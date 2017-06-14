@@ -25,7 +25,7 @@
 [Includes]
   Include
 
-[Includes.Common.Private]
+#MSCHANGE - Id and Auth manager needs to use x509 functions.  Need to clean up and add unit tests ASAP.  [Includes.Common.Private]
   Library/Include
   Library/OpensslLib/openssl/include
   Library/OpensslLib/openssl/crypto/include
