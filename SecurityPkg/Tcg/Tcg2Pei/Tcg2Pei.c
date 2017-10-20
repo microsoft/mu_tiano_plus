@@ -21,6 +21,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #include <Guid/TcgEventHob.h>
 #include <Guid/MeasuredFvHob.h>
+#include <Guid/ExcludedFvHob.h> // Mschange
 #include <Guid/TpmInstance.h>
 #include <Guid/MigratedFvInfo.h>
 
@@ -231,9 +232,17 @@ EndofPeiSignalNotifyCallBack (
   IN VOID                       *Ppi
   )
 {
-  MEASURED_HOB_DATA  *MeasuredHobData;
+  MEASURED_HOB_DATA                                      *MeasuredHobData;
+  EXCLUDED_HOB_DATA                                      *ExcludedHobData;          // MS_CHANGE
+  EFI_PEI_FIRMWARE_VOLUME_INFO_MEASUREMENT_EXCLUDED_PPI  *MeasurementExcludedFvPpi; // MS_CHANGE
+  UINT32                                                 Instance;                  // MS_CHANGE
+  UINT32                                                 Count;                     // MS_CHANGE
+  UINT32                                                 HobIndex;                  // MS_CHANGE
+  EFI_STATUS                                             Status;                    // MS_CHANGE
 
-  MeasuredHobData = NULL;
+  MeasuredHobData          = NULL;
+  ExcludedHobData          = NULL; // MS_CHANGE
+  MeasurementExcludedFvPpi = NULL; // MS_CHANGE
 
   PERF_CALLBACK_BEGIN (&gEfiEndOfPeiSignalPpiGuid);
 
@@ -262,6 +271,76 @@ EndofPeiSignalNotifyCallBack (
     CopyMem (&MeasuredHobData->MeasuredFvBuf[mMeasuredBaseFvIndex], mMeasuredChildFvInfo, sizeof (EFI_PLATFORM_FIRMWARE_BLOB) * (mMeasuredChildFvIndex));
   }
 
+  // MS_CHANGE - START
+  // Create a guid hob to save all excluded FVs for DXE - mschange start
+  //
+
+  //
+  // Get count
+  //
+  Instance = 0;
+  Count    = 0;
+  do {
+    Status = PeiServicesLocatePpi (
+               &gEfiPeiFirmwareVolumeInfoMeasurementExcludedPpiGuid,
+               Instance,
+               NULL,
+               (VOID **)&MeasurementExcludedFvPpi
+               );
+    if (!EFI_ERROR (Status)) {
+      Count += MeasurementExcludedFvPpi->Count;
+      Instance++;
+    }
+  } while (!EFI_ERROR (Status));
+
+  // Check if there are any excluded FVs
+  if (Count > 0) {
+    DEBUG ((DEBUG_INFO, "Found %d FVs excluded.  Publishing hob\n", Count));
+    ExcludedHobData = BuildGuidHob (
+                        &gExcludedFvHobGuid,
+                        sizeof (EXCLUDED_HOB_DATA) + (sizeof (EFI_PEI_FIRMWARE_VOLUME_INFO_MEASUREMENT_EXCLUDED_FV) * Count)
+                        );
+
+    // Make sure allocation was successful
+    if (ExcludedHobData != NULL) {
+      ExcludedHobData->Num = Count;
+      //
+      // Copy FV info to hob data
+      //
+      Instance = 0;
+      HobIndex = 0;
+      do {
+        Status = PeiServicesLocatePpi (
+                   &gEfiPeiFirmwareVolumeInfoMeasurementExcludedPpiGuid,
+                   Instance,
+                   NULL,
+                   (VOID **)&MeasurementExcludedFvPpi
+                   );
+        if (!EFI_ERROR (Status)) {
+          if (MeasurementExcludedFvPpi->Count <= 0) {
+            DEBUG ((DEBUG_ERROR, "ExcludedFvPpi has invalid count %d", MeasurementExcludedFvPpi->Count));
+            ASSERT (MeasurementExcludedFvPpi->Count > 0);
+          } else if ( HobIndex + MeasurementExcludedFvPpi->Count > Count) {
+            DEBUG ((DEBUG_ERROR, "Found more ExcludedFvPpi fvs than when calculated buffer size.  BufferSizeCount (0x%x)  NewCount (0x%x)", Count, (HobIndex + MeasurementExcludedFvPpi->Count)));
+            ASSERT (HobIndex + MeasurementExcludedFvPpi->Count <= Count);
+          } else {
+            CopyMem (&ExcludedHobData->ExcludedFvs[HobIndex], &MeasurementExcludedFvPpi->Fv[0], sizeof (EFI_PEI_FIRMWARE_VOLUME_INFO_MEASUREMENT_EXCLUDED_FV) * MeasurementExcludedFvPpi->Count);
+            HobIndex += MeasurementExcludedFvPpi->Count;
+          }
+
+          Instance++;
+        }
+      } while (!EFI_ERROR (Status));
+    } else {
+      DEBUG ((
+        DEBUG_ERROR,
+        "Failed to allocate 0x%x byte of memory for ExcludedFvHob",
+        sizeof (EXCLUDED_HOB_DATA) + (sizeof (EFI_PEI_FIRMWARE_VOLUME_INFO_MEASUREMENT_EXCLUDED_FV) * Count)
+        ));
+    }
+  }  // Done with Excluded Fv Hob - mschange end
+
+  // MS_CHANGE - END
   PERF_CALLBACK_END (&gEfiEndOfPeiSignalPpiGuid);
 
   return EFI_SUCCESS;
@@ -279,9 +358,9 @@ SyncPcrAllocationsAndPcrMask (
   EFI_STATUS                       Status;
   EFI_TCG2_EVENT_ALGORITHM_BITMAP  TpmHashAlgorithmBitmap;
   UINT32                           TpmActivePcrBanks;
-  UINT32                           NewTpmActivePcrBanks;
-  UINT32                           Tpm2PcrMask;
-  UINT32                           NewTpm2PcrMask;
+  // UINT32                            NewTpmActivePcrBanks;   // MS_CHANGE_? - Update PCR order, add PCD, enable deallocate *and* allocate.
+  UINT32  Tpm2PcrMask;
+  UINT32  NewTpm2PcrMask;
 
   DEBUG ((DEBUG_ERROR, "SyncPcrAllocationsAndPcrMask!\n"));
 
@@ -317,12 +396,15 @@ SyncPcrAllocationsAndPcrMask (
   // If there are active PCR banks that are not supported by the Platform mask,
   // update the TPM allocations and reboot the machine.
   //
+
+  /*
+  // MS_CHANGE_? - Update PCR order, add PCD, enable deallocate *and* allocate.
   if ((TpmActivePcrBanks & Tpm2PcrMask) != TpmActivePcrBanks) {
     NewTpmActivePcrBanks = TpmActivePcrBanks & Tpm2PcrMask;
 
-    DEBUG ((DEBUG_INFO, "%a - Reallocating PCR banks from 0x%X to 0x%X.\n", __FUNCTION__, TpmActivePcrBanks, NewTpmActivePcrBanks));
+    DEBUG ((EFI_D_INFO, "%a - Reallocating PCR banks from 0x%X to 0x%X.\n", __FUNCTION__, TpmActivePcrBanks, NewTpmActivePcrBanks));
     if (NewTpmActivePcrBanks == 0) {
-      DEBUG ((DEBUG_ERROR, "%a - No viable PCRs active! Please set a less restrictive value for PcdTpm2HashMask!\n", __FUNCTION__));
+      DEBUG ((EFI_D_ERROR, "%a - No viable PCRs active! Please set a less restrictive value for PcdTpm2HashMask!\n", __FUNCTION__));
       ASSERT (FALSE);
     } else {
       Status = Tpm2PcrAllocateBanks (NULL, (UINT32)TpmHashAlgorithmBitmap, NewTpmActivePcrBanks);
@@ -330,16 +412,16 @@ SyncPcrAllocationsAndPcrMask (
         //
         // We can't do much here, but we hope that this doesn't happen.
         //
-        DEBUG ((DEBUG_ERROR, "%a - Failed to reallocate PCRs!\n", __FUNCTION__));
+        DEBUG ((EFI_D_ERROR, "%a - Failed to reallocate PCRs!\n", __FUNCTION__));
         ASSERT_EFI_ERROR (Status);
       }
-
       //
       // Need reset system, since we just called Tpm2PcrAllocateBanks().
       //
-      ResetCold ();
+      ResetCold();
     }
   }
+  */
 
   //
   // If there are any PCRs that claim support in the Platform mask that are
@@ -356,6 +438,29 @@ SyncPcrAllocationsAndPcrMask (
 
     Status = PcdSet32S (PcdTpm2HashMask, NewTpm2PcrMask);
     ASSERT_EFI_ERROR (Status);
+    Tpm2PcrMask = NewTpm2PcrMask;
+  }
+
+  //
+  // If there are active PCR banks that are not supported by the Platform mask,
+  // update the TPM allocations and reboot the machine.
+  // MS_CHANGE_? - Update PCR order, add PCD, enable deallocate *and* allocate.
+  //
+  if ((Tpm2PcrMask != TpmActivePcrBanks) && FixedPcdGetBool (PcdForceReallocatePcrBanks)) {
+    DEBUG ((EFI_D_INFO, "%a - Reallocating PCR banks from 0x%X to 0x%X.\n", __FUNCTION__, TpmActivePcrBanks, Tpm2PcrMask));
+    Status = Tpm2PcrAllocateBanks (NULL, (UINT32)TpmHashAlgorithmBitmap, Tpm2PcrMask);
+    if (EFI_ERROR (Status)) {
+      //
+      // We can't do much here, but we hope that this doesn't happen.
+      //
+      DEBUG ((EFI_D_ERROR, "%a - Failed to reallocate PCRs!\n", __FUNCTION__));
+      ASSERT_EFI_ERROR (Status);
+    }
+
+    //
+    // Need reset system, since we just called Tpm2PcrAllocateBanks().
+    //
+    ResetCold ();
   }
 }
 
@@ -879,7 +984,7 @@ MeasureMainBios (
   EFI_FV_INFO                  VolumeInfo;
   EFI_PEI_FIRMWARE_VOLUME_PPI  *FvPpi;
 
-  PERF_START_EX (mFileHandle, "EventRec", "Tcg2Pei", 0, PERF_ID_TCG2_PEI);
+  PERF_FUNCTION_BEGIN (); // MS_CHANGE
 
   //
   // Only measure BFV at the very beginning. Other parts of Static Core Root of
@@ -910,7 +1015,7 @@ MeasureMainBios (
 
   Status = MeasureFvImage ((EFI_PHYSICAL_ADDRESS)(UINTN)VolumeInfo.FvStart, VolumeInfo.FvSize);
 
-  PERF_END_EX (mFileHandle, "EventRec", "Tcg2Pei", 0, PERF_ID_TCG2_PEI + 1);
+  PERF_FUNCTION_END (); // MS_CHANGE
 
   return Status;
 }
