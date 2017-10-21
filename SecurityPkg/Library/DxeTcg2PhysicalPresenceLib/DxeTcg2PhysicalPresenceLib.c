@@ -30,6 +30,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Guid/Tcg2PhysicalPresenceData.h>
 #include <Library/Tpm2CommandLib.h>
 #include <Library/Tcg2PhysicalPresenceLib.h>
+#include <Library/Tcg2PhysicalPresencePromptLib.h>    // MU_CHANGE
 #include <Library/Tcg2PpVendorLib.h>
 
 #define CONFIRM_BUFFER_SIZE  4096
@@ -251,6 +252,9 @@ Tcg2ExecutePhysicalPresence (
   }
 }
 
+// MU_CHANGE [BEGIN] - Move this code out of the business for processing requests.
+#if (0)
+
 /**
   Read the specified key for user confirmation.
 
@@ -294,6 +298,9 @@ Tcg2ReadUserKey (
 
   return FALSE;
 }
+
+#endif
+// MU_CHANGE [END]
 
 /**
   Fill Buffer With BootHashAlg.
@@ -587,9 +594,9 @@ Tcg2UserConfirm (
   FreePool (ConfirmText);
   HiiRemovePackages (mTcg2PpStringPackHandle);
 
-  if (Tcg2ReadUserKey (CautionKey)) {
-    return TRUE;
-  }
+  // if (Tcg2ReadUserKey (CautionKey)) {
+  //   return TRUE;
+  // }
 
   return FALSE;
 }
