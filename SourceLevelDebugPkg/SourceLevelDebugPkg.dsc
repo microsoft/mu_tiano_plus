@@ -121,5 +121,9 @@
   SourceLevelDebugPkg/DebugAgentPei/DebugAgentPei.inf
   SourceLevelDebugPkg/DebugAgentDxe/DebugAgentDxe.inf
 
+##MSCHANGE BEGIN
+  SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf
+##MSCHANGE END
+
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
