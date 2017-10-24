@@ -296,13 +296,15 @@ FfsProcessSection (
   UINT32                    CompressedDataLength;
   BOOLEAN                   Found;
 
-  Found = FALSE;
-
+  // MU_CHANGE Start: Initialize Variables
+  Found             = FALSE;
   *OutputBuffer     = NULL;
   ParsedLength      = 0;
   Status            = EFI_NOT_FOUND;
-  ScratchBufferSize = 0;    // MU_CHANGE
-  DstBufferSize     = 0;    // MU_CHANGE
+  ScratchBufferSize = 0;
+  DstBufferSize     = 0;
+  // MU_CHANGE End: Initialize Variables
+
   while (ParsedLength < SectionSize) {
     if (IS_SECTION2 (Section)) {
       ASSERT (SECTION2_SIZE (Section) > 0x00FFFFFF);
