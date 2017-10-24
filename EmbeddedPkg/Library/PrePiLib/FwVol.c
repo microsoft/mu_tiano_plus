@@ -293,9 +293,11 @@ FfsProcessSection (
   CHAR8                     *CompressedData;
   UINT32                    CompressedDataLength;
 
-  *OutputBuffer = NULL;
-  ParsedLength  = 0;
-  Status        = EFI_NOT_FOUND;
+  *OutputBuffer     = NULL;
+  ParsedLength      = 0;
+  Status            = EFI_NOT_FOUND;
+  ScratchBufferSize = 0;    // MU_CHANGE
+  DstBufferSize     = 0;    // MU_CHANGE
   while (ParsedLength < SectionSize) {
     if (IS_SECTION2 (Section)) {
       ASSERT (SECTION2_SIZE (Section) > 0x00FFFFFF);
