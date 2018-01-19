@@ -117,28 +117,12 @@ AesEcbEncrypt (
   OUT  UINT8        *Output
   )
 {
-  AES_KEY  *AesKey;
-
-  //
-  // Check input parameters.
-  //
-  if (AesContext == NULL || Input == NULL || (InputSize % AES_BLOCK_SIZE) != 0 || Output == NULL) {
-    return FALSE;
-  }
-
-  AesKey = (AES_KEY *) AesContext;
-
-  //
-  // Perform AES data encryption with ECB mode (block-by-block)
-  //
-  while (InputSize > 0) {
-    AES_ecb_encrypt (Input, Output, AesKey, AES_ENCRYPT);
-    Input     += AES_BLOCK_SIZE;
-    Output    += AES_BLOCK_SIZE;
-    InputSize -= AES_BLOCK_SIZE;
-  }
-
-  return TRUE;
+// MS_CHANGE_162948 
+// MSChange [BEGIN] - Deprecate ECB mode.
+  ASSERT (FALSE);
+  return FALSE;
+  
+// MSChange [END]
 }
 
 /**
@@ -174,28 +158,11 @@ AesEcbDecrypt (
   OUT  UINT8        *Output
   )
 {
-  AES_KEY  *AesKey;
-
-  //
-  // Check input parameters.
-  //
-  if (AesContext == NULL || Input == NULL || (InputSize % AES_BLOCK_SIZE) != 0 || Output == NULL) {
-    return FALSE;
-  }
-
-  AesKey = (AES_KEY *) AesContext;
-
-  //
-  // Perform AES data decryption with ECB mode (block-by-block)
-  //
-  while (InputSize > 0) {
-    AES_ecb_encrypt (Input, Output, AesKey + 1, AES_DECRYPT);
-    Input     += AES_BLOCK_SIZE;
-    Output    += AES_BLOCK_SIZE;
-    InputSize -= AES_BLOCK_SIZE;
-  }
-
-  return TRUE;
+// MS_CHANGE_162948
+// MSChange [BEGIN] - Deprecate ECB mode.
+  ASSERT (FALSE);
+  return FALSE;
+// MSChange [END]
 }
 
 /**
