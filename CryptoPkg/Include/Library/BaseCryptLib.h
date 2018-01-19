@@ -2913,4 +2913,22 @@ RandomBytes (
   IN   UINTN  Size
   );
 
+// MS_CHANGE_205319
+// MSChange [BEGIN]
+/**
+Function to Get the Subject Name from an X509 cert in UTF8 format.
+
+@param[in] Cert        - Raw DER encoded Certificate
+@param[in] CertLength  - Length of the raw cert buffer
+
+@retval CHAR8 String or NULL - SubjectName which has C, O, and CN contents in it.
+**/
+CHAR8*
+EFIAPI
+X509GetUTF8SubjectName (
+IN CONST  UINT8    *Cert,
+IN CONST  UINTN     CertLength
+);
+// MSChange [END]
+
 #endif // __BASE_CRYPT_LIB_H__
