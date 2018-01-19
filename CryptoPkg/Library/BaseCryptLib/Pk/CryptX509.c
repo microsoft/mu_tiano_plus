@@ -728,3 +728,64 @@ X509GetTBSCert (
 
   return TRUE;
 }
+
+// MS_CHANGE_205319
+// MSChange [BEGIN]
+/**
+Function to Get the Subject Name from an X509 cert in UTF8 format.  
+
+@param[in] Cert        - Raw DER encoded Certificate
+@param[in] CertLength  - Length of the raw cert buffer
+
+@retval CHAR8 String or NULL - SubjectName which has C, O, and CN contents in it. 
+**/
+CHAR8 *
+EFIAPI
+X509GetUTF8SubjectName(
+IN CONST  UINT8    *Cert,
+IN CONST  UINTN     CertLength
+)
+{
+    BIO       *SubjectBio = NULL;
+    CHAR8     *SubjectName = NULL;
+    X509      *X509Cert = NULL;
+
+    if ((Cert == NULL) || (CertLength == 0)){
+        DEBUG((DEBUG_ERROR, __FUNCTION__" Invalid input parameters.\n"));
+        goto Cleanup;
+    }
+
+    //Convert Raw DER Cert into OpenSSL Cert Object 
+    X509Cert = d2i_X509(NULL, &Cert, (UINT32)CertLength);
+    if (X509Cert == NULL)
+    {
+        DEBUG((DEBUG_ERROR, __FUNCTION__" d2i_X509 failed. X509Cert == NULL\n"));
+        goto Cleanup;
+    }
+
+   //Create a Bio object
+    SubjectBio = BIO_new(BIO_s_mem());
+    if (SubjectBio == NULL){
+        goto Cleanup;
+    }
+
+    //Get the subject name in the bio object. XN_FLAG_ONELINE has UTF8_CONVERT that we are interested in.
+    if (X509_NAME_print_ex(SubjectBio, X509_get_subject_name(X509Cert), 0, XN_FLAG_ONELINE)) {
+        //Add additional byte to hold a '\0' at the end. BIO_number_written(out) returns size not including the '\0'
+        SubjectName = AllocateZeroPool(BIO_number_written(SubjectBio) + 1);
+        if (SubjectName != NULL) {
+
+            BIO_read(SubjectBio, SubjectName, (int) BIO_number_written(SubjectBio));
+        }
+    }
+
+Cleanup:
+    BIO_free(SubjectBio);
+
+    if (X509Cert){
+        FreePool(X509Cert);
+    }
+
+    return SubjectName;
+}
+// MSChange [BEGIN]
