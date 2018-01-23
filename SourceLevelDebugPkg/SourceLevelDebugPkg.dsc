@@ -40,6 +40,9 @@
   PciLib|MdePkg/Library/BasePciLibCf8/BasePciLibCf8.inf
   PciCf8Lib|MdePkg/Library/BasePciCf8Lib/BasePciCf8Lib.inf
   PlatformHookLib|MdeModulePkg/Library/BasePlatformHookLibNull/BasePlatformHookLibNull.inf
+##MSCHANGE Begin
+  SourceDebugEnabledLib|SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf ## MS_CHANGE_?
+##MSCHANGE End
 
 !ifdef $(SOURCE_DEBUG_USE_USB)
   DebugCommunicationLib|SourceLevelDebugPkg/Library/DebugCommunicationLibUsb/DebugCommunicationLibUsb.inf
@@ -48,6 +51,16 @@
   DebugCommunicationLib|SourceLevelDebugPkg/Library/DebugCommunicationLibSerialPort/DebugCommunicationLibSerialPort.inf
 !endif
 !endif
+
+##MSCHANGE Begin
+!if $(TARGET) == DEBUG
+!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
+  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+!endif
+!endif
+##MSCHANGE End
 
 [LibraryClasses.common.PEIM]
   PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
@@ -103,6 +116,10 @@
   SourceLevelDebugPkg/Library/DebugAgent/SmmDebugAgentLib.inf
   SourceLevelDebugPkg/DebugAgentPei/DebugAgentPei.inf
   SourceLevelDebugPkg/DebugAgentDxe/DebugAgentDxe.inf
+
+##MSCHANGE BEGIN
+  SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf
+##MSCHANGE END
 
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
