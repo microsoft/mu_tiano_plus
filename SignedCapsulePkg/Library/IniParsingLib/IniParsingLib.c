@@ -1107,6 +1107,8 @@ GetGuidFromDataFile (
   EFI_STATUS                            Status;
   RETURN_STATUS                         RStatus;
 
+  Value = NULL; //vs2017
+
   if (Context == NULL || SectionName == NULL || EntryName == NULL || Guid == NULL) {
     return EFI_INVALID_PARAMETER;
   }
@@ -1150,6 +1152,8 @@ GetDecimalUintnFromDataFile (
 {
   CHAR8                                 *Value;
   EFI_STATUS                            Status;
+
+  Value = NULL;
 
   if (Context == NULL || SectionName == NULL || EntryName == NULL || Data == NULL) {
     return EFI_INVALID_PARAMETER;
@@ -1195,6 +1199,8 @@ GetHexUintnFromDataFile (
   CHAR8                                 *Value;
   EFI_STATUS                            Status;
 
+  Value = NULL; //vs2017
+
   if (Context == NULL || SectionName == NULL || EntryName == NULL || Data == NULL) {
     return EFI_INVALID_PARAMETER;
   }
@@ -1238,6 +1244,8 @@ GetHexUint64FromDataFile (
 {
   CHAR8                                 *Value;
   EFI_STATUS                            Status;
+
+  Value = NULL;
 
   if (Context == NULL || SectionName == NULL || EntryName == NULL || Data == NULL) {
     return EFI_INVALID_PARAMETER;
