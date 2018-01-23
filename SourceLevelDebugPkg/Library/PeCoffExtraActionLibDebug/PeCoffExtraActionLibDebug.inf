@@ -35,7 +35,7 @@
 [Sources.IA32]
   Ia32/IntHandlerFuncs.c
   Ia32/IntHandler.nasm
-  Ia32/IntHandler.S
+  #Ia32/IntHandler.S  ##MSCHANGE
 
 [Sources.X64]
   X64/IntHandlerFuncs.c
