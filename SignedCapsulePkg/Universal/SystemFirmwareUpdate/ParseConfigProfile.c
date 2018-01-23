@@ -51,6 +51,8 @@ ParseUpdateDataFile (
   EFI_GUID                              FileGuid;
   VOID                                  *Context;
 
+  SectionName = NULL; //vs2017
+
   //
   // First process the data buffer and get all sections and entries
   //
