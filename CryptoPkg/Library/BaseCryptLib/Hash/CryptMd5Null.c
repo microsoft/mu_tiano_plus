@@ -135,3 +135,34 @@ Md5Final (
   ASSERT (FALSE);
   return FALSE;
 }
+//MSCHANGE Begin
+/**
+Computes the MD5 message digest of a input data buffer.
+
+This function performs the MD5 message digest of a given data buffer, and places
+the digest value into the specified memory.
+
+If this interface is not supported, then return FALSE.
+
+@param[in]   Data        Pointer to the buffer containing the data to be hashed.
+@param[in]   DataSize    Size of Data buffer in bytes.
+@param[out]  HashValue   Pointer to a buffer that receives the MD5 digest
+value (16 bytes).
+
+@retval TRUE   MD5 digest computation succeeded.
+@retval FALSE  MD5 digest computation failed.
+@retval FALSE  This interface is not supported.
+
+**/
+BOOLEAN
+EFIAPI
+Md5HashAll(
+  IN   CONST VOID  *Data,
+  IN   UINTN       DataSize,
+  OUT  UINT8       *HashValue
+)
+{
+  ASSERT(FALSE);
+  return FALSE;
+}
+//MSCHANGE End
