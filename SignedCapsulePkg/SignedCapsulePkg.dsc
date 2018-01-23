@@ -106,6 +106,14 @@
   IniParsingLib|SignedCapsulePkg/Library/IniParsingLib/IniParsingLib.inf
   PlatformFlashAccessLib|SignedCapsulePkg/Library/PlatformFlashAccessLibNull/PlatformFlashAccessLibNull.inf
 
+##MSCHANGE Begin
+!if $(TARGET) == DEBUG
+  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+!endif
+##MSCHANGE End
+
 [LibraryClasses.common.PEI_CORE]
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
   MemoryAllocationLib|MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf
