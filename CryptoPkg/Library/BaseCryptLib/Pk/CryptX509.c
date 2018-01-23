@@ -749,6 +749,7 @@ IN CONST  UINTN     CertLength
     BIO       *SubjectBio = NULL;
     CHAR8     *SubjectName = NULL;
     X509      *X509Cert = NULL;
+    UINT64    BioWrittenCount;  //mschange
 
     if ((Cert == NULL) || (CertLength == 0)){
         DEBUG((DEBUG_ERROR, __FUNCTION__" Invalid input parameters.\n"));
@@ -769,15 +770,19 @@ IN CONST  UINTN     CertLength
         goto Cleanup;
     }
 
+    //MSCHANGE Begin
     //Get the subject name in the bio object. XN_FLAG_ONELINE has UTF8_CONVERT that we are interested in.
     if (X509_NAME_print_ex(SubjectBio, X509_get_subject_name(X509Cert), 0, XN_FLAG_ONELINE)) {
-        //Add additional byte to hold a '\0' at the end. BIO_number_written(out) returns size not including the '\0'
-        SubjectName = AllocateZeroPool(BIO_number_written(SubjectBio) + 1);
-        if (SubjectName != NULL) {
-
-            BIO_read(SubjectBio, SubjectName, (int) BIO_number_written(SubjectBio));
+        BioWrittenCount = BIO_number_written(SubjectBio);  //mschange - switch to intsafe once available
+        // BioWrittenCount will have to be cast to an 'int' so we can only proceed if that works.
+        if (BioWrittenCount < MAX_INTN) {
+          //Add additional byte to hold a '\0' at the end. BIO_number_written(out) returns size not including the '\0'
+          SubjectName = AllocateZeroPool((UINTN)BioWrittenCount + 1);
+          if (SubjectName != NULL) {
+            BIO_read(SubjectBio, SubjectName, (int)BioWrittenCount);
+          }
         }
-    }
+    } //MSCHANGE End
 
 Cleanup:
     BIO_free(SubjectBio);

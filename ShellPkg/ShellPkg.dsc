@@ -64,6 +64,14 @@
   DxeServicesLib|MdePkg/Library/DxeServicesLib/DxeServicesLib.inf
   ReportStatusCodeLib|MdePkg/Library/BaseReportStatusCodeLibNull/BaseReportStatusCodeLibNull.inf
 
+##MSCHANGE Begin
+!if $(TARGET) == DEBUG
+  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+!endif
+##MSCHANGE End
+
 [LibraryClasses.ARM]
   #
   # It is not possible to prevent the ARM compiler for generic intrinsic functions.
@@ -90,6 +98,11 @@
   # Build all the libraries when building this package.
   # This helps developers test changes and how they affect the package.
   #
+## MSCHANGE BEGIN
+  ShellPkg/Application/ShellCTestApp/ShellCTestApp.inf
+  ShellPkg/Application/ShellExecTestApp/SA.inf
+  ShellPkg/Application/ShellSortTestApp/ShellSortTestApp.inf
+## MSCHANGE END
   ShellPkg/Library/UefiShellLib/UefiShellLib.inf
   ShellPkg/Library/UefiShellAcpiViewCommandLib/UefiShellAcpiViewCommandLib.inf
   ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.inf
