@@ -2206,6 +2206,43 @@ X509GetCommonName (
   IN OUT  UINTN        *CommonNameSize
   );
 
+// MSCHANGE [Begin]
+/**
+  Retrieve the organization name (O) string from one X.509 certificate.
+
+  @param[in]      Cert             Pointer to the DER-encoded X509 certificate.
+  @param[in]      CertSize         Size of the X509 certificate in bytes.
+  @param[out]     NameBuffer       Buffer to contain the retrieved certificate organization
+                                   name string. At most NameBufferSize bytes will be
+                                   written and the string will be null terminated. May be
+                                   NULL in order to determine the size buffer needed.
+  @param[in,out]  NameBufferSiz e  The size in bytes of the Name buffer on input,
+                                   and the size of buffer returned Name on output.
+                                   If NameBuffer is NULL then the amount of space needed
+                                   in buffer (including the final null) is returned.
+
+  @retval RETURN_SUCCESS           The certificate Organization Name retrieved successfully.
+  @retval RETURN_INVALID_PARAMETER If Cert is NULL.
+                                   If NameBufferSize is NULL.
+                                   If NameBuffer is not NULL and *CommonNameSize is 0.
+                                   If Certificate is invalid.
+  @retval RETURN_NOT_FOUND         If no Organization Name entry exists.
+  @retval RETURN_BUFFER_TOO_SMALL  If the NameBuffer is NULL. The required buffer size
+                                   (including the final null) is returned in the
+                                   CommonNameSize parameter.
+  @retval RETURN_UNSUPPORTED       The operation is not supported.
+
+**/
+RETURN_STATUS
+EFIAPI
+X509GetOrganizationName (
+  IN      CONST UINT8  *Cert,
+  IN      UINTN        CertSize,
+  OUT     CHAR8        *NameBuffer,  OPTIONAL
+  IN OUT  UINTN        *NameBufferSize
+  );
+// MSCHANGE [End]
+
 /**
   Verify one X509 certificate was issued by the trusted CA.
 
@@ -2912,23 +2949,5 @@ RandomBytes (
   OUT  UINT8  *Output,
   IN   UINTN  Size
   );
-
-// MS_CHANGE_205319
-// MSChange [BEGIN]
-/**
-Function to Get the Subject Name from an X509 cert in UTF8 format.
-
-@param[in] Cert        - Raw DER encoded Certificate
-@param[in] CertLength  - Length of the raw cert buffer
-
-@retval CHAR8 String or NULL - SubjectName which has C, O, and CN contents in it.
-**/
-CHAR8*
-EFIAPI
-X509GetUTF8SubjectName (
-IN CONST  UINT8    *Cert,
-IN CONST  UINTN     CertLength
-);
-// MSChange [END]
 
 #endif // __BASE_CRYPT_LIB_H__
