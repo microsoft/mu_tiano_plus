@@ -3372,6 +3372,9 @@ ShellPromptForResponse (
   if (Type != ShellPromptResponseTypeFreeform) {
     Resp = (SHELL_PROMPT_RESPONSE*)AllocateZeroPool(sizeof(SHELL_PROMPT_RESPONSE));
     if (Resp == NULL) {
+      if (Response != NULL) {  // MS_CHANGE
+        *Response = NULL;      // MS_CHANGE 
+      }                        // MS_CHANGE
       return (EFI_OUT_OF_RESOURCES);
     }
   }
@@ -3574,6 +3577,8 @@ ShellPromptForResponse (
       *Response = Resp;
     } else if (Buffer != NULL) {
       *Response = Buffer;
+    } else {             // MS_CHANGE
+      *Response = NULL;  // MS_CHANGE
     }
   } else {
     if (Resp != NULL) {
