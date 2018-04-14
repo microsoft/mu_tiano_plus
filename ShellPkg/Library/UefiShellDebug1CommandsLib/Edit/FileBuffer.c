@@ -2773,6 +2773,8 @@ FileBufferCutLine (
   UINTN           Row;
   UINTN           Col;
 
+  *CutLine = NULL;    // MS_CHANGE
+
   if (FileBuffer.ReadOnly) {
     StatusBarSetStatusString (L"Read Only File Can Not Be Modified");
     return EFI_SUCCESS;
