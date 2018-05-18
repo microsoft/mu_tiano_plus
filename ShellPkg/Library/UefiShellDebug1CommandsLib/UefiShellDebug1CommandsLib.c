@@ -113,6 +113,7 @@ UefiShellDebug1CommandsLibDestructor (
   return (EFI_SUCCESS);
 }
 
+#if 0 // MSCHANGE [Begin]
 /**
   Convert a Unicode character to upper case only if
   it maps to a valid small-case ASCII character.
@@ -141,6 +142,7 @@ CharToUpper (
 
   return Char;
 }
+#endif   // MSCHANGE [ENd]
 
 /**
   Function returns a system configuration table that is stored in the
