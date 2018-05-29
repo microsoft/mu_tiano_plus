@@ -343,7 +343,7 @@ InternalX509GetNIDName (
   INTN             Length;
   X509_NAME_ENTRY *Entry;
   ASN1_STRING     *EntryData;
-  char            *UTF8Name;
+  unsigned char   *UTF8Name; // MS_CHANGE: added unsigned
   int              Indx;
 
   ReturnStatus = RETURN_INVALID_PARAMETER;
