@@ -7,6 +7,7 @@
 **/
 
 #include "SecPeiDebugAgentLib.h"
+#include <Library/SourceDebugEnabledLib.h>       // MS_CHANGE_217204
 
 GLOBAL_REMOVE_IF_UNREFERENCED BOOLEAN  mSkipBreakpoint = FALSE;
 
@@ -371,6 +372,21 @@ InitializeDebugAgent (
   EFI_PHYSICAL_ADDRESS             Address;
   UINT32                           DebugTimerFrequency;
   BOOLEAN                          CpuInterruptState;
+
+// MS_CHANGE_217204
+  //
+  // Check if source debugging is runtime enabled.
+  //
+  DEBUG((DEBUG_INFO, __FUNCTION__ "[SEC/PEI]: enter...\n"));
+  if (IsSourceDebugEnabled(InitFlag) == FALSE) {
+    DEBUG((DEBUG_INFO, __FUNCTION__ "[SEC/PEI]: source debug not enabled\n"));
+    if (Function != NULL) {
+      Function(Context);
+    }
+
+    return;
+  }
+// END
 
   //
   // Disable interrupts and save current interrupt state
