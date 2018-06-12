@@ -41,7 +41,9 @@
             "UnitTestFrameworkPkg/UnitTestFrameworkPkg.dec",
             "SecurityPkg/SecurityPkg.dec",
             "StandaloneMmPkg/StandaloneMmPkg.dec",
-            "CryptoPkg/CryptoPkg.dec"
+            "CryptoPkg/CryptoPkg.dec",
+            # MU_CHANGE - Measure into PCR7 if Debug is enabled.
+            "SourceLevelDebugPkg/SourceLevelDebugPkg.dec",
         ],
         # For host based unit tests
         "AcceptableDependencies-HOST_APPLICATION":[],
