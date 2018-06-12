@@ -13,6 +13,7 @@
 **/
 
 #include "SmmDebugAgentLib.h"
+#include <Library/SourceDebugEnabledLib.h>       // MS_CHANGE_217204
 
 DEBUG_AGENT_MAILBOX         *mMailboxPointer = NULL;
 DEBUG_AGENT_MAILBOX         mLocalMailbox;
@@ -196,6 +197,20 @@ InitializeDebugAgent (
   DEBUG_AGENT_MAILBOX           *Mailbox;
   UINT64                        *MailboxLocation;
   UINT32                        DebugTimerFrequency;
+
+// MS_CHANGE_217204
+  if (InitFlag != DEBUG_AGENT_INIT_ENTER_SMI && InitFlag != DEBUG_AGENT_INIT_EXIT_SMI) {
+    DEBUG((DEBUG_INFO, __FUNCTION__ "[SMM]: enter...\n"));
+  }
+
+  if (IsSourceDebugEnabled(InitFlag) == FALSE) {
+    if (InitFlag != DEBUG_AGENT_INIT_ENTER_SMI && InitFlag != DEBUG_AGENT_INIT_EXIT_SMI) {
+      DEBUG((DEBUG_INFO, __FUNCTION__ "[SMM]: source debug not enabled\n"));
+    }
+
+    return;
+  }
+// END
 
   switch (InitFlag) {
   case DEBUG_AGENT_INIT_SMM:
