@@ -503,9 +503,9 @@ Tpm2PcrExtend (
 EFI_STATUS
 EFIAPI
 Tpm2PcrEvent (
-  IN      TPMI_DH_PCR         PcrHandle,
-  IN      TPM2B_EVENT         *EventData,
-  OUT     TPML_DIGEST_VALUES  *Digests
+  IN      TPMI_DH_PCR      PcrHandle,
+  IN      TPM2B_EVENT      *EventData,
+  OUT  TPML_DIGEST_VALUES  *Digests
   );
 
 /**
@@ -522,10 +522,10 @@ Tpm2PcrEvent (
 EFI_STATUS
 EFIAPI
 Tpm2PcrRead (
-  IN   TPML_PCR_SELECTION  *PcrSelectionIn,
-  OUT  UINT32              *PcrUpdateCounter,
-  OUT  TPML_PCR_SELECTION  *PcrSelectionOut,
-  OUT  TPML_DIGEST         *PcrValues
+  IN      TPML_PCR_SELECTION  *PcrSelectionIn,
+  OUT  UINT32                 *PcrUpdateCounter,
+  OUT  TPML_PCR_SELECTION     *PcrSelectionOut,
+  OUT  TPML_DIGEST            *PcrValues
   );
 
 /**
@@ -1128,6 +1128,22 @@ EFIAPI
 Tpm2PcrReadForActiveBank (
   IN      TPMI_DH_PCR  PcrHandle,
   OUT     TPML_DIGEST  *HashList
+  );
+/**
+  MSCHANGE
+  Check if all hash algorithms supported in HashAlgorithmMask are
+  present in the DigestList.
+
+  @param DigestList         Digest list
+  @param HashAlgorithmMask  Bitfield of allowed hash algorithms.
+
+  @retval TRUE  All hash algorithms present.
+  @retval FALSE Some hash algorithms not present.
+**/
+BOOLEAN
+IsDigestListInSyncWithHashAlgorithmMask (
+  IN TPML_DIGEST_VALUES  *DigestList,
+  IN UINT32              HashAlgorithmMask
   );
 
 #endif
