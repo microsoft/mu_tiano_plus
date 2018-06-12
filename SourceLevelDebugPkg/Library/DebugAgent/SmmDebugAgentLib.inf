@@ -75,6 +75,7 @@
   PeCoffExtraActionLib
   PeCoffGetEntryPointLib
   SmmServicesTableLib
+  SourceDebugEnabledLib  # MSCHANGE - runtime check if source debug is enabled ## MS_CHANGE_?
 
 [Guids]
   ## CONSUMES ## SystemTable

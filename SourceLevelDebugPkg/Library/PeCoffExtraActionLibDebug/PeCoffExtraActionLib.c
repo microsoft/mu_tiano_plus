@@ -70,7 +70,7 @@ PeCoffLoaderExtraActionCommon (
   ASSERT (ImageContext != NULL);
 
   if (ImageContext->PdbPointer != NULL) {
-    DEBUG((EFI_D_ERROR, "    PDB = %a\n", ImageContext->PdbPointer));
+    DEBUG((EFI_D_INFO, "    PDB = %a\n", ImageContext->PdbPointer));     // MS_CHANGE_304324
   }
 
   //
@@ -100,11 +100,17 @@ PeCoffLoaderExtraActionCommon (
     }
   } else {
     if (!CheckDebugAgentHandler (&IdtDescriptor, IO_HW_BREAKPOINT_VECTOR_NUM)) {
+
+//MS_CHANGE_217204
+      goto Cleanup;
+#if 0
       //
       // Save and update IDT entry for INT1
       //
       SaveAndUpdateIdtEntry1 (&IdtDescriptor, &OriginalIdtEntry);
       IdtEntryHooked = TRUE;
+#endif
+// END
     }
   }
   
@@ -184,6 +190,9 @@ PeCoffLoaderExtraActionCommon (
       AsmWriteDr7 (Dr7);
     }
   }
+
+Cleanup:                               // MS_CHANGE_217204
+
   //
   // Restore original IDT entry for INT1 if it was hooked.
   //
