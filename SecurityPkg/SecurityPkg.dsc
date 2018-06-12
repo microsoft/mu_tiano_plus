@@ -3,6 +3,8 @@
 #
 # Copyright (c) 2009 - 2021, Intel Corporation. All rights reserved.<BR>
 # (C) Copyright 2015-2020 Hewlett Packard Enterprise Development LP<BR>
+# Copyright (c) Microsoft Corporation
+#
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ##
@@ -76,6 +78,18 @@
   SecureBootVariableProvisionLib|SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.inf
   TdxLib|MdePkg/Library/TdxLib/TdxLib.inf
   OemTpm2InitLib|SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf               ## MS_CHANGE_?
+  SourceDebugEnabledLib|SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf ## MS_CHANGE_?
+
+## MU_CHANGE [BEGIN]
+[LibraryClasses.X64, LibraryClasses.IA32]
+!if $(TARGET) == DEBUG
+!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
+  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+!endif
+!endif
+## MU_CHANGE [END]
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
@@ -95,7 +109,6 @@
 
 [LibraryClasses.RISCV64]
   RngLib|MdePkg/Library/BaseRngLibTimerLib/BaseRngLibTimerLib.inf
-
 [LibraryClasses.X64.SEC]
   HashLib|SecurityPkg/Library/HashLibTdx/HashLibTdx.inf
   TpmMeasurementLib|SecurityPkg/Library/SecTpmMeasurementLib/SecTpmMeasurementLibTdx.inf
@@ -287,7 +300,13 @@
   SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLibVendorNull.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibSimple.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibVerbose.inf
+  SecurityPkg/Library/DxeTpmMeasurementLib/DxeTpmMeasurementLib.inf
+  SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
+  SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
+  SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
+  SecurityPkg/Library/TempPreUefiEventLogLib/TempPreUefiEventLogLib.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
+  SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
 ## MSCHANGE END
 
 [Components.IA32, Components.X64, Components.ARM, Components.AARCH64]
