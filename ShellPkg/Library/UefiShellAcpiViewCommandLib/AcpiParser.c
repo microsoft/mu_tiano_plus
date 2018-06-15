@@ -689,14 +689,18 @@ DumpAcpiHeader (
   IN UINT8* Ptr
   )
 {
-  return ParseAcpi (
-           TRUE,
-           0,
-           "ACPI Table Header",
-           Ptr,
-           sizeof (EFI_ACPI_DESCRIPTION_HEADER),
-           PARSER_PARAMS (AcpiHeaderParser)
-           );
+  // MS_CHANGE [BEGIN] - This code currently breaks CoreBuild, and we don't use it anyway.
+  //                      Bugs filed.
+  // return ParseAcpi (
+  //          TRUE,
+  //          0,
+  //          "ACPI Table Header",
+  //          Ptr,
+  //          ACPI_DESCRIPTION_HEADER_LENGTH,
+  //          PARSER_PARAMS (AcpiHeaderParser)
+  //          );
+  return 0;
+  // MS_CHANGE [END]
 }
 
 /**
@@ -721,20 +725,24 @@ ParseAcpiHeader (
   OUT CONST UINT8**  Revision
   )
 {
-  UINT32                        BytesParsed;
+  // MS_CHANGE [BEGIN] - This code currently breaks CoreBuild, and we don't use it anyway.
+  //                      Bugs filed.
+  // UINT32                        BytesParsed;
 
-  BytesParsed = ParseAcpi (
-                  FALSE,
-                  0,
-                  NULL,
-                  Ptr,
-                  sizeof (EFI_ACPI_DESCRIPTION_HEADER),
-                  PARSER_PARAMS (AcpiHeaderParser)
-                  );
+  // BytesParsed = ParseAcpi (
+  //                 FALSE,
+  //                 0,
+  //                 NULL,
+  //                 Ptr,
+  //                 ACPI_DESCRIPTION_HEADER_LENGTH,
+  //                 PARSER_PARAMS (AcpiHeaderParser)
+  //                 );
 
-  *Signature = AcpiHdrInfo.Signature;
-  *Length = AcpiHdrInfo.Length;
-  *Revision = AcpiHdrInfo.Revision;
+  // *Signature = AcpiHdrInfo.Signature;
+  // *Length = AcpiHdrInfo.Length;
+  // *Revision = AcpiHdrInfo.Revision;
 
-  return BytesParsed;
+  // return BytesParsed;
+  return 0;
+  // MS_CHANGE [END]
 }
