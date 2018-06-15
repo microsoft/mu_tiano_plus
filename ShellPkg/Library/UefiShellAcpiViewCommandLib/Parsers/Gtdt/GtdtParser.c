@@ -176,8 +176,11 @@ DumpGTBlock (
              Length,
              PARSER_PARAMS (GtBlockParser)
              );
-  GTBlockTimerLength = (*GtBlockLength - Offset) / (*GtBlockTimerCount);
-  Length -= Offset;
+  // MS_CHANGE [BEGIN] - This code currently breaks CoreBuild, and we don't use it anyway.
+  //                      Bugs filed.
+  GTBlockTimerLength = (UINT16)((*GtBlockLength - Offset) / (*GtBlockTimerCount));
+  Length -= (UINT16)Offset;
+  // MS_CHANGE [END]
 
   if (*GtBlockTimerCount != 0) {
     Ptr += (*GtBlockTimerOffset);
@@ -193,7 +196,10 @@ DumpGTBlock (
                  );
       // Increment by GT Block Timer structure size
       Ptr += Offset;
-      Length -= Offset;
+      // MS_CHANGE [BEGIN] - This code currently breaks CoreBuild, and we don't use it anyway.
+      //                      Bugs filed.
+      Length -= (UINT16)Offset;
+      // MS_CHANGE [END]
       Index++;
     }
 
