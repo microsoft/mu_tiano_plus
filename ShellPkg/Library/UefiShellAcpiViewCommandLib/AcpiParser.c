@@ -603,19 +603,23 @@ DumpAcpiHeader (
   IN UINT8* Ptr
   )
 {
-  ACPI_DESCRIPTION_HEADER_INFO AcpiHdrInfo;
-  ACPI_PARSER AcpiHeaderParser[] = {
-    PARSE_ACPI_HEADER (&AcpiHdrInfo)
-  };
+  // MS_CHANGE [BEGIN] - This code currently breaks CoreBuild, and we don't use it anyway.
+  //                      Bugs filed.
+  // ACPI_DESCRIPTION_HEADER_INFO AcpiHdrInfo;
+  // ACPI_PARSER AcpiHeaderParser[] = {
+  //   PARSE_ACPI_HEADER (&AcpiHdrInfo)
+  // };
 
-  return ParseAcpi (
-           TRUE,
-           0,
-           "ACPI Table Header",
-           Ptr,
-           ACPI_DESCRIPTION_HEADER_LENGTH,
-           PARSER_PARAMS (AcpiHeaderParser)
-           );
+  // return ParseAcpi (
+  //          TRUE,
+  //          0,
+  //          "ACPI Table Header",
+  //          Ptr,
+  //          ACPI_DESCRIPTION_HEADER_LENGTH,
+  //          PARSER_PARAMS (AcpiHeaderParser)
+  //          );
+  return 0;
+  // MS_CHANGE [END]
 }
 
 /** This function parses the ACPI header as described by the AcpiHeaderParser.
@@ -639,24 +643,28 @@ ParseAcpiHeader (
   OUT CONST UINT8**  Revision
   )
 {
-  UINT32                        BytesParsed;
-  ACPI_DESCRIPTION_HEADER_INFO  AcpiHdrInfo;
-  ACPI_PARSER AcpiHeaderParser[] = {
-    PARSE_ACPI_HEADER (&AcpiHdrInfo)
-  };
+  // MS_CHANGE [BEGIN] - This code currently breaks CoreBuild, and we don't use it anyway.
+  //                      Bugs filed.
+  // UINT32                        BytesParsed;
+  // ACPI_DESCRIPTION_HEADER_INFO  AcpiHdrInfo;
+  // ACPI_PARSER AcpiHeaderParser[] = {
+  //   PARSE_ACPI_HEADER (&AcpiHdrInfo)
+  // };
 
-  BytesParsed = ParseAcpi (
-                  FALSE,
-                  0,
-                  NULL,
-                  Ptr,
-                  ACPI_DESCRIPTION_HEADER_LENGTH,
-                  PARSER_PARAMS (AcpiHeaderParser)
-                  );
+  // BytesParsed = ParseAcpi (
+  //                 FALSE,
+  //                 0,
+  //                 NULL,
+  //                 Ptr,
+  //                 ACPI_DESCRIPTION_HEADER_LENGTH,
+  //                 PARSER_PARAMS (AcpiHeaderParser)
+  //                 );
 
-  *Signature = AcpiHdrInfo.Signature;
-  *Length = AcpiHdrInfo.Length;
-  *Revision = AcpiHdrInfo.Revision;
+  // *Signature = AcpiHdrInfo.Signature;
+  // *Length = AcpiHdrInfo.Length;
+  // *Revision = AcpiHdrInfo.Revision;
 
-  return BytesParsed;
+  // return BytesParsed;
+  return 0;
+  // MS_CHANGE [END]
 }

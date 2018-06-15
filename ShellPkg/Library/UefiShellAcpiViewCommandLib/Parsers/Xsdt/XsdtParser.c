@@ -93,7 +93,9 @@ ParseAcpiXsdt (
       CONST UINT8*  Revision;
 
       if ((UINT64*)(UINTN)(*TablePointer) != NULL) {
-        UINT8*      Ptr;
+        // MS_CHANGE [BEGIN] - This code currently breaks CoreBuild, and we don't use it anyway.
+        //                      Bugs filed.
+        UINT8*      InnerPtr;
 
         ParseAcpiHeader (
           (UINT8*)(UINTN)(*TablePointer),
@@ -102,18 +104,19 @@ ParseAcpiXsdt (
           &Revision
           );
 
-        Ptr = (UINT8*)Signature;
+        InnerPtr = (UINT8*)Signature;
 
         UnicodeSPrint (
           Buffer,
           sizeof (Buffer),
           L"Entry[%d] - %c%c%c%c",
           EntryIndex++,
-          Ptr[0],
-          Ptr[1],
-          Ptr[2],
-          Ptr[3]
+          InnerPtr[0],
+          InnerPtr[1],
+          InnerPtr[2],
+          InnerPtr[3]
           );
+        // MS_CHANGE [END]
       } else {
         UnicodeSPrint (
           Buffer,
