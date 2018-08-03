@@ -77,7 +77,7 @@ Pkcs1v2Encrypt (
   // First step, check all buffers. We *hate* NULL buffers. They burns us.
   if (PublicKey == NULL || InData == NULL || EncryptedData == NULL || EncryptedDataSize == NULL)
   {
-    DEBUG(( DEBUG_ERROR, __FUNCTION__" - Invalid parameter!\n" ));
+    DEBUG(( DEBUG_ERROR, "%a - Invalid parameter!\n", __FUNCTION__ )); // MS_CHANGE
     return FALSE;
   }
 
@@ -85,7 +85,7 @@ Pkcs1v2Encrypt (
   // Check public key size.   
   if (PublicKeySize > 0xFFFFFFFF)
   {
-    DEBUG((DEBUG_ERROR, __FUNCTION__" - Invalid parameter. Public Key Size too large for implementation!\n"));
+    DEBUG((DEBUG_ERROR, "%a - Invalid parameter. Public Key Size too large for implementation!\n", __FUNCTION__)); // MS_CHANGE
     return FALSE;
   }
 
@@ -121,7 +121,7 @@ Pkcs1v2Encrypt (
   CertData = d2i_X509( &CertData, &TempPointer, (UINT32)PublicKeySize );
   if (CertData == NULL)
   {
-    DEBUG(( DEBUG_ERROR, __FUNCTION__" - Failed to parse x509 cert!\n" ));
+    DEBUG(( DEBUG_ERROR, "%a - Failed to parse x509 cert!\n", __FUNCTION__ )); // MS_CHANGE
     goto _Exit;
   }
 
@@ -131,7 +131,7 @@ Pkcs1v2Encrypt (
   InternalPublicKey = X509_get_pubkey( CertData );
   if (InternalPublicKey == NULL)
   {
-    DEBUG(( DEBUG_ERROR, __FUNCTION__" - Failed to extract public key!\n" ));
+    DEBUG(( DEBUG_ERROR, "%a - Failed to extract public key!\n", __FUNCTION__ )); // MS_CHANGE
     goto _Exit;
   }
 
@@ -140,14 +140,14 @@ Pkcs1v2Encrypt (
   PkeyCtx = EVP_PKEY_CTX_new( InternalPublicKey, NULL );      // We use NULL for the engine so the default engine is used.
   if (PkeyCtx == NULL)
   {
-    DEBUG(( DEBUG_ERROR, __FUNCTION__" - Context creation failed!\n" ));
+    DEBUG(( DEBUG_ERROR, "%a - Context creation failed!\n", __FUNCTION__ )); // MS_CHANGE
     goto _Exit;
   }
   // Initialize the context and set the desired padding.
   if (EVP_PKEY_encrypt_init( PkeyCtx ) <= 0 ||
       EVP_PKEY_CTX_set_rsa_padding( PkeyCtx, RSA_PKCS1_OAEP_PADDING ) <= 0)
   {
-    DEBUG(( DEBUG_ERROR, __FUNCTION__" - Failed to initialize the context!\n" ));
+    DEBUG(( DEBUG_ERROR, "%a - Failed to initialize the context!\n", __FUNCTION__ )); // MS_CHANGE
     goto _Exit;
   }
 
@@ -155,7 +155,7 @@ Pkcs1v2Encrypt (
   // Attempt to determine the required buffer length for malloc'ing.
   if (EVP_PKEY_encrypt( PkeyCtx, NULL, &OutDataSize, InData, InDataSize ) <= 0)
   {
-    DEBUG(( DEBUG_ERROR, __FUNCTION__" - Failed to determine output buffer size!\n" ));
+    DEBUG(( DEBUG_ERROR, "%a - Failed to determine output buffer size!\n", __FUNCTION__ )); // MS_CHANGE
     goto _Exit;
   }
 
@@ -164,7 +164,7 @@ Pkcs1v2Encrypt (
   OutData = AllocatePool( OutDataSize );    // We'll just go ahead and use UEFI allocate for this.
   if (OutData == NULL)
   {
-    DEBUG(( DEBUG_ERROR, __FUNCTION__" - Failed to allocate the output buffer!\n" ));
+    DEBUG(( DEBUG_ERROR, "%a - Failed to allocate the output buffer!\n", __FUNCTION__ )); // MS_CHANGE
     goto _Exit;
   }
 
@@ -172,7 +172,7 @@ Pkcs1v2Encrypt (
   // Finally! We can try to encrypt something!
   if (EVP_PKEY_encrypt( PkeyCtx, OutData, &OutDataSize, InData, InDataSize ) <= 0)
   {
-    DEBUG(( DEBUG_ERROR, __FUNCTION__" - Failed to encrypt!\n" ));
+    DEBUG(( DEBUG_ERROR, "%a - Failed to encrypt!\n", __FUNCTION__ )); // MS_CHANGE
     // If we've had an error here, it's imperitive that we free the output buffer
     // since no one else will really get the chance.
     FreePool( OutData );

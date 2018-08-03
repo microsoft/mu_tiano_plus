@@ -829,7 +829,7 @@ IN CONST  UINTN     CertLength
     UINT64    BioWrittenCount;  //mschange
 
     if ((Cert == NULL) || (CertLength == 0)){
-        DEBUG((DEBUG_ERROR, __FUNCTION__" Invalid input parameters.\n"));
+        DEBUG((DEBUG_ERROR, "%a Invalid input parameters.\n", __FUNCTION__)); // MS_CHANGE
         goto Cleanup;
     }
 
@@ -837,7 +837,7 @@ IN CONST  UINTN     CertLength
     X509Cert = d2i_X509(NULL, &Cert, (UINT32)CertLength);
     if (X509Cert == NULL)
     {
-        DEBUG((DEBUG_ERROR, __FUNCTION__" d2i_X509 failed. X509Cert == NULL\n"));
+        DEBUG((DEBUG_ERROR, "%a d2i_X509 failed. X509Cert == NULL\n", __FUNCTION__)); // MS_CHANGE
         goto Cleanup;
     }
 
