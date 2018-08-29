@@ -9,13 +9,15 @@ import os
 import logging
 from edk2toolext.environment import shell_environment
 from edk2toolext.invocables.edk2_ci_build import CiBuildSettingsManager
+from edk2toolext.invocables.edk2_ci_setup import CiSetupSettingsManager     # MU_CHANGE
 from edk2toolext.invocables.edk2_setup import SetupSettingsManager, RequiredSubmodule
 from edk2toolext.invocables.edk2_update import UpdateSettingsManager
 from edk2toolext.invocables.edk2_pr_eval import PrEvalSettingsManager
 from edk2toollib.utility_functions import GetHostInfo
 
 
-class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManager, PrEvalSettingsManager):
+# MU_CHANGE - Add CiSetupSettingsManager superclass.
+class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManager, PrEvalSettingsManager):
 
     def __init__(self):
         self.ActualPackages = []
@@ -35,7 +37,7 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
         group.add_argument("-no_piptools", "--npt", dest="no_piptools", action="store_true", default=False, help="Force the system to not use pip tools")
 
     def RetrieveCommandLineOptions(self, args):
-        super().RetrieveCommandLineOptions(args)
+		# MU_CHANGE - Don't call super....lots of issues...see pytools docs...super().RetrieveCommandLineOptions(args)
         if args.force_piptools:
             self.UseBuiltInBaseTools = True
         if args.no_piptools:
@@ -49,26 +51,10 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
         ''' return iterable of edk2 packages supported by this build.
         These should be edk2 workspace relative paths '''
 
-        return ("ArmPkg",
-                "ArmPlatformPkg",
-                "ArmVirtPkg",
-                "DynamicTablesPkg",
-                "EmulatorPkg",
-                "MdePkg",
-                "MdeModulePkg",
-                "NetworkPkg",
-                "PcAtChipsetPkg",
-                "SecurityPkg",
-                "UefiCpuPkg",
+        return ("SecurityPkg",
                 "FmpDevicePkg",
                 "ShellPkg",
-                "StandaloneMmPkg",
                 "FatPkg",
-                "CryptoPkg",
-                "UnitTestFrameworkPkg",
-                "OvmfPkg",
-                "RedfishPkg",
-                "UefiPayloadPkg"
                 )
 
     def GetArchitecturesSupported(self):
@@ -78,7 +64,8 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
                 "X64",
                 "ARM",
                 "AARCH64",
-                "RISCV64")
+                # "RISCV64"     # MU_CHANGE remove RISC-V
+                )
 
     def GetTargetsSupported(self):
         ''' return iterable of edk2 target tags supported by this build '''
@@ -178,30 +165,44 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
         '''
         rs = []
         rs.append(RequiredSubmodule(
-            "ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3", False))
-        rs.append(RequiredSubmodule(
             "CryptoPkg/Library/OpensslLib/openssl", False))
-        rs.append(RequiredSubmodule(
-            "UnitTestFrameworkPkg/Library/CmockaLib/cmocka", False))
-        rs.append(RequiredSubmodule(
-            "MdeModulePkg/Universal/RegularExpressionDxe/oniguruma", False))
-        rs.append(RequiredSubmodule(
-            "MdeModulePkg/Library/BrotliCustomDecompressLib/brotli", False))
-        rs.append(RequiredSubmodule(
-            "BaseTools/Source/C/BrotliCompress/brotli", False))
-        rs.append(RequiredSubmodule(
-            "RedfishPkg/Library/JsonLib/jansson", False))
         return rs
 
     def GetName(self):
-        return "Edk2"
+        # MU_CHANGE
+        return "TianoPlus"
 
     def GetDependencies(self):
+        # MU_CHANGE BEGIN
+        ''' Return Git Repository Dependencies
+
+        Return an iterable of dictionary objects with the following fields
+        {
+            Path: <required> Workspace relative path
+            Url: <required> Url of git repo
+            Commit: <optional> Commit to checkout of repo
+            Branch: <optional> Branch to checkout (will checkout most recent commit in branch)
+            Full: <optional> Boolean to do shallow or Full checkout.  (default is False)
+            ReferencePath: <optional> Workspace relative path to git repo to use as "reference"
+        }
+        '''
         return [
+            {
+                "Path": "MU_BASECORE",
+                "Url": "https://github.com/Microsoft/mu_basecore.git",
+                "Branch": ""
+            }
         ]
+        # MU_CHANGE END
 
     def GetPackagesPath(self):
-        return ()
+        # MU_CHANGE BEGIN
+        ''' Return a list of workspace relative paths that should be mapped as edk2 PackagesPath '''
+        result = []
+        for a in self.GetDependencies():
+            result.append(a["Path"])
+        return result
+        # MU_CHANGE END
 
     def GetWorkspaceRoot(self):
         ''' get WorkspacePath '''
@@ -209,20 +210,4 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
 
     def FilterPackagesToTest(self, changedFilesList: list, potentialPackagesList: list) -> list:
         ''' Filter potential packages to test based on changed files. '''
-        build_these_packages = []
-        possible_packages = potentialPackagesList.copy()
-        for f in changedFilesList:
-            # split each part of path for comparison later
-            nodes = f.split("/")
-
-            # python file change in .pytool folder causes building all
-            if f.endswith(".py") and ".pytool" in nodes:
-                build_these_packages = possible_packages
-                break
-
-            # BaseTools files that might change the build
-            if "BaseTools" in nodes:
-                if os.path.splitext(f) not in [".txt", ".md"]:
-                    build_these_packages = possible_packages
-                    break
-        return build_these_packages
+        return []
