@@ -69,6 +69,13 @@
 !endif
 ##MSCHANGE End
 
+##MSCHANGE   Pull in the unit-test library for the VerifyPkcs7EkuUnitTestApp
+  UnitTestLib|MsUnitTestPkg/Library/UnitTestLib/UnitTestLib.inf
+  UnitTestAssertLib|MsUnitTestPkg/Library/UnitTestAssertLib/UnitTestAssertLib.inf
+  UnitTestLogLib|MsUnitTestPkg/Library/UnitTestLogLib/UnitTestLogLib.inf
+  UnitTestPersistenceLib|MsUnitTestPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
+  UnitTestBootUsbLib|MsUnitTestPkg/Library/UnitTestBootUsbLibNull/UnitTestBootUsbLibNull.inf
+  UnitTestResultReportLib|MsUnitTestPkg/Library/UnitTestResultReportPlainTextOutputLib/UnitTestResultReportLib.inf
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #

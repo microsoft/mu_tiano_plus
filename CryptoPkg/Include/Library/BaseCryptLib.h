@@ -1904,6 +1904,7 @@ Pkcs7Sign (
   OUT  UINTN        *SignedDataSize
   );
 
+
 /**
   Verifies the validity of a PKCS#7 signed data as described in "PKCS #7:
   Cryptographic Message Syntax Standard". The input signed data could be wrapped
@@ -1936,6 +1937,63 @@ Pkcs7Verify (
   IN  CONST UINT8  *InData,
   IN  UINTN        DataLength
   );
+
+
+// MS_CHANGE [BEGIN] - Add a function that will verify Extended Key Usages
+//                     are present in the end-entity (leaf) signer certificate
+//                     in a PKCS7 formatted signature.
+
+/**
+  VerifyEKUsInPkcs7Signature()
+
+  This function receives a PKCS7 formatted signature, and then verifies that 
+  the specified Enhanced or Extended Key Usages (EKU's) are present in the end-entity 
+  leaf signing certificate.
+
+  Note that this function does not validate the certificate chain.
+  
+  Applications for custom EKU's are quite flexible.  For example, a policy EKU
+  may be present in an Issuing Certificate Authority (CA), and any sub-ordinate
+  certificate issued might also contain this EKU, thus constraining the 
+  sub-ordinate certificate.  Other applications might allow a certificate 
+  embedded in a device to specify that other Object Identifiers (OIDs) are
+  present which contains binary data specifying custom capabilities that 
+  the device is able to do.
+ 
+  @param[in]  Pkcs7Signature     - The PKCS#7 signed information content block. An array
+                                   containing the content block with both the signature,
+                                   the signer's certificate, and any necessary intermediate
+                                   certificates.
+ 
+  @param[in]  Pkcs7SignatureSize - Number of bytes in Pkcs7Signature.
+ 
+  @param[in]  RequiredEKUs       - Array of null-terminated strings listing OIDs of
+                                   required EKUs that must be present in the signature.
+ 
+  @param[in]  RequiredEKUsSize   - Number of elements in the RequiredEKUs string array.
+
+  @param[in]  RequireAllPresent  - If this is TRUE, then all of the specified EKU's
+                                   must be present in the leaf signer.  If it is
+                                   FALSE, then we will succeed if we find any
+                                   of the specified EKU's.
+
+  @retval EFI_SUCCESS            - The required EKUs were found in the signature.
+  @retval EFI_INVALID_PARAMETER  - A parameter was invalid.
+  @retval EFI_NOT_FOUND          - One or more EKU's were not found in the signature.
+
+**/
+EFI_STATUS
+EFIAPI
+VerifyEKUsInPkcs7Signature (
+  IN CONST UINT8  *Pkcs7Signature,
+  IN CONST UINT32  SignatureSize,
+  IN CONST CHAR8  *RequiredEKUs[],
+  IN CONST UINT32  RequiredEKUsSize,
+  IN BOOLEAN       RequireAllPresent
+);
+
+// MS_CHANGE [END]
+
 
 /**
   This function receives a PKCS7 formatted signature, and then verifies that
