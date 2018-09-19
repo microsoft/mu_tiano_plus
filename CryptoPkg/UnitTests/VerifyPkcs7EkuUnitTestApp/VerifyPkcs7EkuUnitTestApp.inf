@@ -1,0 +1,48 @@
+## @file
+## Copyright (c) 2016, Microsoft Corporation. All rights reserved.<BR>
+##
+
+
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = VerifyPkcs7EkuUnitTestApp
+  FILE_GUID                      = A5471421-6474-4ADE-8B13-2F9C26FBC53C 
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = VerifyPkcs7EkuUnitTestAppEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  VerifyPkcs7EkuUnitTestApp.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MsUnitTestPkg/MsUnitTestPkg.dec
+  CryptoPkg/CryptoPkg.dec
+
+
+[Protocols]
+
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  BaseCryptLib
+  UefiApplicationEntryPoint
+  DebugLib
+  UnitTestLib
+  UnitTestAssertLib
+  UnitTestLogLib
+  PrintLib
+  OpensslLib
+
+[Guids]
+
+
+
+
