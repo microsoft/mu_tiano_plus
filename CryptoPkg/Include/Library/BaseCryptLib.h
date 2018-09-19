@@ -1908,6 +1908,7 @@ Pkcs7Sign (
   OUT  UINTN        *SignedDataSize
   );
 
+
 /**
   Verifies the validity of a PKCS#7 signed data as described in "PKCS #7:
   Cryptographic Message Syntax Standard". The input signed data could be wrapped
