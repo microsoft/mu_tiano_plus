@@ -68,6 +68,13 @@
 !endif
 ##MSCHANGE End
 
+##MSCHANGE   Pull in the unit-test library for the VerifyPkcs7EkuUnitTestApp
+  UnitTestLib|MsUnitTestPkg/Library/UnitTestLib/UnitTestLib.inf
+  UnitTestAssertLib|MsUnitTestPkg/Library/UnitTestAssertLib/UnitTestAssertLib.inf
+  UnitTestLogLib|MsUnitTestPkg/Library/UnitTestLogLib/UnitTestLogLib.inf
+  UnitTestPersistenceLib|MsUnitTestPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
+  UnitTestBootUsbLib|MsUnitTestPkg/Library/UnitTestBootUsbLibNull/UnitTestBootUsbLibNull.inf
+  UnitTestResultReportLib|MsUnitTestPkg/Library/UnitTestResultReportPlainTextOutputLib/UnitTestResultReportLib.inf
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
@@ -279,6 +286,9 @@
       !endif
   }
 
+  ## MS_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
+  CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
+  ## MS_CHANGE [END]
 [Components.IA32, Components.X64]
   CryptoPkg/Driver/CryptoSmm.inf {
     <Defines>
