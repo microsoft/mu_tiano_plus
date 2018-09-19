@@ -58,6 +58,7 @@
   Pk/CryptX509.c
   Pk/CryptAuthenticode.c
   Pk/CryptTs.c
+  Pk/CryptPkcs7VerifyEku.c       ## MS_CHANGE  Added support for checking EKU's in PKCS7 signatures.
   Pem/CryptPem.c
 
   SysCall/CrtWrapper.c
