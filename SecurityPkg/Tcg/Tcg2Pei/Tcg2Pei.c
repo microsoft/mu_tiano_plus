@@ -240,8 +240,6 @@ EndofPeiSignalNotifyCallBack (
   UINT32                                                 HobIndex;                  // MS_CHANGE
   EFI_STATUS                                             Status;                    // MS_CHANGE
 
-  PERF_CALLBACK_BEGIN (PERF_VERBOSITY_STANDARD, &gEfiEndOfPeiSignalPpiGuid); // MS_CHANGE
-
   MeasuredHobData          = NULL;
   ExcludedHobData          = NULL; // MS_CHANGE
   MeasurementExcludedFvPpi = NULL; // MS_CHANGE
@@ -986,9 +984,7 @@ MeasureMainBios (
   EFI_FV_INFO                  VolumeInfo;
   EFI_PEI_FIRMWARE_VOLUME_PPI  *FvPpi;
 
-  // PERF_START_EX (mFileHandle, "EventRec", "Tcg2Pei", 0, PERF_ID_TCG2_PEI); // MS_CHANGE
-
-  PERF_FUNCTION_BEGIN (PERF_VERBOSITY_STANDARD);
+  PERF_FUNCTION_BEGIN (); // MS_CHANGE
 
   //
   // Only measure BFV at the very beginning. Other parts of Static Core Root of
@@ -1019,8 +1015,7 @@ MeasureMainBios (
 
   Status = MeasureFvImage ((EFI_PHYSICAL_ADDRESS)(UINTN)VolumeInfo.FvStart, VolumeInfo.FvSize);
 
-  PERF_FUNCTION_END (PERF_VERBOSITY_STANDARD);
-  // PERF_END_EX (mFileHandle, "EventRec", "Tcg2Pei", 0, PERF_ID_TCG2_PEI + 1); // MS_CHANGE
+  PERF_FUNCTION_END (); // MS_CHANGE
 
   return Status;
 }
