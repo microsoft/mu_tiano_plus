@@ -399,7 +399,7 @@ InternalX509GetNIDName (
 
   Entry = X509_NAME_get_entry (X509Name, Index);
   if (Entry == NULL) {
-    DEBUG((DEBUG_ERROR,"Entry %d not found\n", Indx));
+    DEBUG((DEBUG_ERROR,"Entry %d not found\n", Index));
     goto _Exit;
   }
 
