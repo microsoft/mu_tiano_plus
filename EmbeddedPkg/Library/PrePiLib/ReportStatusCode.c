@@ -21,7 +21,7 @@
 #include <Protocol/StatusCode.h>
 #include <Guid/StatusCodeDataTypeId.h>
 #include <Guid/StatusCodeDataTypeDebug.h>
-#include <FrameworkPei.h>
+// #include <FrameworkPei.h>  // MU_CHANGE
 
 EFI_STATUS
 EFIAPI
