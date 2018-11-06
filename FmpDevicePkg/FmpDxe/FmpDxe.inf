@@ -26,7 +26,7 @@
 
 [Sources]
   FmpDxe.c
-  DetectTestKey.c
+  #DetectTestKey.c      ## MU_CHANGE - Don't need this and it requires SHA-256 anyway.
   VariableSupport.h
   VariableSupport.c
 
@@ -66,6 +66,7 @@
   gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceProgressColor                    ## CONSUMES
   gFmpDevicePkgTokenSpaceGuid.PcdFmpDevicePkcs7CertBufferXdr               ## CONSUMES
   gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceTestKeySha256Digest              ## CONSUMES
+  gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageDefaultTypeIdGuid           ## CONSUMES ## MU_CHANGE - Default to PCD GUID.
   gEfiMdeModulePkgTokenSpaceGuid.PcdTestKeyUsed                            ## SOMETIMES_PRODUCES
 
 [Depex]

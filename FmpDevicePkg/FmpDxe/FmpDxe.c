@@ -154,12 +154,31 @@ GetImageTypeIdGuid (
     if (Status != EFI_UNSUPPORTED) {
       DEBUG ((DEBUG_ERROR, "FmpDxe: FmpDeviceLib GetImageTypeIdGuidPtr() returned invalid error %r\n", Status));
     }
-    return &gEfiCallerIdGuid;
+    // return &gEfiCallerIdGuid;   // MU_CHANGE - Default to PCD GUID.
   }
-  if (FmpDeviceLibGuid == NULL) {
+  else if (FmpDeviceLibGuid == NULL) {
     DEBUG ((DEBUG_ERROR, "FmpDxe: FmpDeviceLib GetImageTypeIdGuidPtr() returned invalid GUID\n"));
-    return &gEfiCallerIdGuid;
+    // MU_CHANGE [BEGIN] - Default to PCD GUID.
+    // return &gEfiCallerIdGuid;
+    Status = EFI_NOT_FOUND;
+    // MU_CHANGE [END] - Default to PCD GUID.
   }
+
+  // MU_CHANGE [BEGIN] - Default to PCD GUID.
+  // Check the PCD. If it's zero, ASSERT.
+  if (EFI_ERROR (Status)) {
+    if (PcdGetSize (PcdFmpDeviceImageDefaultTypeIdGuid) == sizeof (EFI_GUID)) {
+      FmpDeviceLibGuid = (EFI_GUID *)PcdGetPtr (PcdFmpDeviceImageDefaultTypeIdGuid);
+    }
+    else {
+      // MU_CHANGE - Elaborate on which FmpDriver is failing.
+      DEBUG ((DEBUG_ERROR, "FmpDxe %s: FmpDeviceLib did not return a GUID and PcdFmpDeviceImageDefaultTypeIdGuid is undefined\n", mImageIdName));
+      ASSERT (FALSE);
+      FmpDeviceLibGuid = &gEfiCallerIdGuid;
+    }
+  }
+  // MU_CHANGE [END] - Default to PCD GUID.
+
   return FmpDeviceLibGuid;
 }
 
@@ -1377,14 +1396,15 @@ FmpDxeEntryPoint (
     //
     // PcdFmpDeviceImageIdName must be set to a non-empty Unicode string
     //
-    DEBUG ((DEBUG_ERROR, "FmpDxe: FmpDeviceLib PcdFmpDeviceImageIdName is an empty string.\n"));
+    // MU_CHANGE - Elaborate on which FmpDriver is failing.
+    DEBUG ((DEBUG_ERROR, "FmpDxe %g: FmpDeviceLib PcdFmpDeviceImageIdName is an empty string.\n", &gEfiCallerIdGuid));
     ASSERT (FALSE);
   }
 
   //
   // Detects if PcdFmpDevicePkcs7CertBufferXdr contains a test key.
   //
-  DetectTestKey ();
+  // DetectTestKey ();      // MU_CHANGE - Don't need this and it requires SHA-256 anyway.
 
   if (IsLockFmpDeviceAtLockEventGuidRequired ()) {
     //
@@ -1392,9 +1412,11 @@ FmpDxeEntryPoint (
     //
     Status = LockAllFmpVariables ();
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "FmpDxe: Failed to lock variables.  Status = %r.\n", Status));
+      // MU_CHANGE - Elaborate on which FmpDriver is failing.
+      DEBUG ((DEBUG_ERROR, "FmpDxe %s: Failed to lock variables.  Status = %r.\n", mImageIdName, Status));
     } else {
-      DEBUG ((DEBUG_INFO, "FmpDxe: All variables locked\n"));
+      // MU_CHANGE - Elaborate on which FmpDriver is failing.
+      DEBUG ((DEBUG_INFO, "FmpDxe %s: All variables locked\n", mImageIdName));
     }
 
     //
@@ -1407,7 +1429,8 @@ FmpDxeEntryPoint (
     if (PcdGetSize (PcdFmpDeviceLockEventGuid) == sizeof (EFI_GUID)) {
       LockGuid = (EFI_GUID *)PcdGetPtr (PcdFmpDeviceLockEventGuid);
     }
-    DEBUG ((DEBUG_INFO, "FmpDxe: Lock GUID: %g\n", LockGuid));
+    // MU_CHANGE - Elaborate on which FmpDriver is failing.
+    DEBUG ((DEBUG_INFO, "FmpDxe %s: Lock GUID: %g\n", mImageIdName, LockGuid));
 
     Status = gBS->CreateEventEx (
                     EVT_NOTIFY_SIGNAL,
@@ -1418,7 +1441,8 @@ FmpDxeEntryPoint (
                     &mFmpDeviceLockEvent
                     );
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "FmpDxe: Failed to register notification.  Status = %r\n", Status));
+      // MU_CHANGE - Elaborate on which FmpDriver is failing.
+      DEBUG ((DEBUG_ERROR, "FmpDxe %s: Failed to register notification.  Status = %r\n", mImageIdName, Status));
     }
     ASSERT_EFI_ERROR (Status);
   } else {
