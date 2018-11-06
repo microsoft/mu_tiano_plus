@@ -1617,7 +1617,8 @@ FmpDxeEntryPoint (
     //
     // PcdFmpDeviceImageIdName must be set to a non-empty Unicode string
     //
-    DEBUG ((DEBUG_ERROR, "FmpDxe: PcdFmpDeviceImageIdName is an empty string.\n"));
+    // MU_CHANGE - Elaborate on which FmpDriver is failing.
+    DEBUG ((DEBUG_ERROR, "FmpDxe(%g): PcdFmpDeviceImageIdName is an empty string.\n", &gEfiCallerIdGuid));
     ASSERT (FALSE);
     return EFI_UNSUPPORTED;
   }
