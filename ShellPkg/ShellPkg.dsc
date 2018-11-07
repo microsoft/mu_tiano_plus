@@ -96,7 +96,6 @@
   ShellPkg/Application/ShellCTestApp/ShellCTestApp.inf
   ShellPkg/Application/ShellExecTestApp/SA.inf
   ShellPkg/Application/ShellSortTestApp/ShellSortTestApp.inf
-  ShellPkg/Library/UefiShellAcpiViewCommandLib/UefiShellAcpiViewCommandLib.inf
 ## MSCHANGE END
   ShellPkg/Library/UefiShellLib/UefiShellLib.inf
   ShellPkg/Library/UefiShellAcpiViewCommandLib/UefiShellAcpiViewCommandLib.inf

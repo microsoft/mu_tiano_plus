@@ -6,7 +6,7 @@
 # Capsules.  The behavior of the Firmware Management Protocol instance is
 # customized using libraries and PCDs.
 #
-# Copyright (c) 2016, Microsoft Corporation. All rights reserved.<BR>
+# Copyright (c) Microsoft Corporation. All rights reserved.<BR>
 # Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -50,6 +50,14 @@
   FmpPayloadHeaderLib|FmpDevicePkg/Library/FmpPayloadHeaderLibV1/FmpPayloadHeaderLibV1.inf
   FmpDeviceLib|FmpDevicePkg/Library/FmpDeviceLibNull/FmpDeviceLibNull.inf
   TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
+
+  ##MUCHANGE Begin
+!if $(TARGET) == DEBUG
+  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+!endif
+##MUCHANGE End
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
