@@ -14,7 +14,6 @@ BuildConfig.conf
 /Silicon/
 /CryptoPkg/Library/OpensslLib/openssl
 
-
 # Ignore unused UDK PKGs.
 /ArmPkg/
 /ArmPlatformPkg/
