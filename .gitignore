@@ -9,6 +9,12 @@ BuildConfig.conf
 # Ignore SelfDescribingEnvironment artifacts.
 *_extdep/
 
+# Ignore our repos from CI
+/MU_BASECORE/
+/Silicon/
+/CryptoPkg/Library/OpensslLib/openssl
+
+
 # Ignore unused UDK PKGs.
 /ArmPkg/
 /ArmPlatformPkg/

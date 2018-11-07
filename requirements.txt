@@ -1,0 +1,2 @@
+edk2-pytool-library
+edk2-pytool-extensions
