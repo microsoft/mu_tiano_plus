@@ -1,0 +1,59 @@
+{
+    "Name": "Project Mu Tiano Plus Repo CI Build",
+    "GroupName": "MuTianoPlus",
+    
+    #Workspace path relative to this file
+    "RelativeWorkspaceRoot": "",
+    "Scopes": [ "corebuild" ],
+
+    # Other Repos that are dependencies
+    "Dependencies": [
+        #FileSystem Path relative to workspace
+        #Url
+        #Branch
+        #Commit
+         {
+            "Path": "MU_BUILD",
+            "Url": "https://github.com/Microsoft/mu_build.git",
+            "Branch": "release/201808"
+        },
+        { 
+            "Path": "MU_BASECORE", 
+            "Url": "https://github.com/Microsoft/mu_basecore.git",
+            "Branch": "release/201808"
+        },
+        {
+            "Path": "Silicon/Arm/TIANO",
+            "Url": "https://github.com/Microsoft/mu_silicon_arm_tiano.git",
+            "Branch": "release/20180529"
+        }
+    ],
+
+    # Edk2 style PackagesPath for resolving dependencies.
+    # Only needed if it isn't this package and isn't a dependency
+    "PackagesPath": [],
+
+    # Packages in this repo
+    "Packages": [
+        "CryptoPkg",
+        # too many errors "EmbeddedPkg",
+        # too many errors "OptionRomPkg",
+        "FatPkg",
+        "FmpDevicePkg",
+        "ShellPkg",
+        "SignedCapsulePkg",
+        "SourceLevelDebugPkg"
+    ],
+    "ArchSupported": [
+        "IA32",
+        "X64"
+        #"AARCH64"  too many errors.  
+    ],
+    "Targets": [
+        "DEBUG",
+        "RELEASE"
+    ],
+    "DependencyCheck": {
+        "skip":true
+    }
+}
