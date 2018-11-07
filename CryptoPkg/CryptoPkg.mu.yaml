@@ -1,0 +1,20 @@
+{
+    "CompilerPlugin": {
+        "IgnoreInf": []
+    },
+    "DependencyCheck": {
+        "AcceptableDependencies": [
+            "MdePkg/MdePkg.dec",
+            "MdeModulePkg/MdeModulePkg.dec",
+            "MsUnitTestPkg/MsUnitTestPkg.dec",
+            "CryptoPkg/CryptoPkg.dec"
+        ],
+        "IgnoreInf": []
+    },
+    "DSCCheck": {
+        "IgnoreInf": [
+            "CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf",
+            "CryptoPkg/Library/OpensslLib/OpensslLib.inf" #Ignore as this is subset of OpenSSLLibCrypto.inf
+        ]
+    }
+}

@@ -83,6 +83,7 @@
   gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceProgressColor                    ## CONSUMES
   gFmpDevicePkgTokenSpaceGuid.PcdFmpDevicePkcs7CertBufferXdr               ## CONSUMES
   gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceTestKeySha256Digest              ## CONSUMES
+  gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageDefaultTypeIdGuid           ## CONSUMES ## MU_CHANGE - Default to PCD GUID.
   gEfiMdeModulePkgTokenSpaceGuid.PcdTestKeyUsed                            ## SOMETIMES_PRODUCES
 
 [Depex]
