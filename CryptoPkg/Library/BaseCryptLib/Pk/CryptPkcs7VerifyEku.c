@@ -451,7 +451,7 @@ VerifyEKUsInPkcs7Signature (
   //
   // Create the PKCS7 object.
   //
-  Pkcs7 = d2i_PKCS7(NULL, (CONST CHAR8 **)&Temp, (INT32)SignedDataSize);
+  Pkcs7 = d2i_PKCS7(NULL, (const unsigned char **) &Temp, (INT32)SignedDataSize);
   if (Pkcs7 == NULL) {
     DEBUG((DEBUG_ERROR,
            "%a - ERROR:  Could not read PKCS7 data.\n",
