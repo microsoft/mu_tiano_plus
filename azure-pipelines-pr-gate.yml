@@ -4,7 +4,7 @@ strategy:
     TARGET_CRYPTO:
       Build.Pkgs: 'CryptoPkg'
     TARGET_OTHER1:
-      Build.Pkgs: 'FmpDevicePkg ShellPkg SignedCapsulePkg'
+      Build.Pkgs: 'FmpDevicePkg ShellPkg'
     TARGET_OTHER2:
       Build.Pkgs: 'FatPkg SourceLevelDebugPkg'
 
