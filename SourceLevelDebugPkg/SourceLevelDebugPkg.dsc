@@ -117,6 +117,7 @@
 
 ##MSCHANGE BEGIN
   SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf
+  SourceLevelDebugPkg/Library/SourceDebugForceEnabled/SourceDebugForceEnabledLib.inf
 ##MSCHANGE END
 
 [BuildOptions]
