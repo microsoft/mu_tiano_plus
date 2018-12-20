@@ -36,7 +36,6 @@
         "FatPkg",
         "FmpDevicePkg",
         "ShellPkg",
-        "SignedCapsulePkg",
         "SourceLevelDebugPkg"
     ],
     "ArchSupported": [

@@ -5,13 +5,14 @@
 #
 #  Description:    Checks if source debugging is runtime enabled.
 #
-#  Copyright (c) 2016 - 2018, Microsoft Corporation.
+#  Copyright (c) 2018, Microsoft Corporation.
 #
 ##
 
+
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = SourceDebugEnabledLib
+  BASE_NAME                      = SourceDebugForceEnabledLib
   FILE_GUID                      = 328de004-43b7-42fe-8dcb-fee65a37de75
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
@@ -24,7 +25,7 @@
 #
 
 [Sources.Common]
-  SourceDebugEnabledLib.c
+  SourceDebugForceEnabledLib.c
 
 [Packages]
   MdePkg/MdePkg.dec

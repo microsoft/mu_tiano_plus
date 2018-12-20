@@ -15,16 +15,16 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 
 
-Copyright (C) 2016 - 2018 Microsoft Corporation. All Rights Reserved.
+Copyright (C) 2018 Microsoft Corporation. All Rights Reserved.
 
 Module Name:
 
-MsSourceDebugEnabledLib.c
+SourceDebugForceEnabledLib.c
 
 Abstract:
 
-This module implements routines that indicate if source debugging is
-runtime enabled.
+This module implements routines that indicate source debugging is always
+enabled.
 
 Environment:
 
@@ -50,5 +50,5 @@ IsSourceDebugEnabled (
   IN UINT32 InitFlag
   )
 {
-  return FALSE;
+  return TRUE;
 }

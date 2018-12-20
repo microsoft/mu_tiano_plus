@@ -117,6 +117,7 @@
       #
       FILE_GUID = $(DEVICE_FMP_ESRT_GUID)
   }
+   FmpDevicePkg/FmpDxe/FmpDxeWorkAround1.inf
 
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
