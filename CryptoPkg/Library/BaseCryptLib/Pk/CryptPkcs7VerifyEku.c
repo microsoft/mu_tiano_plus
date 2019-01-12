@@ -29,7 +29,7 @@
 
 **/
 
-#include <base.h>
+#include <Base.h> // MS_CHANGE
 #include "InternalCryptLib.h"
 
 #include <openssl/x509v3.h>
@@ -451,7 +451,8 @@ VerifyEKUsInPkcs7Signature (
   //
   // Create the PKCS7 object.
   //
-  Pkcs7 = d2i_PKCS7(NULL, (const unsigned char **) &Temp, (INT32)SignedDataSize);
+  // MS_CHANGE: fix the cast to be UINT8 instead of CHAR8
+  Pkcs7 = d2i_PKCS7(NULL, (CONST UINT8 **)&Temp, (INT32)SignedDataSize);
   if (Pkcs7 == NULL) {
     DEBUG((DEBUG_ERROR,
            "%a - ERROR:  Could not read PKCS7 data.\n",
