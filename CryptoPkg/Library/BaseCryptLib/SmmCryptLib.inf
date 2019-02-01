@@ -34,14 +34,14 @@
 
 [Sources]
   Hash/CryptMd4Null.c
-  Hash/CryptMd5Null.c         ## MS_CHANGE_162948 - MSChange - Remove support for deprecated crypto. 
+  Hash/CryptMd5Null.c         ## MS_CHANGE_162948 - MSChange - Remove support for deprecated crypto.
   Hash/CryptSha1.c
   Hash/CryptSha256.c
   Hash/CryptSha512Null.c
   Hmac/CryptHmacMd5Null.c
   Hmac/CryptHmacSha1Null.c
   Hmac/CryptHmacSha256.c
-  Cipher/CryptAesNull.c       ## MS_CHANGE_162948 - MSChange - Remove support for deprecated crypto. 
+  Cipher/CryptAesNull.c       ## MS_CHANGE_162948 - MSChange - Remove support for deprecated crypto.
   Cipher/CryptTdesNull.c
   Cipher/CryptArc4Null.c
   Pk/CryptRsaBasic.c
@@ -57,6 +57,9 @@
   Pk/CryptAuthenticodeNull.c
   Pk/CryptTsNull.c
   Pem/CryptPem.c
+  Pk/CryptPkcs7VerifyEku.c       ## MS_CHANGE  Added support for checking EKU's in PKCS7 signatures.
+  Pk/CryptPkcs1Oaep.c ## MS_CHANGE_194897  - Add a wrapper function for the PKCS1v2 RSAES-OAEP PKI encryption functionality provided by OpenSSL.
+
 
   SysCall/CrtWrapper.c
   SysCall/ConstantTimeClock.c
