@@ -40,8 +40,9 @@
     ],
     "ArchSupported": [
         "IA32",
-        "X64"
-        #"AARCH64"  too many errors.  
+        "X64",
+        "ARM",
+        "AARCH64"
     ],
     "Targets": [
         "DEBUG",
