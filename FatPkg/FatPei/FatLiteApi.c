@@ -428,7 +428,7 @@ GetRecoveryCapsuleInfo (
   UINTN                 Index;
   UINTN                 BlockDeviceNo;
   UINTN                 RecoveryCapsuleCount;
-  PEI_FILE_HANDLE       Handle;
+  PEI_FILE_HANDLE       Handle = NULL;          // MU_CHANGE - TCBZ1559
   UINTN                 NumberRecoveryCapsules;
 
   Status = GetNumberRecoveryCapsules (PeiServices, This, &NumberRecoveryCapsules);
@@ -556,7 +556,7 @@ LoadRecoveryCapsule (
   PEI_FAT_PRIVATE_DATA  *PrivateData;
   UINTN                 Index;
   UINTN                 RecoveryCapsuleCount;
-  PEI_FILE_HANDLE       Handle;
+  PEI_FILE_HANDLE       Handle = NULL;              // MU_CHANGE - TCBZ1559
   UINTN                 NumberRecoveryCapsules;
 
   Status = GetNumberRecoveryCapsules (PeiServices, This, &NumberRecoveryCapsules);
