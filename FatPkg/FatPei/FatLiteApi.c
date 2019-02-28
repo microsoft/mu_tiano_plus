@@ -428,6 +428,9 @@ GetRecoveryCapsuleInfo (
   UINTN                 Index;
   UINTN                 BlockDeviceNo;
   UINTN                 RecoveryCapsuleCount;
+  //
+  // set LocalVariable to suppress incorrect compiler/analyzer warnings
+  //
   PEI_FILE_HANDLE       Handle = NULL;          // MU_CHANGE - TCBZ1559
   UINTN                 NumberRecoveryCapsules;
 
@@ -556,6 +559,9 @@ LoadRecoveryCapsule (
   PEI_FAT_PRIVATE_DATA  *PrivateData;
   UINTN                 Index;
   UINTN                 RecoveryCapsuleCount;
+  //
+  // set LocalVariable to suppress incorrect compiler/analyzer warnings
+  //
   PEI_FILE_HANDLE       Handle = NULL;              // MU_CHANGE - TCBZ1559
   UINTN                 NumberRecoveryCapsules;
 
