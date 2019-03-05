@@ -305,7 +305,7 @@ FatSetFileInfo (
   CHAR16        NewFileName[EFI_PATH_STRING_LENGTH];
   EFI_TIME      ZeroTime;
   FAT_DIRENT    *DirEnt;
-  FAT_DIRENT    *TempDirEnt = NULL;     // MU_CHANGE - TCBZ1559
+  FAT_DIRENT    *TempDirEnt;
   UINT8         NewAttribute;
   BOOLEAN       ReadOnly;
 
