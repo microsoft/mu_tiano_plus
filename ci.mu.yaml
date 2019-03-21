@@ -15,12 +15,12 @@
         {
             "Path": "MU_BASECORE",
             "Url": "https://github.com/Microsoft/mu_basecore.git",
-            "Branch": "release/201808"
+            "Branch": "dev/1905"
         },
         {
-            "Path": "Silicon/Arm/TIANO",
+            "Path": "Silicon/Arm/MU_TIANO",
             "Url": "https://github.com/Microsoft/mu_silicon_arm_tiano.git",
-            "Branch": "release/201808"
+            "Branch": "dev/1905"
         }
     ],
 
@@ -41,7 +41,7 @@
     "ArchSupported": [
         "IA32",
         "X64"
-        #"AARCH64"  too many errors.  
+        #"AARCH64"  too many errors.
     ],
     "Targets": [
         "DEBUG",
