@@ -425,6 +425,11 @@ GetRecoveryCapsuleInfo (
   PEI_FILE_HANDLE       Handle;
   UINTN                 NumberRecoveryCapsules;
 
+  //
+  // set Handle to suppress incorrect compiler/analyzer warnings
+  //
+  Handle = NULL;        // MU_CHANGE - TCBZ1559
+
   Status = GetNumberRecoveryCapsules (PeiServices, This, &NumberRecoveryCapsules);
 
   if (EFI_ERROR (Status)) {
@@ -548,6 +553,11 @@ LoadRecoveryCapsule (
   UINTN                 RecoveryCapsuleCount;
   PEI_FILE_HANDLE       Handle;
   UINTN                 NumberRecoveryCapsules;
+
+  //
+  // set Handle to suppress incorrect compiler/analyzer warnings
+  //
+  Handle = NULL;        // MU_CHANGE - TCBZ1559
 
   Status = GetNumberRecoveryCapsules (PeiServices, This, &NumberRecoveryCapsules);
 
