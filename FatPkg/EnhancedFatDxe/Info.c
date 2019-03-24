@@ -303,6 +303,11 @@ FatSetFileInfo (
   UINT8          NewAttribute;
   BOOLEAN        ReadOnly;
 
+  //
+  // set TempDirEnt to suppress incorrect compiler/analyzer warnings
+  //
+  TempDirEnt = NULL;        // MU_CHANGE - TCBZ1559
+
   ZeroMem (&ZeroTime, sizeof (EFI_TIME));
   Parent = OFile->Parent;
   DirEnt = OFile->DirEnt;
