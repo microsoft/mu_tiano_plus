@@ -4,6 +4,15 @@ Project Mu Tiano Plus Repository
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
+Branch Status - release/201811
+==============================
+
+Abandoned - 2019-04-17
+----------------------
+This branch had a short integration cycle and was only used for development. It was never stabilized and will not be maintained with bugfixes.
+
+Recommend transitioning any content to the next release.
+
 Code of Conduct
 ===============
 
