@@ -497,6 +497,45 @@ TlsSetVerify (
   SSL_set_verify (TlsConn->Ssl, VerifyMode, NULL);
 }
 
+// MU_CHANGE - Proposed fixes for TCBZ960, invalid domain name (CN) accepted. [BEGIN]
+/**
+  Set the specified host name to be verified.
+
+  @param[in]  Tls           Pointer to the TLS object.
+  @param[in]  Flags         The setting flags during the validation.
+  @param[in]  HostName      The specified host name to be verified.
+
+  @retval  EFI_SUCCESS           The HostName setting was set successfully.
+  @retval  EFI_INVALID_PARAMETER The parameter is invalid.
+  @retval  EFI_ABORTED           Invalid HostName setting.
+
+**/
+EFI_STATUS
+EFIAPI
+TlsSetVerifyHost (
+  IN     VOID                     *Tls,
+  IN     UINT32                   Flags,
+  IN     CHAR8                    *HostName
+  )
+{
+  TLS_CONNECTION  *TlsConn;
+
+  TlsConn = (TLS_CONNECTION *) Tls;
+  if (TlsConn == NULL || TlsConn->Ssl == NULL || HostName == NULL) {
+     return EFI_INVALID_PARAMETER;
+  }
+
+  SSL_set_hostflags(TlsConn->Ssl, Flags);
+
+  if (SSL_set1_host(TlsConn->Ssl, HostName) == 0) {
+    return EFI_ABORTED;
+  }
+
+  return EFI_SUCCESS;
+}
+
+// MU_CHANGE - Proposed fixes for TCBZ960, invalid domain name (CN) accepted. [END]
+
 /**
   Sets a TLS/SSL session ID to be used during TLS/SSL connect.
 
