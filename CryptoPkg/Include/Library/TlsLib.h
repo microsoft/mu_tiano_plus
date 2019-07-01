@@ -402,6 +402,31 @@ TlsSetVerify (
   IN     UINT32                   VerifyMode
   );
 
+
+// MU_CHANGE - Proposed fixes for TCBZ960, invalid domain name (CN) accepted. [BEGIN]
+/**
+  Set the specified host name to be verified.
+
+  @param[in]  Tls           Pointer to the TLS object.
+  @param[in]  Flags         The setting flags during the validation.
+  @param[in]  HostName      The specified host name to be verified.
+
+  @retval  EFI_SUCCESS           The HostName setting was set successfully.
+  @retval  EFI_INVALID_PARAMETER The parameter is invalid.
+  @retval  EFI_ABORTED           Invalid HostName setting.
+
+**/
+EFI_STATUS
+EFIAPI
+TlsSetVerifyHost (
+  IN     VOID                     *Tls,
+  IN     UINT32                   Flags,
+  IN     CHAR8                    *HostName
+  );
+
+// MU_CHANGE - Proposed fixes for TCBZ960, invalid domain name (CN) accepted. [END]
+
+
 /**
   Sets a TLS/SSL session ID to be used during TLS/SSL connect.
 
