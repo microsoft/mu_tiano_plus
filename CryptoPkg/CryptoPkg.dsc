@@ -76,6 +76,10 @@
   UnitTestPersistenceLib|MsUnitTestPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
   UnitTestBootUsbLib|MsUnitTestPkg/Library/UnitTestBootUsbLibNull/UnitTestBootUsbLibNull.inf
   UnitTestResultReportLib|MsUnitTestPkg/Library/UnitTestResultReportPlainTextOutputLib/UnitTestResultReportLib.inf
+##MSCHANGE End
+
+[LibraryClasses.AARCH64.DXE_DRIVER, LibraryClasses.ARM.DXE_DRIVER, LibraryClasses.AARCH64.UEFI_APPLICATION, LibraryClasses.ARM.UEFI_APPLICATION]
+  RngLib|SecurityPkg/RandomNumberGenerator/RngDxeLib/RngDxeLib.inf
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
