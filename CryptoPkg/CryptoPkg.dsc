@@ -70,6 +70,10 @@
   PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
 ##MSCHANGE End
+
+[LibraryClasses.AARCH64.DXE_DRIVER, LibraryClasses.ARM.DXE_DRIVER, LibraryClasses.AARCH64.UEFI_APPLICATION, LibraryClasses.ARM.UEFI_APPLICATION]
+  RngLib|SecurityPkg/RandomNumberGenerator/RngDxeLib/RngDxeLib.inf
+
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
   # It is not possible to prevent the ARM compiler for generic intrinsic functions.
