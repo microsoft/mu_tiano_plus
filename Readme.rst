@@ -2,9 +2,9 @@
 Project Mu Tiano Plus Repository
 ================================
 
-.. |build_status_windows| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/mu_tiano_plus%20PR%20gate?branchName=release/201903
+.. |build_status_windows| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/mu_tiano_plus%20PR%20gate?branchName=dev/201905
 
-|build_status_windows| Current build status for release/201903
+|build_status_windows| Current build status for dev/201905
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
