@@ -14,7 +14,7 @@ workspace:
 steps:
 - checkout: self
   clean: true
-  fetchDepth: 20
+  #fetchDepth: 20
   submodules: recursive
   
 - task: UsePythonVersion@0
