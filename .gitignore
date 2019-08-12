@@ -12,6 +12,8 @@ BuildConfig.conf
 # Ignore our repos from CI
 /MU_BASECORE/
 /Silicon/
+/CryptoPkg/Library/OpensslLib/openssl
+
 
 # Ignore unused UDK PKGs.
 /ArmPkg/
