@@ -23,11 +23,13 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
         pass
 
     def AddCommandLineOptions(self, parserObj):
-        parserObj.add_argument('--Tool_Chain', "--toolchain", "--tool_chain", dest='tool_chain_tag', type=str, help='tool chain tag to use for this build')
+        parserObj.add_argument('--Tool_Chain', "--toolchain", "--tool_chain", dest='tool_chain_tag',
+                               default="VS2017", type=str, help='tool chain tag to use for this build')
 
     def RetrieveCommandLineOptions(self, args):
         if args.tool_chain_tag is not None:
-            shell_environment.GetBuildVars().SetValue("TOOL_CHAIN_TAG", args.tool_chain_tag, "Set as cli parameter")
+            shell_environment.GetBuildVars().SetValue(
+                "TOOL_CHAIN_TAG", args.tool_chain_tag, "Set as cli parameter")
         # cache this so usage within CISettings is consistant.
         self.ToolChainTagCacheValue = args.tool_chain_tag
 
@@ -41,7 +43,7 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
         if (GetHostInfo().os == "Linux"
             and "AARCH64" in self.GetArchSupported() and
             self.ToolChainTagCacheValue is not None and
-            self.ToolChainTagCacheValue.upper().startswith("GCC")):
+                self.ToolChainTagCacheValue.upper().startswith("GCC")):
             scopes += ("gcc_aarch64_linux",)
 
         return scopes
@@ -83,7 +85,7 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
         else:
             return ("IA32",
                     "X64")  # removing aarch64 because too many errors
-                #   "AARCH64")
+            #   "AARCH64")
 
     def GetTargetsSupported(self):
         return ("DEBUG", "RELEASE")
