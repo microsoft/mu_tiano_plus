@@ -141,6 +141,7 @@
   CryptoPkg/Library/BaseCryptLibNull/PeiCryptLibNull.inf
   CryptoPkg/Library/BaseCryptLibNull/RuntimeCryptLibNull.inf
   CryptoPkg/Library/TlsLib/TlsLib.inf
+  CryptoPkg/Library/TlsLibNull/TlsLibNull.inf
   CryptoPkg/Library/OpensslLib/OpensslLib.inf
   CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
 
