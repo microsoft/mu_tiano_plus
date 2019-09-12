@@ -73,6 +73,8 @@ steps:
 # Copy the build logs to the artifact staging directory
 - task: CopyFiles@2
   displayName: "Copy build logs"
+  continueOnError: true
+  condition: succeededOrFailed()
   inputs:
     targetFolder: '$(Build.ArtifactStagingDirectory)'
     contents: |
@@ -87,6 +89,7 @@ steps:
 - task: PublishBuildArtifacts@1
   continueOnError: true
   displayName: "Publish build logs"
+  condition: succeededOrFailed()
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'Build Logs $(Build.Pkgs)'
