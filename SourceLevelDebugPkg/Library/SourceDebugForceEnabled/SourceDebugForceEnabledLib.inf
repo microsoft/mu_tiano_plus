@@ -13,7 +13,7 @@
 [Defines]
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = SourceDebugForceEnabledLib
-  FILE_GUID                      = 328de004-43b7-42fe-8dcb-fee65a37de75
+  FILE_GUID                      = 694109c0-4647-4d1b-91bf-b1590f95ea5f
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = SourceDebugEnabledLib
