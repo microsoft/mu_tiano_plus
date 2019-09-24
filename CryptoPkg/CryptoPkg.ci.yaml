@@ -1,0 +1,45 @@
+{
+    "CompilerPlugin": {
+        "DscPath": "CryptoPkg.dsc"
+    },
+    "HostUnitTestCompilerPlugin": {
+        #"DscPath": "CryptoPkgTest.dsc"
+    },
+    "HostUnitTestDscCompleteCheck": {
+        #"DscPath": "CryptoPkg.dsc",
+        "IgnoreInf": []  
+    },
+    "CharEncodingCheck": {
+        "IgnoreFiles": []
+    },
+    "DependencyCheck": {
+        "AcceptableDependencies": [
+            "MdePkg/MdePkg.dec",
+            "MdeModulePkg/MdeModulePkg.dec",
+            "CryptoPkg/CryptoPkg.dec",
+            "SecurityPkg/SecurityPkg.dec"
+        ], 
+        "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
+            "MsUnitTestPkg/MsUnitTestPkg.dec",
+            "UefiHostTestPkg/UefiHostTestPkg.dec",
+            "UefiHostUnitTestPkg/UefiHostUnitTestPkg.dec",
+            "CmockaHostUnitTestPkg/CmockaHostUnitTestPkg.dec"
+        ],
+        "AcceptableDependencies-UEFI_APPLICATION": [
+            "MsUnitTestPkg/MsUnitTestPkg.dec"
+        ],
+        "IgnoreInf": []
+    },
+    "DscCompleteCheck": {
+        "DscPath": "CryptoPkg.dsc",
+        "IgnoreInf": []
+    },
+    "GuidCheck": {
+        "IgnoreGuidName": [],
+        "IgnoreGuidValue": [],
+        "IgnoreFoldersAndFiles": []
+    },
+    "LibraryClassCheck": {
+        "IgnoreHeaderFile": []
+    }
+}

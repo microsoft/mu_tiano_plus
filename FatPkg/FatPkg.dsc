@@ -37,15 +37,6 @@
   BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
   BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
 
-##MSCHANGE Begin
-!if $(TARGET) == DEBUG
-  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
-  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
-  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
-!endif
-##MSCHANGE End
-
-
   UefiLib|MdePkg/Library/UefiLib/UefiLib.inf
   PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
@@ -55,6 +46,21 @@
   DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
   DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
+
+##MSCHANGE Begin
+[LibraryClasses.common]
+  BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
+!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
+!if $(TARGET) == DEBUG
+[LibraryClasses.X64, LibraryClasses.IA32]
+  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports on MSVC
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+[LibraryClasses.X64]
+  BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+!endif
+!endif
+##MSCHANGE End
 
 [LibraryClasses.common.PEIM]
   PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf

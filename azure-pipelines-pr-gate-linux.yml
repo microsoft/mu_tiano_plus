@@ -4,9 +4,9 @@ strategy:
     TARGET_CRYPTO:
       Build.Pkgs: 'CryptoPkg'
     TARGET_FMP_SHELL:
-      Build.Pkgs: 'FmpDevicePkg ShellPkg'
+      Build.Pkgs: 'FmpDevicePkg,ShellPkg'
     TARGET_FAT_SLD:
-      Build.Pkgs: 'FatPkg SourceLevelDebugPkg'
+      Build.Pkgs: 'FatPkg,SourceLevelDebugPkg'
 
 variables:
   GCC_AARCH_PREFIX: bin/aarch64-linux-gnu-
@@ -24,9 +24,6 @@ steps:
     versionSpec: '3.7.x'
     architecture: 'x64'
 
-- script: python -m pip install --upgrade pip
-  displayName: 'Install/Upgrade pip'
-
 - script: pip install -r requirements.txt --upgrade
   displayName: 'Install/Upgrade mu_build'
 
@@ -36,25 +33,25 @@ steps:
   displayName: CI Setup $(Build.Pkgs)
   inputs:
     filename: stuart_ci_setup
-    arguments: -c CISettings.py --force-git
+    arguments: -c CISettings.py --force-git TOOL_CHAIN_TAG=GCC5
 
 - task: CmdLine@1
   displayName: Submodule Setup $(Build.Pkgs)
   inputs:
     filename: stuart_setup
-    arguments: -c CISettings.py
+    arguments: -c CISettings.py TOOL_CHAIN_TAG=GCC5
 
 - task: CmdLine@1
   displayName: Update $(Build.Pkgs)
   inputs:
     filename: stuart_update
-    arguments: -c CISettings.py --Tool_Chain GCC5
+    arguments: -c CISettings.py TOOL_CHAIN_TAG=GCC5
 
 - task: CmdLine@1
   displayName: Build and Test $(Build.Pkgs)
   inputs:
     filename: stuart_ci_build
-    arguments: -c CISettings.py --Tool_Chain GCC5 -p $(Build.Pkgs)
+    arguments: -c CISettings.py TOOL_CHAIN_TAG=GCC5 -p $(Build.Pkgs)
 
 
 # Publish Test Results to Azure Pipelines/TFS
@@ -84,7 +81,12 @@ steps:
       Build/**/BUILDLOG_*.md
       Build/**/CI_*.txt
       Build/**/CI_*.md
+      Build/**/CISETUP.txt
+      Build/**/SETUPLOG.txt
+      Build/**/UPDATELOG.txt
       Build/**/TestSuites.xml
+      Build/**/BUILD_TOOLS_REPORT.html
+      Build/**/OVERRIDELOG.txt
     flattenFolders: true
 
 # Publish build artifacts to Azure Artifacts/TFS or a file share
