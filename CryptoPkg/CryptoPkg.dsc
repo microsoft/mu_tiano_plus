@@ -42,18 +42,16 @@
   UefiDriverEntryPoint|MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf
   UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
   TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
-
   IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
-  OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLib.inf
 
-##MSCHANGE Begin
-!if $(TARGET) == DEBUG
-  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
-  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
-  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+## MU_CHANGE [BEGIN] only do IA32 and X64 for these libraries because of TCBZ2029
+!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
+[LibraryClasses.X64, LibraryClasses.IA32]
 !endif
-##MSCHANGE End
+  OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLib.inf
+## MU_CHANGE [END]
 
+[LibraryClasses]
 ##MSCHANGE   Pull in the unit-test library for the VerifyPkcs7EkuUnitTestApp
   UnitTestLib|MsUnitTestPkg/Library/UnitTestLib/UnitTestLib.inf
   UnitTestAssertLib|MsUnitTestPkg/Library/UnitTestAssertLib/UnitTestAssertLib.inf
@@ -61,6 +59,21 @@
   UnitTestPersistenceLib|MsUnitTestPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
   UnitTestBootUsbLib|MsUnitTestPkg/Library/UnitTestBootUsbLibNull/UnitTestBootUsbLibNull.inf
   UnitTestResultReportLib|MsUnitTestPkg/Library/UnitTestResultReportPlainTextOutputLib/UnitTestResultReportLib.inf
+
+## MU_CHANGE Begin
+[LibraryClasses.common]
+  BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
+!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
+!if $(TARGET) == DEBUG
+[LibraryClasses.X64, LibraryClasses.IA32]
+  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports on MSVC
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+[LibraryClasses.X64]
+  BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+!endif
+!endif
+## MU_CHANGE End
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
@@ -128,19 +141,27 @@
 #
 ###################################################################################################
 [Components]
-  CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
-  CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf
-  CryptoPkg/Library/BaseCryptLib/RuntimeCryptLib.inf
   CryptoPkg/Library/BaseCryptLibNull/BaseCryptLibNull.inf
-  CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
-  CryptoPkg/Library/TlsLib/TlsLib.inf
   CryptoPkg/Library/TlsLibNull/TlsLibNull.inf
+
+## MU_CHANGE [BEGIN] only do IA32 and X64 for these libraries because of TCBZ2029
+!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
+[Components.IA32, Components.X64]
+!endif
+## MU_CHANGE [END]
   CryptoPkg/Library/OpensslLib/OpensslLib.inf
   CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
+  CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+  CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf
+  CryptoPkg/Library/TlsLib/TlsLib.inf
+  CryptoPkg/Library/BaseCryptLib/RuntimeCryptLib.inf
+
+  CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
 
   ## MS_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
   CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
   ## MS_CHANGE [END]
+
 [Components.IA32, Components.X64]
   CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf
 
