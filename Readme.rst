@@ -41,7 +41,7 @@ Bug Fixes-dev
 1908_CIBuild Changes
 --------------------
 
-- Incomplete
+- Update requirements to 0.10.x
 
 1908_Rebase Changes
 -------------------
@@ -51,7 +51,7 @@ Source Commit from dev/201908: ef65b9329d6b83b62af1faff842e9eea0a066e5e
 - Drop changes for ShellPkg\Library\UefiShellAcpiViewCommandLib\Parsers\Gtdt\GtdtParser.c
   - Looks like TianoCore may have addressed.
 - gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageDefaultTypeIdGuid has been upstreamed to tianocore as gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageTypeIdGuid
-  ○ Need a new PR to track the ASSERT instead of gEfiCallerIdGuid (~FmpDxe.c::181).
+  - Need a new PR to track the ASSERT instead of gEfiCallerIdGuid (~FmpDxe.c::181).
 - DEVICE_FMP_STORAGE_ACCESS_ENABLE now allows FMP Image description and Pkcs7 certs via PcdPatchableInModule
 - Applying the fix from TianoCore for Crypto on ARM is needed to replace
 
