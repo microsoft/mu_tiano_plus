@@ -76,7 +76,7 @@
   #  If this PCD is not a valid GUID value, the the FmpDxe driver will ASSERT
   #  and fall back to the gEfiCallerIdGuid (FILE_GUID for the specific driver).
   # @Prompt Firmware Device Default Image Type ID
-  gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageDefaultTypeIdGuid|{0}|VOID*|0x40000010
+  gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageDefaultTypeIdGuid|{0}|VOID*|0x40000012
   ## MU_CHANGE [END] - Default to PCD GUID.
 
   ## MU_CHANGE [BEGIN] - Added Pkcs7 EKU value
