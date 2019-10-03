@@ -9,26 +9,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #include "InternalTlsLib.h"
 
-
-/**
-  Gets the OpenSSL cipher suite mapping for the supplied IANA TLS cipher suite.
-
-  @param[in]  CipherId    The supplied IANA TLS cipher suite ID.
-
-  @return  The corresponding OpenSSL cipher suite mapping if found,
-           NULL otherwise.
-
-**/
-STATIC
-CONST VOID * //TLS_CIPHER_MAPPING type
-TlsGetCipherMapping (
-  IN     UINT16                   CipherId
-  )
-{
-  ASSERT(FALSE);
-  return NULL;
-}
-
 /**
   Set a new TLS/SSL method for a particular TLS object.
 

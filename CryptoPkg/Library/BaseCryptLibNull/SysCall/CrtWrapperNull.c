@@ -11,29 +11,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 int errno = 0;
 
-typedef
-int
-(*SORT_COMPARE)(
-  IN  VOID  *Buffer1,
-  IN  VOID  *Buffer2
-  );
-
-//
-// Duplicated from EDKII BaseSortLib for qsort() wrapper
-//
-STATIC
-VOID
-QuickSortWorker (
-  IN OUT    VOID          *BufferToSort,
-  IN CONST  UINTN         Count,
-  IN CONST  UINTN         ElementSize,
-  IN        SORT_COMPARE  CompareFunction,
-  IN        VOID          *Buffer
-  )
-{
-  ASSERT(FALSE);
-}
-
 //---------------------------------------------------------
 // Standard C Run-time Library Interface Wrapper
 //---------------------------------------------------------
