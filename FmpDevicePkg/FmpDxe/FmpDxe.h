@@ -28,6 +28,9 @@
 #include <Library/FmpDeviceLib.h>
 #include <Library/FmpPayloadHeaderLib.h>
 #include <Library/CapsuleUpdatePolicyLib.h>
+// MU_CHANGE Starts
+#include <Library/ReportStatusCodeLib.h>
+// MU_CHANGE Ends
 #include <Protocol/FirmwareManagement.h>
 #include <Protocol/FirmwareManagementProgress.h>
 #include <Protocol/VariableLock.h>

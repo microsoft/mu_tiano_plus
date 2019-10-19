@@ -1188,6 +1188,9 @@ SetTheImage (
   FmpHeader = GetFmpHeader ( (EFI_FIRMWARE_IMAGE_AUTHENTICATION *)Image, ImageSize, &FmpPayloadSize );
   if (FmpHeader == NULL) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - GetFmpHeader failed.\n", mImageIdName));
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETFMPHEADER;
+    // MU_CHANGE Ends
     Status = EFI_ABORTED;
     goto cleanup;
   }
@@ -1232,6 +1235,9 @@ SetTheImage (
 
   if (Progress == NULL) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - Invalid progress callback\n", mImageIdName));
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_PROGRESS_CALLBACK_ERROR;
+    // MU_CHANGE Ends
     Status = EFI_INVALID_PARAMETER;
     goto cleanup;
   }
@@ -1252,6 +1258,9 @@ SetTheImage (
   Status = CheckSystemPower (&BooleanValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - CheckSystemPower - API call failed %r.\n", mImageIdName, Status));
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKPWR_API;
+    // MU_CHANGE Ends
     goto cleanup;
   }
   if (!BooleanValue) {
@@ -1272,10 +1281,16 @@ SetTheImage (
   Status = CheckSystemThermal (&BooleanValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - CheckSystemThermal - API call failed %r.\n", mImageIdName, Status));
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKSYSTHERMAL_API;
+    // MU_CHANGE Ends
     goto cleanup;
   }
   if (!BooleanValue) {
     Status = EFI_ABORTED;
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_THERMAL;
+    // MU_CHANGE Ends
     DEBUG (
       (DEBUG_ERROR,
       "FmpDxe(%s): SetTheImage() - CheckSystemThermal - returned False.  Update not allowed due to System Thermal.\n", mImageIdName)
@@ -1291,10 +1306,16 @@ SetTheImage (
   Status = CheckSystemEnvironment (&BooleanValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - CheckSystemEnvironment - API call failed %r.\n", mImageIdName, Status));
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKSYSENV_API;
+    // MU_CHANGE Ends
     goto cleanup;
   }
   if (!BooleanValue) {
     Status = EFI_ABORTED;
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_SYSTEM_ENV;
+    // MU_CHANGE Ends
     DEBUG (
       (DEBUG_ERROR,
       "FmpDxe(%s): SetTheImage() - CheckSystemEnvironment - returned False.  Update not allowed due to System Environment.\n", mImageIdName)
@@ -1316,12 +1337,18 @@ SetTheImage (
   Status = GetFmpPayloadHeaderSize (FmpHeader, FmpPayloadSize, &FmpHeaderSize);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - GetFmpPayloadHeaderSize failed %r.\n", mImageIdName, Status));
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETFMPHEADERSIZE;
+    // MU_CHANGE Ends
     goto cleanup;
   }
 
   AllHeaderSize = GetAllHeaderSize ((EFI_FIRMWARE_IMAGE_AUTHENTICATION *)Image, FmpHeaderSize + DependenciesSize);
   if (AllHeaderSize == 0) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - GetAllHeaderSize failed.\n", mImageIdName));
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETALLHEADERSIZE;
+    // MU_CHANGE Ends
     Status = EFI_ABORTED;
     goto cleanup;
   }
@@ -1368,10 +1395,21 @@ SetTheImage (
              VendorCode,
              FmpDxeProgress,
              IncomingFwVersion,
-             AbortReason
+             // MU_CHANGE Starts
+             AbortReason,
+             &LastAttemptStatus
+             // MU_CHANGE Ends
              );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() SetImage from FmpDeviceLib failed. Status =  %r.\n", mImageIdName, Status));
+    // MU_CHANGE Starts
+    // Returned LastAttemptStatus should fall into designated LAST_ATTEMPT_STATUS_LIBRARY_ERROR range.
+    if ((LastAttemptStatus < LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE) ||
+        (LastAttemptStatus > LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE)) {
+      ReportStatusCode ((EFI_ERROR_MINOR | EFI_ERROR_CODE), FIRMWARE_MANAGEMENT_ILLEGAL_STATE);
+      LastAttemptStatus = LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL;
+    }
+    // MU_CHANGE Ends
     goto cleanup;
   }
 
@@ -1406,6 +1444,9 @@ cleanup:
   }
 
   mProgressFunc = NULL;
+  // MU_CHANGE Starts
+  DEBUG((DEBUG_INFO, "SetTheImage Cleanup LastAttemptStatus: %u.\n", LastAttemptStatus));
+  // MU_CHANGE Ends
   SetLastAttemptStatusInVariable (Private, LastAttemptStatus);
 
   if (Progress != NULL) {
