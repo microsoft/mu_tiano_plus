@@ -453,6 +453,15 @@ FmpDeviceCheckImage (
                                 EFI_BOOT_SERVICES.AllocatePool().  It is the
                                 caller's responsibility to free this buffer with
                                 EFI_BOOT_SERVICES.FreePool().
+// MU_CHANGE Starts
+  @param[out] LastAttemptStatus A pointer to a UINT32 that holds the last attempt
+                                status to report back to the ESRT table in case
+                                of error. Will only be checked when this funtions
+                                returns error. Returned status code falls outside of 
+                                LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE and
+                                LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE
+                                will be converted to LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL
+// MU_CHANGE Ends
 
   @retval EFI_SUCCESS            The firmware device was successfully updated
                                  with the new firmware image.
@@ -470,7 +479,10 @@ FmpDeviceSetImage (
   IN  CONST VOID                                     *VendorCode,       OPTIONAL
   IN  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  Progress,          OPTIONAL
   IN  UINT32                                         CapsuleFwVersion,
-  OUT CHAR16                                         **AbortReason
+// MU_CHANGE Starts
+  OUT CHAR16                                         **AbortReason,
+  OUT UINT32                                         *LastAttemptStatus
+// MU_CHANGE Ends
   )
 {
   return EFI_UNSUPPORTED;

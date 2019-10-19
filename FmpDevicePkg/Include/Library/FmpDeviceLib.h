@@ -12,7 +12,46 @@
 #ifndef __FMP_DEVICE_LIB__
 #define __FMP_DEVICE_LIB__
 
+// MU_CHANGE Starts
+#include <Guid/SystemResourceTable.h>
+// MU_CHANGE Ends
 #include <Protocol/FirmwareManagement.h>
+
+// MU_CHANGE Starts
+#define FIRMWARE_MANAGEMENT_SUBCLASS  \
+                                      0x00CD0000
+
+#define FIRMWARE_MANAGEMENT_ILLEGAL_STATE  \
+                                      (EFI_SOFTWARE | FIRMWARE_MANAGEMENT_SUBCLASS | EFI_SW_EC_ILLEGAL_SOFTWARE_STATE)
+
+/*
+Error codes allocated inside vendor specific error range
+*/
+#define LAST_ATTEMPT_STATUS_DRIVER_ERROR_COUNT              0x80
+
+/**
+Additional error codes reserved in UNSUCCESSFUL_VENDOR_RANGE for FmpDxe driver usage:
+FmpDxe can use error codes from the range FmpDeviceLib API should return last attempt status in the range between
+LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN and LAST_ATTEMPT_STATUS_DRIVER_ERROR_MAX_ERROR_CODE
+**/
+enum EXPANDED_ERROR_LIST
+{
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETFMPHEADER             = LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_IMAGE_INVALID            ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_PROGRESS_CALLBACK_ERROR  ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKPWR_API             ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKSYSTHERMAL_API      ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_THERMAL                  ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKSYSENV_API          ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_SYSTEM_ENV               ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETFMPHEADERSIZE         ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETALLHEADERSIZE         ,
+  LAST_ATTEMPT_STATUS_DRIVER_ERROR_MAX_ERROR_CODE           = LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN +\
+                                                              LAST_ATTEMPT_STATUS_DRIVER_ERROR_COUNT,
+  LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE,
+  LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE          = LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MAX
+};
+// MU_CHANGE Ends
 
 /**
   Callback function that installs a Firmware Management Protocol instance onto
@@ -446,6 +485,15 @@ FmpDeviceCheckImage (
                                 EFI_BOOT_SERVICES.AllocatePool().  It is the
                                 caller's responsibility to free this buffer with
                                 EFI_BOOT_SERVICES.FreePool().
+// MU_CHANGE Starts
+  @param[out] LastAttemptStatus A pointer to a UINT32 that holds the last attempt
+                                status to report back to the ESRT table in case
+                                of error. Will only be checked when this funtions
+                                returns error. Returned status code falls outside of 
+                                LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE and
+                                LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE
+                                will be converted to LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL
+// MU_CHANGE Ends
 
   @retval EFI_SUCCESS            The firmware device was successfully updated
                                  with the new firmware image.
@@ -463,7 +511,10 @@ FmpDeviceSetImage (
   IN  CONST VOID                                     *VendorCode,       OPTIONAL
   IN  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  Progress,          OPTIONAL
   IN  UINT32                                         CapsuleFwVersion,
-  OUT CHAR16                                         **AbortReason
+// MU_CHANGE Starts
+  OUT CHAR16                                         **AbortReason,
+  OUT UINT32                                         *LastAttemptStatus
+// MU_CHANGE Ends
   );
 
 /**

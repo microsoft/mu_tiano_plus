@@ -59,6 +59,9 @@
   FmpDeviceLib
   FmpPayloadHeaderLib
   CapsuleUpdatePolicyLib
+  # MU_CHANGE Starts
+  ReportStatusCodeLib
+  # MU_CHANGE Ends
 
 [Guids]
   gEfiEndOfDxeEventGroupGuid
