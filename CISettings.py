@@ -7,7 +7,7 @@ import os
 from edk2toolext.environment import shell_environment
 from edk2toolext.invocables.edk2_ci_build import CiBuildSettingsManager
 from edk2toolext.invocables.edk2_ci_setup import CiSetupSettingsManager
-from edk2toolext.invocables.edk2_setup import SetupSettingsManager
+from edk2toolext.invocables.edk2_setup import SetupSettingsManager, RequiredSubmodule
 from edk2toolext.invocables.edk2_update import UpdateSettingsManager
 from edk2toollib.utility_functions import GetHostInfo
 
@@ -110,7 +110,7 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
 
     def GetActiveScopes(self):
         ''' return tuple containing scopes that should be active for this process '''
-        scopes = ("corebuild", "project_mu")
+        scopes = ("corebuild", "project_mu","cibuild")
 
         self.ActualToolChainTag = shell_environment.GetBuildVars().GetValue("TOOL_CHAIN_TAG", "")
 
@@ -150,24 +150,11 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
                 "Branch": "dev/201908"
             }
         ]
-
-    def GetRequiredRepos(self):
-        ''' Required Submodules to be populated '''
-        # Edk2 Bug - If any module references CryptoPkg.dec
-        # the entire dec is verified even the [*.Private] sections.  This
-        # means that openssl must be there.
-
-        # Once this is fixed the below code can be used to optimize
-        # the submodules for only those that are needed when only some
-        # packages are being build.
-
-        # "ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3"]
-        #NeedsOpenSSL = {"CryptoPkg"}
-        # if (len(NeedsOpenSSL - set(self.ActualPackages)) != len(NeedsOpenSSL)):
-        #  Add openssl
-        rr = []
-        rr.append("CryptoPkg/Library/OpensslLib/openssl")
-        return rr
+    def GetRequiredSubmodules(self):
+        ''' return iterable containing RequiredSubmodule objects.
+        If no RequiredSubmodules return an empty iterable
+        '''
+        return [RequiredSubmodule("CryptoPkg/Library/OpensslLib/openssl", False)]
 
     def GetPackagesPath(self):
         ''' Return a list of workspace relative paths that should be mapped as edk2 PackagesPath '''

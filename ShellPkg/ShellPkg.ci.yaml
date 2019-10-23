@@ -1,13 +1,12 @@
+##
+# CI configuration for ShellPkg
+#
+# Copyright (c) Microsoft Corporation
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
 {
     "CompilerPlugin": {
         "DscPath": "ShellPkg.dsc"
-    },
-    "HostUnitTestCompilerPlugin": {
-        #"DscPath": "ShellPkgTest.dsc",
-    },
-    "HostUnitTestDscCompleteCheck": {
-        #"DscPath": "ShellPkgTest.dsc",
-        "IgnoreInf": []  
     },
     "CharEncodingCheck": {
         "IgnoreFiles": []
@@ -18,7 +17,7 @@
             "MdeModulePkg/MdeModulePkg.dec",
             "ShellPkg/ShellPkg.dec",
             "NetworkPkg/NetworkPkg.dec"
-        ], 
+        ],
         "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
             "MsUnitTestPkg/MsUnitTestPkg.dec",
             "UefiHostTestPkg/UefiHostTestPkg.dec",
@@ -29,15 +28,30 @@
     },
     "DscCompleteCheck": {
         "DscPath": "ShellPkg.dsc",
-        "IgnoreInf": []
+        "IgnoreInf": [
+            "ShellPkg/Application/ShellCTestApp/ShellCTestApp.inf",
+            "ShellPkg/Application/ShellExecTestApp/SA.inf",
+            "ShellPkg/Application/ShellSortTestApp/ShellSortTestApp.inf"
+            ]
     },
     "GuidCheck": {
-        "IgnoreGuidName": [], 
+        "IgnoreGuidName": [],
         "IgnoreGuidValue": [],
         "IgnoreFoldersAndFiles": [],
-        "IgnoreDuplicates": ["gUefiShellFileGuid=Shell"]
+        "IgnoreDuplicates": [
+            "Shell=gUefiShellFileGuid", # by design
+        ]
     },
     "LibraryClassCheck": {
         "IgnoreHeaderFile": []
+    },
+
+    ## options defined ci/Plugin/SpellCheck
+    "SpellCheck": {
+        "skip": True,
+        "IgnoreFiles": [],           # use gitignore syntax to ignore errors in matching files
+        "ExtendWords": [],           # words to extend to the dictionary for this package
+        "IgnoreStandardPaths": [],   # Standard Plugin defined paths that should be ignore
+        "AdditionalIncludePaths": [] # Additional paths to spell check (wildcards supported)
     }
 }

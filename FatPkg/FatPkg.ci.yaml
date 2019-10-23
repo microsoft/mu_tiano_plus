@@ -1,13 +1,12 @@
+##
+# CI configuration for FatPkg
+#
+# Copyright (c) Microsoft Corporation
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
 {
     "CompilerPlugin": {
         "DscPath": "FatPkg.dsc"
-    },
-    "HostUnitTestCompilerPlugin": {
-        #"DscPath": "FatPkgTest.dsc",
-    },
-    "HostUnitTestDscCompleteCheck": {
-        #"DscPath": "FatPkgTest.dsc",
-        "IgnoreInf": []  
     },
     "CharEncodingCheck": {
         "IgnoreFiles": []
@@ -17,26 +16,40 @@
             "MdePkg/MdePkg.dec",
             "MdeModulePkg/MdeModulePkg.dec",
             "FatPkg/FatPkg.dec"
-        ], 
-        "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
+        ],
+        # For host based unit tests
+        "AcceptableDependencies-HOST_APPLICATION":[
             "MsUnitTestPkg/MsUnitTestPkg.dec",
             "UefiHostTestPkg/UefiHostTestPkg.dec",
             "UefiHostUnitTestPkg/UefiHostUnitTestPkg.dec",
             "CmockaHostUnitTestPkg/CmockaHostUnitTestPkg.dec"
         ],
+        # For UEFI shell based apps
+        "AcceptableDependencies-UEFI_APPLICATION":[],
         "IgnoreInf": []
     },
     "DscCompleteCheck": {
-        "DscPath": "FatPkg.dsc",
-        "IgnoreInf": []
+        "IgnoreInf": [],
+        "DscPath": "FatPkg.dsc"
     },
     "GuidCheck": {
-        "IgnoreGuidName": [], 
+        "IgnoreGuidName": [],
         "IgnoreGuidValue": [],
         "IgnoreFoldersAndFiles": [],
         "IgnoreDuplicates": []
     },
     "LibraryClassCheck": {
         "IgnoreHeaderFile": []
+    },
+    "SpellCheck": {
+        "skip": True,
+        "ExtendWords": [
+            "ELTORITO",
+            "FHAND",
+            "IFILE",
+            "OFILE",
+            "FDISKed",
+            "Lfnbuffer"
+        ]
     }
 }

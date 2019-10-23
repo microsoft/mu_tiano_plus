@@ -1,13 +1,12 @@
+##
+# CI configuration for FmpDevicePkg
+#
+# Copyright (c) Microsoft Corporation
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
 {
     "CompilerPlugin": {
         "DscPath": "FmpDevicePkg.dsc"
-    },
-    "HostUnitTestCompilerPlugin": {
-        #"DscPath": "FmpDevicePkgTest.dsc",
-    },
-    "HostUnitTestDscCompleteCheck": {
-        #"DscPath": "FmpDevicePkgTest.dsc",
-        "IgnoreInf": []  
     },
     "CharEncodingCheck": {
         "IgnoreFiles": []
@@ -18,7 +17,7 @@
             "MdeModulePkg/MdeModulePkg.dec",
             "FmpDevicePkg/FmpDevicePkg.dec",
             "CryptoPkg/CryptoPkg.dec"
-        ], 
+        ],
         "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
             "MsUnitTestPkg/MsUnitTestPkg.dec",
             "UefiHostTestPkg/UefiHostTestPkg.dec",
@@ -32,12 +31,18 @@
         "IgnoreInf": []
     },
     "GuidCheck": {
-        "IgnoreGuidName": [], 
+        "IgnoreGuidName": [],
         "IgnoreGuidValue": [],
         "IgnoreFoldersAndFiles": [],
         "IgnoreDuplicates": []
     },
     "LibraryClassCheck": {
         "IgnoreHeaderFile": []
+    },
+    "SpellCheck": {
+        "skip": True,
+        "ExtendWords": [
+            "FMPSTATE",
+        ]
     }
 }

@@ -1,12 +1,12 @@
 ##
-# CI configuration for CryptoPkg
+# CI configuration for ShellPkg
 #
 # Copyright (c) Microsoft Corporation
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 {
     "CompilerPlugin": {
-        "DscPath": "CryptoPkg.dsc"
+        "DscPath": "SourceLevelDebugPkg.dsc"
     },
     "CharEncodingCheck": {
         "IgnoreFiles": []
@@ -15,29 +15,27 @@
         "AcceptableDependencies": [
             "MdePkg/MdePkg.dec",
             "MdeModulePkg/MdeModulePkg.dec",
-            "CryptoPkg/CryptoPkg.dec"
+            "MsUnitTestPkg/MsUnitTestPkg.dec",
+            "SourceLevelDebugPkg/SourceLevelDebugPkg.dec",
+            "UefiCpuPkg/UefiCpuPkg.dec"
         ],
-        # For host based unit tests
-        "AcceptableDependencies-HOST_APPLICATION":[
+        "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
             "MsUnitTestPkg/MsUnitTestPkg.dec",
             "UefiHostTestPkg/UefiHostTestPkg.dec",
             "UefiHostUnitTestPkg/UefiHostUnitTestPkg.dec",
             "CmockaHostUnitTestPkg/CmockaHostUnitTestPkg.dec"
         ],
-        # For UEFI shell based apps
-        "AcceptableDependencies-UEFI_APPLICATION": [
-            "MsUnitTestPkg/MsUnitTestPkg.dec"
-        ],
         "IgnoreInf": []
     },
     "DscCompleteCheck": {
-        "DscPath": "CryptoPkg.dsc",
+        "DscPath": "SourceLevelDebugPkg.dsc",
         "IgnoreInf": []
     },
     "GuidCheck": {
         "IgnoreGuidName": [],
         "IgnoreGuidValue": [],
-        "IgnoreFoldersAndFiles": []
+        "IgnoreFoldersAndFiles": [],
+        "IgnoreDuplicates": []
     },
     "LibraryClassCheck": {
         "IgnoreHeaderFile": []
