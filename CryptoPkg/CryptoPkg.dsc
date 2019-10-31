@@ -286,9 +286,9 @@
       !endif
   }
 
-  ## MS_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
+  ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
   CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
-  ## MS_CHANGE [END]
+  ## MU_CHANGE [END]
 [Components.IA32, Components.X64]
   CryptoPkg/Driver/CryptoSmm.inf {
     <Defines>
