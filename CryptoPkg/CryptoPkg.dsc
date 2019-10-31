@@ -41,15 +41,9 @@
   UefiRuntimeLib|MdePkg/Library/UefiRuntimeLib/UefiRuntimeLib.inf
   UefiDriverEntryPoint|MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf
   UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
-  TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
+  # TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf # MU_CHANGE - remove timerlib
   IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
-
-## MU_CHANGE [BEGIN] only do IA32 and X64 for these libraries because of TCBZ2029
-!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
-[LibraryClasses.X64, LibraryClasses.IA32]
-!endif
   OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLib.inf
-## MU_CHANGE [END]
 
 [LibraryClasses]
 ##MSCHANGE   Pull in the unit-test library for the VerifyPkcs7EkuUnitTestApp
@@ -63,14 +57,15 @@
 ## MU_CHANGE Begin
 [LibraryClasses.common]
   BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
+
+[LibraryClasses.X64, LibraryClasses.IA32]
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf # MU_CHANGE always include RngLib
 !if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
 !if $(TARGET) == DEBUG
-[LibraryClasses.X64, LibraryClasses.IA32]
   #if debug is enabled provide StackCookie support lib so that we can link to /GS exports on MSVC
-  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
-[LibraryClasses.X64]
-  BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
-  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+  [LibraryClasses.X64]
+    BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+    NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
 !endif
 !endif
 ## MU_CHANGE End
@@ -158,9 +153,9 @@
 
   CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
 
-  ## MS_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
+  ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
   CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
-  ## MS_CHANGE [END]
+  ## MU_CHANGE [END]
 
 [Components.IA32, Components.X64]
   CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf
