@@ -7,13 +7,15 @@ import os
 import logging
 from edk2toolext.environment import shell_environment
 from edk2toolext.invocables.edk2_ci_build import CiBuildSettingsManager
+from edk2toolext.invocables.edk2_ci_setup import CiSetupSettingsManager     # MU_CHANGE
 from edk2toolext.invocables.edk2_setup import SetupSettingsManager, RequiredSubmodule
 from edk2toolext.invocables.edk2_update import UpdateSettingsManager
 from edk2toolext.invocables.edk2_pr_eval import PrEvalSettingsManager
 from edk2toollib.utility_functions import GetHostInfo
 
 
-class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManager, PrEvalSettingsManager):
+# MU_CHANGE - Add CiSetupSettingsManager superclass.
+class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManager, PrEvalSettingsManager):
 
     def __init__(self):
         self.ActualPackages = []
@@ -39,16 +41,12 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
         ''' return iterable of edk2 packages supported by this build.
         These should be edk2 workspace relative paths '''
 
-        return ("MdePkg",
-                "MdeModulePkg",
-                "NetworkPkg",
-                "PcAtChipsetPkg",
-                "SecurityPkg",
-                "UefiCpuPkg",
-                "FmpDevicePkg",
+        return ("FmpDevicePkg",
                 "ShellPkg",
                 "FatPkg",
-                "CryptoPkg"
+                "CryptoPkg",
+				"SourceLevelDebugPkg",
+				"EmbeddedPkg"
                 )
 
     def GetArchitecturesSupported(self):
@@ -134,20 +132,53 @@ class Settings(CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManag
         If no RequiredSubmodules return an empty iterable
         '''
         rs=[]
-        rs.append(RequiredSubmodule(
-            "ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3", False))
+        # MU_CHANGE
+        # rs.append(RequiredSubmodule(
+        #     "ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3", False))
         rs.append(RequiredSubmodule(
             "CryptoPkg/Library/OpensslLib/openssl", False))
         return rs
 
     def GetName(self):
-        return "Edk2"
+        # MU_CHANGE
+        return "TianoPlus"
 
     def GetDependencies(self):
-        return []
+        # MU_CHANGE BEGIN
+        ''' Return Git Repository Dependendencies
+
+        Return an iterable of dictionary objects with the following fields
+        {
+            Path: <required> Workspace relative path
+            Url: <required> Url of git repo
+            Commit: <optional> Commit to checkout of repo
+            Branch: <optional> Branch to checkout (will checkout most recent commit in branch)
+            Full: <optional> Boolean to do shallow or Full checkout.  (default is False)
+            ReferencePath: <optional> Workspace relative path to git repo to use as "reference"
+        }
+        '''
+        return [
+            {
+                "Path": "Silicon/Arm/MU_TIANO",
+                "Url": "https://github.com/Microsoft/mu_silicon_arm_tiano.git",
+                "Branch": "personal/brbarkel/1911_pre_naive"
+            },
+            {
+                "Path": "MU_BASECORE",
+                "Url": "https://github.com/Microsoft/mu_basecore.git",
+                "Branch": "dev/201911_pre"
+            }
+        ]
+        # MU_CHANGE END
 
     def GetPackagesPath(self):
-        return ()
+        # MU_CHANGE BEGIN
+        ''' Return a list of workspace relative paths that should be mapped as edk2 PackagesPath '''
+        result = []
+        for a in self.GetDependencies():
+            result.append(a["Path"])
+        return result
+        # MU_CHANGE END
 
     def GetWorkspaceRoot(self):
         ''' get WorkspacePath '''
