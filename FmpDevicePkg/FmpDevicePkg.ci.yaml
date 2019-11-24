@@ -35,6 +35,10 @@
     "SpellCheck": {
         "ExtendWords": [
             "FMPSTATE",
+            # MU_CHANGE
+            "GETFMPHEADER",
+            "CHECKPWR",
+            "GETFMPHEADERSIZE"
         ]
     },
     "Defines": {
