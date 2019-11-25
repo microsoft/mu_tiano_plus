@@ -161,7 +161,7 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
             {
                 "Path": "Silicon/Arm/MU_TIANO",
                 "Url": "https://github.com/Microsoft/mu_silicon_arm_tiano.git",
-                "Branch": "personal/brbarkel/1911_pre_naive"
+                "Branch": "dev/201911_pre"
             },
             {
                 "Path": "MU_BASECORE",
