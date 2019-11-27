@@ -53,10 +53,14 @@
   UnitTestPersistenceLib|MsUnitTestPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
   UnitTestBootUsbLib|MsUnitTestPkg/Library/UnitTestBootUsbLibNull/UnitTestBootUsbLibNull.inf
   UnitTestResultReportLib|MsUnitTestPkg/Library/UnitTestResultReportPlainTextOutputLib/UnitTestResultReportLib.inf
+##MSCHANGE End
 
 ##MSCHANGE Begin
 [LibraryClasses.common]
   BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
+
+[LibraryClasses.AARCH64.DXE_DRIVER, LibraryClasses.ARM.DXE_DRIVER, LibraryClasses.AARCH64.UEFI_APPLICATION, LibraryClasses.ARM.UEFI_APPLICATION]
+  RngLib|SecurityPkg/RandomNumberGenerator/RngDxeLib/RngDxeLib.inf
 
 [LibraryClasses.X64, LibraryClasses.IA32]
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf # MU_CHANGE always include RngLib
@@ -139,11 +143,6 @@
   CryptoPkg/Library/BaseCryptLibNull/BaseCryptLibNull.inf
   CryptoPkg/Library/TlsLibNull/TlsLibNull.inf
 
-## MS_CHANGE [BEGIN] only do IA32 and X64 for these libraries because of TCBZ2029
-!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
-[Components.IA32, Components.X64]
-!endif
-## MS_CHANGE [END]
   CryptoPkg/Library/OpensslLib/OpensslLib.inf
   CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
   CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
@@ -153,11 +152,14 @@
 
   CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
 
+[Components.IA32, Components.X64]
+
+
   ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
+  # Currently this unit test doesn't work for AARCH64
   CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
   ## MU_CHANGE [END]
 
-[Components.IA32, Components.X64]
   CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf
 
 [BuildOptions]
