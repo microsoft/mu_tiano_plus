@@ -75,6 +75,10 @@
   UnitTestPersistenceLib|MsUnitTestPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
   UnitTestBootUsbLib|MsUnitTestPkg/Library/UnitTestBootUsbLibNull/UnitTestBootUsbLibNull.inf
   UnitTestResultReportLib|MsUnitTestPkg/Library/UnitTestResultReportPlainTextOutputLib/UnitTestResultReportLib.inf
+##MSCHANGE End
+
+[LibraryClasses.AARCH64.DXE_DRIVER, LibraryClasses.ARM.DXE_DRIVER, LibraryClasses.AARCH64.UEFI_APPLICATION, LibraryClasses.ARM.UEFI_APPLICATION]
+  RngLib|SecurityPkg/RandomNumberGenerator/RngDxeLib/RngDxeLib.inf
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
@@ -286,10 +290,13 @@
       !endif
   }
 
+[Components.IA32, Components.X64]
+
   ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
+  # Currently this unit test doesn't work for AARCH64
   CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
   ## MU_CHANGE [END]
-[Components.IA32, Components.X64]
+
   CryptoPkg/Driver/CryptoSmm.inf {
     <Defines>
       !if $(CRYPTO_SERVICES) == ALL
