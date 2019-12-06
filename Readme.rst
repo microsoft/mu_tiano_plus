@@ -2,25 +2,25 @@
 Project Mu Tiano Plus Repository
 ================================
 
-.. |build_status_windows| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/mu_tiano_plus%20PR%20gate?branchName=dev/201908
+.. |build_status_windows| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/mu_tiano_plus%20PR%20gate?branchName=release/201911
 
-|build_status_windows| Current build status for dev/201908
+|build_status_windows| Current build status for release/201911
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
-Branch Status - dev/201908
+Branch Status - release/201911
 ==============================
 
 Status:
   In Development
 
 Entered Development:
-  2019/09/23
+  2019/12/05
 
 Anticipated Stabilization:
-  November 2019
+  January 2020
 
-Branch Changes - dev/201908
+Branch Changes - release/201911
 ===============================
 
 Breaking Changes-dev
@@ -31,29 +31,22 @@ Breaking Changes-dev
 Main Changes-dev
 ----------------
 
-- None
+- The null version of BaseCryptLib has been added
 
 Bug Fixes-dev
 -------------
 
 - None
 
-1908_CIBuild Changes
+1911_CIBuild Changes
 --------------------
 
-- Update requirements to 0.10.x
+- Updated to use the same CI infastructure as the rest of Mu/EDK2
 
-1908_Rebase Changes
+1911_Rebase Changes
 -------------------
 
-Source Commit from dev/201908: ef65b9329d6b83b62af1faff842e9eea0a066e5e
-
-- Drop changes for ShellPkg\Library\UefiShellAcpiViewCommandLib\Parsers\Gtdt\GtdtParser.c
-  - Looks like TianoCore may have addressed.
-- gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageDefaultTypeIdGuid has been upstreamed to tianocore as gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageTypeIdGuid
-  - Need a new PR to track the ASSERT instead of gEfiCallerIdGuid (~FmpDxe.c::181).
-- DEVICE_FMP_STORAGE_ACCESS_ENABLE now allows FMP Image description and Pkcs7 certs via PcdPatchableInModule
-- Applying the fix from TianoCore for Crypto on ARM is needed to replace
+Source Commit from dev/201908: 46d1613f91
 
 Code of Conduct
 ===============
