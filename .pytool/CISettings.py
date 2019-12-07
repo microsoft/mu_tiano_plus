@@ -145,7 +145,7 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
 
     def GetDependencies(self):
         # MU_CHANGE BEGIN
-        ''' Return Git Repository Dependendencies
+        ''' Return Git Repository Dependencies
 
         Return an iterable of dictionary objects with the following fields
         {
@@ -186,19 +186,5 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
 
     def FilterPackagesToTest(self, changedFilesList: list, potentialPackagesList: list) -> list:
         ''' Filter potential packages to test based on changed files. '''
-        build_these_packages=[]
-        possible_packages=potentialPackagesList.copy()
-        for f in changedFilesList:
-            nodes=f.split("/")  # split each part of path for comparison later
+        return []
 
-            # python file change in .pytool folder causes building all
-            if f.endswith(".py") and ".pytool" in nodes:
-                build_these_packages = possible_packages
-                break
-
-            # BaseTools files that might change the build
-            if "BaseTools" in nodes:
-                if os.path.splitext(f) not in [".txt", ".md"]:
-                    build_these_packages = possible_packages
-                    break
-        return build_these_packages
