@@ -1,13 +1,12 @@
-# Ignore build artifacts.
-/Build
-tags/
+Build/
 .DS_Store
+*_extdep/
 *.pyc
+__pycache__/
+tags/
+.vscode/
 *.bak
 BuildConfig.conf
-
-# Ignore SelfDescribingEnvironment artifacts.
-*_extdep/
 
 # Ignore our repos from CI
 /MU_BASECORE/
