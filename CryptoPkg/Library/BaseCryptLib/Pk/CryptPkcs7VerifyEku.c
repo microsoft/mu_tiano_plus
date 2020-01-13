@@ -508,9 +508,10 @@ Exit:
     free (SignedData);
   }
 
-  if (SignerCert != NULL) {
-    X509_free (SignerCert);
-  }
+  // MU_CHANGE: SignerCert is part of Pkcs7 instance which will be freed in the next block
+  // if (SignerCert != NULL) {
+  //   X509_free (SignerCert);
+  // }
 
   if (Pkcs7 != NULL) {
     PKCS7_free (Pkcs7);

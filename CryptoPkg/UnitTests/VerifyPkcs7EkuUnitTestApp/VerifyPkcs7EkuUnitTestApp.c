@@ -49,7 +49,9 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/UefiLib.h>
 #include <Library/UnitTestLib.h>
 #include <Library/BaseCryptLib.h>
-#include <base.h>
+// MU_CHANGE: Fix case sensitivity on Linux builds
+// #include <base.h>
+#include <Base.h>
 #include "AllTestSignatures.h"
 
 #define UNIT_TEST_APP_NAME        "Verify EKUs in PKCS7 Signature Unit Test Application"
