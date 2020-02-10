@@ -90,6 +90,14 @@
   #
   TcgStorageOpalLib|Include/Library/TcgStorageOpalLib.h
 
+  ## @libraryclass  Provides interfaces to access RPMC device.
+  #
+  RpmcLib|Include/Library/RpmcLib.h
+
+  ## @libraryclass  Provides interfaces to access variable root key.
+  #
+  VariableKeyLib|Include/Library/VariableKeyLib.h
+
   ## @libraryclass  Provides interfaces about firmware TPM measurement.
   #
   TcgEventLogRecordLib|Include/Library/TcgEventLogRecordLib.h
@@ -605,7 +613,6 @@
   ## This PCD records LASA field in TPM2 ACPI table.
   # @Prompt Tpm2AcpiTableLasa LASA field in TPM2 ACPI table.
   gEfiSecurityPkgTokenSpaceGuid.PcdTpm2AcpiTableLasa|0|UINT64|0x00010023
-
   ## This PCD records LAML field in CC EVENTLOG ACPI table.
   gEfiSecurityPkgTokenSpaceGuid.PcdCcEventlogAcpiTableLaml|0|UINT32|0x00010025
 
@@ -618,6 +625,13 @@
   #   FALSE - Do not require PK to be self-signed.
   # @Prompt Require PK to be self-signed
   gEfiMdeModulePkgTokenSpaceGuid.PcdRequireSelfSignedPk|FALSE|BOOLEAN|0x00010027
+# MU_CHANGE START TCBZ2506
+  ## Indicates if the platform will enforce PK's to be self signed when setting the PK with none currently set
+  #   TRUE  - Require PK to be self signed
+  #   FALSE - Does not require PK to be self signed
+  # @Prompt Enforce PK to be self signed
+  gEfiMdeModulePkgTokenSpaceGuid.PcdEnforceSelfsignedPk|FALSE|BOOLEAN|0x00010024
+# MU_CHANGE END
 
 [UserExtensions.TianoCore."ExtraFiles"]
   SecurityPkgExtra.uni
