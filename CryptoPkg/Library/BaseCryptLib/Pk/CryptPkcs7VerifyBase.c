@@ -33,6 +33,39 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
   @retval     FALSE         The P7Data was not correctly formatted for processing.
 
 **/
+static int PKCS7_type_is_other(PKCS7 *p7)
+{
+    int isOther = 1;
+
+    int nid = OBJ_obj2nid(p7->type);
+
+    switch (nid) {
+    case NID_pkcs7_data:
+    case NID_pkcs7_signed:
+    case NID_pkcs7_enveloped:
+    case NID_pkcs7_signedAndEnveloped:
+    case NID_pkcs7_digest:
+    case NID_pkcs7_encrypted:
+        isOther = 0;
+        break;
+    default:
+        isOther = 1;
+    }
+
+    return isOther;
+
+}
+
+static ASN1_OCTET_STRING *PKCS7_get_octet_string(PKCS7 *p7)
+{
+    if (PKCS7_type_is_data(p7))
+        return p7->d.data;
+    if (PKCS7_type_is_other(p7) && p7->d.other
+        && (p7->d.other->type == V_ASN1_OCTET_STRING))
+        return p7->d.other->value.octet_string;
+    return NULL;
+}
+
 BOOLEAN
 EFIAPI
 Pkcs7GetAttachedContent (
@@ -48,6 +81,7 @@ Pkcs7GetAttachedContent (
   UINTN              SignedDataSize;
   BOOLEAN            Wrapped;
   CONST UINT8        *Temp;
+  //PKCS7  *OctStr;
   ASN1_OCTET_STRING  *OctStr;
 
   //
@@ -98,7 +132,14 @@ Pkcs7GetAttachedContent (
     //
     // Retrieve the attached content in PKCS7 signedData
     //
-    OctStr = Pkcs7->d.sign->contents->d.data;
+    
+    //OctStr = Pkcs7->d.sign->contents->d.data;
+    OctStr = PKCS7_get_octet_string(Pkcs7->d.sign->contents);
+    DEBUG ((DEBUG_INFO, "TEST contents:   %p\n", Pkcs7->d.sign->contents));
+    DEBUG ((DEBUG_INFO, "TEST contents  d.Data:   %p\n", Pkcs7->d.sign->contents->d.data));
+    DEBUG ((DEBUG_INFO, "TEST contents  d.Data->Type:   %lx\n", Pkcs7->d.sign->contents->d.data->type));
+    DEBUG ((DEBUG_INFO, "TEST OctStr->Type:     %lx\n", OctStr->type));
+    DEBUG ((DEBUG_INFO, "TEST OctStr->Length:   %x\n", OctStr->length));
     if ((OctStr->length > 0) && (OctStr->data != NULL)) {
       *ContentSize = OctStr->length;
       *Content     = AllocatePool (*ContentSize);
