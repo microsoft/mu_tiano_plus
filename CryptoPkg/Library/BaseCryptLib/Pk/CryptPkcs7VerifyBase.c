@@ -33,6 +33,9 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
   @retval     FALSE         The P7Data was not correctly formatted for processing.
 
 **/
+
+// MU_CHANGE [BEGIN] - TCBZ2539
+// The below code comes from OpenSSL pk7_doit.c
 static int PKCS7_type_is_other(PKCS7 *p7)
 {
     int isOther = 1;
@@ -65,6 +68,7 @@ static ASN1_OCTET_STRING *PKCS7_get_octet_string(PKCS7 *p7)
         return p7->d.other->value.octet_string;
     return NULL;
 }
+// MU_CHANGE [END] - TCBZ2539
 
 BOOLEAN
 EFIAPI
@@ -81,7 +85,6 @@ Pkcs7GetAttachedContent (
   UINTN              SignedDataSize;
   BOOLEAN            Wrapped;
   CONST UINT8        *Temp;
-  //PKCS7  *OctStr;
   ASN1_OCTET_STRING  *OctStr;
 
   //
@@ -132,14 +135,11 @@ Pkcs7GetAttachedContent (
     //
     // Retrieve the attached content in PKCS7 signedData
     //
-    
-    //OctStr = Pkcs7->d.sign->contents->d.data;
+    // MU_CHANGE [BEGIN] - TCBZ2539
     OctStr = PKCS7_get_octet_string(Pkcs7->d.sign->contents);
-    DEBUG ((DEBUG_INFO, "TEST contents:   %p\n", Pkcs7->d.sign->contents));
-    DEBUG ((DEBUG_INFO, "TEST contents  d.Data:   %p\n", Pkcs7->d.sign->contents->d.data));
-    DEBUG ((DEBUG_INFO, "TEST contents  d.Data->Type:   %lx\n", Pkcs7->d.sign->contents->d.data->type));
-    DEBUG ((DEBUG_INFO, "TEST OctStr->Type:     %lx\n", OctStr->type));
-    DEBUG ((DEBUG_INFO, "TEST OctStr->Length:   %x\n", OctStr->length));
+    DEBUG ((DEBUG_INFO, "OctStr->Type:     %x\n", OctStr->type));
+    DEBUG ((DEBUG_INFO, "OctStr->Length:   %x\n", OctStr->length));
+    // MU_CHANGE [END] - TCBZ2539
     if ((OctStr->length > 0) && (OctStr->data != NULL)) {
       *ContentSize = OctStr->length;
       *Content     = AllocatePool (*ContentSize);
