@@ -94,6 +94,43 @@ Pkcs7GetOctetString (
   @retval     FALSE         The P7Data was not correctly formatted for processing.
 
 **/
+
+// MU_CHANGE [BEGIN] - TCBZ2539
+// The below code comes from OpenSSL pk7_doit.c
+static int PKCS7_type_is_other(PKCS7 *p7)
+{
+    int isOther = 1;
+
+    int nid = OBJ_obj2nid(p7->type);
+
+    switch (nid) {
+    case NID_pkcs7_data:
+    case NID_pkcs7_signed:
+    case NID_pkcs7_enveloped:
+    case NID_pkcs7_signedAndEnveloped:
+    case NID_pkcs7_digest:
+    case NID_pkcs7_encrypted:
+        isOther = 0;
+        break;
+    default:
+        isOther = 1;
+    }
+
+    return isOther;
+
+}
+
+static ASN1_OCTET_STRING *PKCS7_get_octet_string(PKCS7 *p7)
+{
+    if (PKCS7_type_is_data(p7))
+        return p7->d.data;
+    if (PKCS7_type_is_other(p7) && p7->d.other
+        && (p7->d.other->type == V_ASN1_OCTET_STRING))
+        return p7->d.other->value.octet_string;
+    return NULL;
+}
+// MU_CHANGE [END] - TCBZ2539
+
 BOOLEAN
 EFIAPI
 Pkcs7GetAttachedContent (
