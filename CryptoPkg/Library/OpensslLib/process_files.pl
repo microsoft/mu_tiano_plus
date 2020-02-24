@@ -66,7 +66,18 @@ BEGIN {
                 "no-dgram",
                 "no-dsa",
                 "no-dynamic-engine",
-                "no-ec",
+            #
+            # MU_CHANGE
+            #    "no-ec",
+            #
+            #    This change requires OpenSSL to be reconfigured in order to generate the
+            #    following files:
+            #
+            #        Library/Include/openssl/opensslconf.h
+            #        Library/OpensslLib/OpensslLib.inf
+            #        Library/OPensslLib/OpensslLibCrypto.inf
+            #
+            #
                 "no-ec2m",
                 "no-engine",
                 "no-err",
