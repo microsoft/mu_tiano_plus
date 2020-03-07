@@ -136,7 +136,7 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         '''
         rs = []
         rs.append(RequiredSubmodule(
-            "CryptoPkg/Library/OpensslLib/openssl", False))
+            "CryptoPkg/Library/OpensslLib/openssl", True))  # MU_CHANGE
         return rs
 
     def GetName(self):
