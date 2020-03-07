@@ -60,6 +60,7 @@
   Tcg2PhysicalPresenceLib|SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
   TcgPpVendorLib|SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
   Tcg2PpVendorLib|SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
+  Tpm2DebugLib|SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf             ## MU_CHANGE
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
   PciLib|MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf
   PciSegmentLib|MdePkg/Library/BasePciSegmentLibPci/BasePciSegmentLibPci.inf
@@ -267,6 +268,9 @@
   SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLibVendorNull.inf
   SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf
   SecurityPkg/Library/DxeHash2CryptoLib/DxeHash2CryptoLib.inf
+  SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibSimple.inf
+  SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibVerbose.inf
+  SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
 # MU_CHANGE [END]
 
 [Components.IA32, Components.X64, Components.ARM, Components.AARCH64]
