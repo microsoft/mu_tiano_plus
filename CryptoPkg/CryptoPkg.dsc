@@ -60,30 +60,28 @@
   TlsLib|CryptoPkg/Library/TlsLibNull/TlsLibNull.inf
   HashApiLib|CryptoPkg/Library/BaseHashApiLib/BaseHashApiLib.inf
 
-##MSCHANGE Begin
-!if $(TARGET) == DEBUG
-  #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
-  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
-  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
-!endif
-##MSCHANGE End
-
-##MSCHANGE   Pull in the unit-test library for the VerifyPkcs7EkuUnitTestApp
-  UnitTestLib|MsUnitTestPkg/Library/UnitTestLib/UnitTestLib.inf
-  UnitTestAssertLib|MsUnitTestPkg/Library/UnitTestAssertLib/UnitTestAssertLib.inf
-  UnitTestLogLib|MsUnitTestPkg/Library/UnitTestLogLib/UnitTestLogLib.inf
-  UnitTestPersistenceLib|MsUnitTestPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
-  UnitTestBootUsbLib|MsUnitTestPkg/Library/UnitTestBootUsbLibNull/UnitTestBootUsbLibNull.inf
-  UnitTestResultReportLib|MsUnitTestPkg/Library/UnitTestResultReportPlainTextOutputLib/UnitTestResultReportLib.inf
-##MSCHANGE End
+##MSCHANGE START Pull in the unit-test library for the VerifyPkcs7EkuUnitTestApp
+  UnitTestLib|UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.inf
+  UnitTestPersistenceLib|UnitTestFrameworkPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
+  UnitTestBootLib|UnitTestFrameworkPkg/Library/UnitTestBootLibNull/UnitTestBootLibNull.inf
+  UnitTestResultReportLib|UnitTestFrameworkPkg/Library/UnitTestResultReportLib/UnitTestResultReportLibDebugLib.inf
+  UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
+  PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
+  MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
 
 [LibraryClasses.AARCH64.DXE_DRIVER, LibraryClasses.ARM.DXE_DRIVER, LibraryClasses.AARCH64.UEFI_APPLICATION, LibraryClasses.ARM.UEFI_APPLICATION]
   RngLib|SecurityPkg/RandomNumberGenerator/RngDxeLib/RngDxeLib.inf
 
+!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019 ##MSCHANGE
 [LibraryClasses.IA32]
   NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
+!endif ##MSCHANGE
+
+##MSCHANGE End
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
+
+  ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf ## MU_CHANGE
   #
   # It is not possible to prevent the ARM compiler for generic intrinsic functions.
   # This library provides the instrinsic functions generate by a given compiler.
@@ -251,7 +249,7 @@
 [Components]
   CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf
-  CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf
+  #CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf #MU_CHANGE
   CryptoPkg/Library/BaseCryptLib/RuntimeCryptLib.inf
   CryptoPkg/Library/BaseCryptLibNull/BaseCryptLibNull.inf
   CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
@@ -263,7 +261,13 @@
 
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/PeiCryptLib.inf
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/DxeCryptLib.inf
+
+# MU_CHANGE START
+[Components.X64, Components.IA32]
+  CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/SmmCryptLib.inf
+# MU_CHANGE END
+
 !endif
 
 !if $(CRYPTO_SERVICES) IN "PACKAGE ALL NONE MIN_PEI"
@@ -294,12 +298,6 @@
   }
 
 [Components.IA32, Components.X64]
-
-  ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
-  # Currently this unit test doesn't work for AARCH64
-  CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
-  ## MU_CHANGE [END]
-
   CryptoPkg/Driver/CryptoSmm.inf {
     <Defines>
       !if $(CRYPTO_SERVICES) == ALL
@@ -311,6 +309,12 @@
       !endif
   }
 !endif
+
+[Components.IA32, Components.X64]
+  ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
+  # Currently this unit test doesn't work for AARCH64
+  CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
+  ## MU_CHANGE [END]
 
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES

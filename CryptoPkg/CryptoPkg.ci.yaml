@@ -22,7 +22,7 @@
         # For UEFI shell based apps
         "AcceptableDependencies-UEFI_APPLICATION":[
             # MU_CHANGE
-            "MsUnitTestPkg/MsUnitTestPkg.dec"
+            "UnitTestFrameworkPkg/UnitTestFrameworkPkg.dec"
         ],
         "IgnoreInf": []
     },
