@@ -23,7 +23,7 @@
 
 [Packages]
   MdePkg/MdePkg.dec
-  MsUnitTestPkg/MsUnitTestPkg.dec
+  UnitTestFrameworkPkg/UnitTestFrameworkPkg.dec
   CryptoPkg/CryptoPkg.dec
 
 
@@ -37,9 +37,6 @@
   UefiApplicationEntryPoint
   DebugLib
   UnitTestLib
-  UnitTestAssertLib
-  UnitTestLogLib
   PrintLib
-  OpensslLib
 
 [Guids]

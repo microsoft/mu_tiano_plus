@@ -42,14 +42,11 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 #include <Uefi.h>
-#include <UnitTestTypes.h>
 #include <Library/BaseLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/DebugLib.h>
 #include <Library/PrintLib.h>
 #include <Library/UefiLib.h>
-#include <Library/UnitTestAssertLib.h>
-#include <Library/UnitTestLogLib.h>
 #include <Library/UnitTestLib.h>
 #include <Library/BaseCryptLib.h>
 // MU_CHANGE: Fix case sensitivity on Linux builds
@@ -57,9 +54,9 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Base.h>
 #include "AllTestSignatures.h"
 
-#define UNIT_TEST_APP_NAME        L"Verify EKUs in PKCS7 Signature Unit Test Application"
-#define UNIT_TEST_APP_VERSION     L"1.0"
-
+#define UNIT_TEST_APP_NAME        "Verify EKUs in PKCS7 Signature Unit Test Application"
+#define UNIT_TEST_APP_VERSION     "1.0"
+#define UNIT_TEST_NAME            UNIT_TEST_APP_NAME
 
 
 ///================================================================================================
@@ -80,7 +77,6 @@ CONST CHAR8 FIRMWARE_SIGNER_EKU[] = "1.3.6.1.4.1.311.76.9.21.1";
   leaf signer certificate.
 
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -90,7 +86,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestVerifyEKUsInSignature (
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context OPTIONAL
   )
 {
@@ -120,7 +115,6 @@ TestVerifyEKUsInSignature (
   and leaf signer). It has one firmware signing EKU in it.
   "1.3.6.1.4.1.311.76.9.21.1"
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -130,7 +124,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestVerifyEKUsWith3CertsInSignature (
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
   )
 {
@@ -158,7 +151,6 @@ TestVerifyEKUsWith3CertsInSignature (
   This PKCS7 signature has 2 certificates in it. (Issuing CA and leaf signer).
   It has one firmware signing EKU in it. "1.3.6.1.4.1.311.76.9.21.1"
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -168,7 +160,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestVerifyEKUsWith2CertsInSignature (
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
   )
 {
@@ -197,7 +188,6 @@ TestVerifyEKUsWith2CertsInSignature (
   This PKCS7 signature only has the leaf signer in it.
   It has one firmware signing EKU in it. "1.3.6.1.4.1.311.76.9.21.1"
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -207,7 +197,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestVerifyEKUsWith1CertInSignature (
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
   )
 {
@@ -239,7 +228,6 @@ TestVerifyEKUsWith1CertInSignature (
   "1.3.6.1.4.1.311.76.9.21.2"
   We verify that both EKU's were present in the leaf signer.
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -249,7 +237,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestVerifyEKUsWithMultipleEKUsInCert (
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
   )
 {
@@ -279,7 +266,6 @@ TestVerifyEKUsWithMultipleEKUsInCert (
   This test verifies that if we send an EKU that is not in the signature,
   that we get back an error.
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -289,7 +275,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestEkusNotPresentInSignature (
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
   )
 {
@@ -325,7 +310,6 @@ TestEkusNotPresentInSignature (
   "1.3.6.1.4.1.311.76.9.21.1"
   "1.3.6.1.4.1.311.76.9.21.1.10001"
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -336,7 +320,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestProductId10001PresentInSignature(
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
 )
 {
@@ -376,7 +359,6 @@ TestProductId10001PresentInSignature(
 
   but we only pass in one of them, and set RequireAllPresent to FALSE.
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -387,7 +369,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestOnlyOneEkuInListRequired(
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
 )
 {
@@ -421,7 +402,6 @@ TestOnlyOneEkuInListRequired(
   not contain any EKUs.
 
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -432,7 +412,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestNoEKUsInSignature(
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
 )
 {
@@ -466,7 +445,6 @@ TestNoEKUsInSignature(
 
   Passes the API invalid parameters, and ensures that it does not succeed.
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -476,7 +454,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestInvalidParameters(
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
 )
 {
@@ -531,7 +508,6 @@ Exit:
   Pass the API a sub set and super set of an EKU and ensure that they
   don't pass.
 
-  @param[in]  Framework - Unit-test framework handle.
   @param[in]  Context   - Optional context pointer for this test.
 
   @retval UNIT_TEST_PASSED            - The required EKUs were found in the signature.
@@ -541,7 +517,6 @@ static
 UNIT_TEST_STATUS
 EFIAPI
 TestEKUSubsetSupersetFails(
-  IN UNIT_TEST_FRAMEWORK_HANDLE  Framework,
   IN UNIT_TEST_CONTEXT           Context
 )
 {
@@ -626,20 +601,16 @@ VerifyPkcs7EkuUnitTestAppEntry (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-    EFI_STATUS            Status          = EFI_SUCCESS;
-    UNIT_TEST_FRAMEWORK   *Framework      = NULL;
-    UNIT_TEST_SUITE       *VerifyEkuTests = NULL;
-    CHAR16                ShortName[100]  = { 0 };
+    EFI_STATUS                    Status         = EFI_SUCCESS;
+    UNIT_TEST_FRAMEWORK_HANDLE    Framework      = NULL;
+    UNIT_TEST_SUITE_HANDLE        VerifyEkuTests = NULL;
 
-
-    ShortName[0] = L'\0';
-    UnicodeSPrint(&ShortName[0], sizeof(ShortName), L"%a", gEfiCallerBaseName);
-    DEBUG(( DEBUG_INFO, "%s v%s\n", UNIT_TEST_APP_NAME, UNIT_TEST_APP_VERSION ));
+    DEBUG(( DEBUG_INFO, "%a v%a\n", UNIT_TEST_APP_NAME, UNIT_TEST_APP_VERSION ));
 
     //
     // Start setting up the test framework for running the tests.
     //
-    Status = InitUnitTestFramework( &Framework, UNIT_TEST_APP_NAME, ShortName, UNIT_TEST_APP_VERSION );
+    Status = InitUnitTestFramework (&Framework, UNIT_TEST_APP_NAME, gEfiCallerBaseName, UNIT_TEST_APP_VERSION );
     if (EFI_ERROR( Status )) {
         DEBUG((DEBUG_ERROR, "Failed in InitUnitTestFramework. Status = %r\n", Status));
         goto EXIT;
@@ -648,9 +619,7 @@ VerifyPkcs7EkuUnitTestAppEntry (
     //
     // Populate the Unit Test Suite.
     //
-    Status = CreateUnitTestSuite(&VerifyEkuTests, Framework,
-                                 L"EKU verify tests", L"VerifyEkuTests.tests",
-                                 NULL, NULL );
+    Status = CreateUnitTestSuite(&VerifyEkuTests, Framework, "EKU verify tests", "VerifyEkuTests.tests", NULL, NULL );
     if (EFI_ERROR( Status )) {
         DEBUG((DEBUG_ERROR, "Failed in CreateUnitTestSuite for VerifyEkuTests\n"));
         Status = EFI_OUT_OF_RESOURCES;
@@ -658,19 +627,19 @@ VerifyPkcs7EkuUnitTestAppEntry (
     }
 
     //
-    // ---------Suite-----------Description--------------------------------Class----------------------------Function------------------------------Pre---Post--Context
+    // ---------Suite-----------Description-------------------------------Class---------------------------Function------------------------------Pre---Post--Context
     //
-    AddTestCase(VerifyEkuTests, L"TestVerifyEKUsInSignature()",            L"CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsInSignature,            NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestVerifyEKUsWith3CertsInSignature()",  L"CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsWith3CertsInSignature,  NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestVerifyEKUsWith2CertsInSignature()",  L"CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsWith2CertsInSignature,  NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestVerifyEKUsWith1CertInSignature()",   L"CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsWith1CertInSignature,   NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestVerifyEKUsWithMultipleEKUsInCert()", L"CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsWithMultipleEKUsInCert, NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestEkusNotPresentInSignature()",        L"CryptoPkg.BaseCryptLib.Eku",   TestEkusNotPresentInSignature,        NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestProductId10001PresentInSignature()", L"CryptoPkg.BaseCryptLib.Eku",   TestProductId10001PresentInSignature, NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestOnlyOneEkuInListRequired()",         L"CryptoPkg.BaseCryptLib.Eku",   TestOnlyOneEkuInListRequired,         NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestNoEKUsInSignature()",                L"CryptoPkg.BaseCryptLib.Eku",   TestNoEKUsInSignature,                NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestInvalidParameters()",                L"CryptoPkg.BaseCryptLib.Eku",   TestInvalidParameters,                NULL, NULL, NULL);
-    AddTestCase(VerifyEkuTests, L"TestEKUSubsetSupersetFails()",           L"CryptoPkg.BaseCryptLib.Eku",   TestEKUSubsetSupersetFails,           NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestVerifyEKUsInSignature()",            "CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsInSignature,            NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestVerifyEKUsWith3CertsInSignature()",  "CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsWith3CertsInSignature,  NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestVerifyEKUsWith2CertsInSignature()",  "CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsWith2CertsInSignature,  NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestVerifyEKUsWith1CertInSignature()",   "CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsWith1CertInSignature,   NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestVerifyEKUsWithMultipleEKUsInCert()", "CryptoPkg.BaseCryptLib.Eku",   TestVerifyEKUsWithMultipleEKUsInCert, NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestEkusNotPresentInSignature()",        "CryptoPkg.BaseCryptLib.Eku",   TestEkusNotPresentInSignature,        NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestProductId10001PresentInSignature()", "CryptoPkg.BaseCryptLib.Eku",   TestProductId10001PresentInSignature, NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestOnlyOneEkuInListRequired()",         "CryptoPkg.BaseCryptLib.Eku",   TestOnlyOneEkuInListRequired,         NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestNoEKUsInSignature()",                "CryptoPkg.BaseCryptLib.Eku",   TestNoEKUsInSignature,                NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestInvalidParameters()",                "CryptoPkg.BaseCryptLib.Eku",   TestInvalidParameters,                NULL, NULL, NULL);
+    AddTestCase(VerifyEkuTests, "TestEKUSubsetSupersetFails()",           "CryptoPkg.BaseCryptLib.Eku",   TestEKUSubsetSupersetFails,           NULL, NULL, NULL);
 
     //
     // Execute the tests.
