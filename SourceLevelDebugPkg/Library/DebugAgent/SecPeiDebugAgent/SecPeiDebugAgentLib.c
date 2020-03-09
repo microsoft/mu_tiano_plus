@@ -377,9 +377,9 @@ InitializeDebugAgent (
   //
   // Check if source debugging is runtime enabled.
   //
-  DEBUG((DEBUG_INFO, __FUNCTION__ "[SEC/PEI]: enter...\n"));
+  DEBUG((DEBUG_INFO, "%a [SEC/PEI]: enter...\n", __FUNCTION__));
   if (IsSourceDebugEnabled(InitFlag) == FALSE) {
-    DEBUG((DEBUG_INFO, __FUNCTION__ "[SEC/PEI]: source debug not enabled\n"));
+    DEBUG((DEBUG_INFO, "%a [SEC/PEI]: source debug not enabled\n", __FUNCTION__));
     if (Function != NULL) {
       Function(Context);
     }

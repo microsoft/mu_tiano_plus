@@ -364,9 +364,9 @@ InitializeDebugAgent (
   UINTN                        TimerCycle;
 
 // MS_CHANGE_217204
-  DEBUG((DEBUG_INFO, __FUNCTION__ "[DXE]: enter...\n"));
+  DEBUG((DEBUG_INFO, "%a [DXE]: enter...\n", __FUNCTION__));
   if (IsSourceDebugEnabled(InitFlag) == FALSE) {
-    DEBUG((DEBUG_INFO, __FUNCTION__ "[DXE]: source debug not enabled\n"));
+    DEBUG((DEBUG_INFO, "%a [DXE]: source debug not enabled\n", __FUNCTION__));
     return;
   }
 // END

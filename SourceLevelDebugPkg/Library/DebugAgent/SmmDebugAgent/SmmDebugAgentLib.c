@@ -194,12 +194,12 @@ InitializeDebugAgent (
 
 // MS_CHANGE_217204
   if (InitFlag != DEBUG_AGENT_INIT_ENTER_SMI && InitFlag != DEBUG_AGENT_INIT_EXIT_SMI) {
-    DEBUG((DEBUG_INFO, __FUNCTION__ "[SMM]: enter...\n"));
+    DEBUG((DEBUG_INFO, "%a [SMM]: enter...\n", __FUNCTION__));
   }
 
   if (IsSourceDebugEnabled(InitFlag) == FALSE) {
     if (InitFlag != DEBUG_AGENT_INIT_ENTER_SMI && InitFlag != DEBUG_AGENT_INIT_EXIT_SMI) {
-      DEBUG((DEBUG_INFO, __FUNCTION__ "[SMM]: source debug not enabled\n"));
+      DEBUG((DEBUG_INFO, "%a [SMM]: source debug not enabled\n", __FUNCTION__));
     }
 
     return;
@@ -398,4 +398,3 @@ InitializeDebugAgent (
     break;
   }
 }
-
