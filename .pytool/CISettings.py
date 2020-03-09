@@ -154,14 +154,14 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
             Commit: <optional> Commit to checkout of repo
             Branch: <optional> Branch to checkout (will checkout most recent commit in branch)
             Full: <optional> Boolean to do shallow or Full checkout.  (default is False)
-            ReferencePath: <optional> Workspace relative path to git repo to use as "reference"
+            ReferencePath: <optional> Workspace relative path to git reporeb to use as "reference"
         }
         '''
         return [
             {
                 "Path": "Silicon/Arm/MU_TIANO",
                 "Url": "https://github.com/Microsoft/mu_silicon_arm_tiano.git",
-                "Branch": "release/201911"
+                "Branch": "release/202002"
             },
             {
                 "Path": "MU_BASECORE",

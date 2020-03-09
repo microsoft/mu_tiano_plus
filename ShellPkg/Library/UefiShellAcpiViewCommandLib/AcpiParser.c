@@ -15,14 +15,16 @@ STATIC UINT32   gIndent;
 STATIC UINT32   mTableErrorCount;
 STATIC UINT32   mTableWarningCount;
 
-STATIC ACPI_DESCRIPTION_HEADER_INFO AcpiHdrInfo;
+//STATIC ACPI_DESCRIPTION_HEADER_INFO AcpiHdrInfo; // MS_CHANGE removed unused variable. PR 1967110
 
 /**
   An ACPI_PARSER array describing the ACPI header.
 **/
+/* MS_CHANGE we turn this off as it is no longer used. Merged PR 1967110
 STATIC CONST ACPI_PARSER AcpiHeaderParser[] = {
   PARSE_ACPI_HEADER (&AcpiHdrInfo)
 };
+*/
 
 /**
   This function resets the ACPI table error counter to Zero.
