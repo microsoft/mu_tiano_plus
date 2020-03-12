@@ -2847,7 +2847,7 @@ DriverEntry (
 
     Status = gBS->CreateEventEx (
                     EVT_NOTIFY_SIGNAL,
-                    TPL_NOTIFY,
+                    TPL_CALLBACK, // MU_CHANGE, BZ 2590
                     OnExitBootServices,
                     NULL,
                     &gEfiEventExitBootServicesGuid,
@@ -2859,7 +2859,7 @@ DriverEntry (
     //
     Status = gBS->CreateEventEx (
                     EVT_NOTIFY_SIGNAL,
-                    TPL_NOTIFY,
+                    TPL_CALLBACK, // MU_CHANGE, BZ 2590
                     OnExitBootServicesFailed,
                     NULL,
                     &gEventExitBootServicesFailedGuid,
