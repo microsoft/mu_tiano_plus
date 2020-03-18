@@ -1,10 +1,16 @@
-# this is meant to be included in a DSC that will enable the correct behavior for a given platform. 
-# Unfortunately, it cannot also be as easy for an FDF. You'll need to include the relevant logic in your FDF.
-
+## @file BaseCryptLib.inc.dsc
+#
+#  Copyright (C) Microsoft Corporation. All rights reserved
+#
+#  This is meant to be included in a DSC that will enable the correct behavior for a given platform.
+#  Unfortunately, it cannot also be as easy for an FDF. You'll need to include the relevant logic in your FDF.
+#  This can be done by 
+#
+################################################################################
 [Defines]
-
+# ShareedCrypto is on by default
 !ifndef SHARED_CRYPTO_ENABLE
-DEFINE SHARED_CRYPTO_ENABLE = FALSE
+  DEFINE SHARED_CRYPTO_ENABLE = TRUE
 !endif
 
 [LibraryClasses.Common]
