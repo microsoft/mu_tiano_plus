@@ -17,23 +17,23 @@ Status:
 Entered Development:
   2019/12/05
 
-Anticipated Stabilization:
-  January 2020
+Stabilized:
+  2020/03/18
 
 Branch Changes - release/201911
 ===============================
 
-Breaking Changes-dev
+Breaking Changes
 --------------------
 
 - None
 
-Main Changes-dev
+Main Changes
 ----------------
 
 - The null version of BaseCryptLib has been added
 
-Bug Fixes-dev
+Bug Fixes
 -------------
 
 - None
