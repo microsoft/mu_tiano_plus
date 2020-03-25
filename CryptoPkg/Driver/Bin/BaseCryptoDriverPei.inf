@@ -1,0 +1,46 @@
+## @file
+#  Crypto Bin Driver package
+#
+# Copyright (C) Microsoft Corporation. All rights reserved.
+## SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION                    = 0x0001001B
+  BASE_NAME                      = BaseCryptoDriverPei
+  MODULE_UNI_FILE                = Crypto.uni
+  FILE_GUID                      = 877c6ad5-8c85-4134-b5aa-d815a208465d
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CryptoPeiEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 AARCH64
+#
+
+# these binaries are resolved by the Nuget Package
+# if they are not found, check there
+
+[Binaries]
+  DXE_DEPEX|edk2-basecrypto-driver-bin_extdep/DEBUG/X64/CryptoPei.depex|DEBUG
+  DXE_DEPEX|edk2-basecrypto-driver-bin_extdep/DEBUG/X64/CryptoPei.depex|RELEASE
+
+[Binaries.X64]
+  PE32|edk2-basecrypto-driver-bin_extdep/DEBUG/X64/CryptoPei.efi|DEBUG
+  PE32|edk2-basecrypto-driver-bin_extdep/RELEASE/X64/CryptoPei.efi|RELEASE
+
+[Binaries.ARM]
+  PE32|edk2-basecrypto-driver-bin_extdep/DEBUG/Arm/CryptoPei.efi|DEBUG
+  PE32|edk2-basecrypto-driver-bin_extdep/RELEASE/Arm/CryptoPei.efi|RELEASE
+
+[Binaries.AARCH64]
+  PE32|edk2-basecrypto-driver-bin_extdep/DEBUG/AARCH64/CryptoPei.efi|DEBUG
+  PE32|edk2-basecrypto-driver-bin_extdep/RELEASE/AARCH64/CryptoPei.efi|RELEASE
+
+[Packages]
+  CryptoPkg/CryptoPkg.dec
+
+[Depex]
+  TRUE

@@ -8,6 +8,7 @@
 [Defines]
   INF_VERSION                    = 0x0001001B
   BASE_NAME                      = BaseCryptoDriverDxe
+  MODULE_UNI_FILE                = Crypto.uni
   FILE_GUID                      = cf80680d-012c-4859-a087-5d565fb6e8c8
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
