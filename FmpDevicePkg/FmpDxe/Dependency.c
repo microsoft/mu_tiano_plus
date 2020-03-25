@@ -552,7 +552,10 @@ EvaluateImageDependencies (
     return EFI_ABORTED;
   }
 
-  mFmpImageInfoBuf = AllocatePool (sizeof(EFI_FIRMWARE_IMAGE_DESCRIPTOR *) * mNumberOfFmpInstance);
+  // MU_CHANGE Starts: [TBZ2602] FmpDxe::EvaluateImageDependencies can reference an uninitialized pointer
+  // mFmpImageInfoBuf = AllocatePool (sizeof(EFI_FIRMWARE_IMAGE_DESCRIPTOR *) * mNumberOfFmpInstance);
+  mFmpImageInfoBuf = AllocateZeroPool (sizeof(EFI_FIRMWARE_IMAGE_DESCRIPTOR *) * mNumberOfFmpInstance);
+  // MU_CHANGE Ends
   if (mFmpImageInfoBuf == NULL) {
     return EFI_OUT_OF_RESOURCES;
   }
