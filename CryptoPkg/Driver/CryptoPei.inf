@@ -41,7 +41,7 @@
   TlsLib
 
 [Ppis]
-  gEfiPeiMemoryDiscoveredPpiGuid  ## CONSUMES
+  gEfiPeiMemoryDiscoveredPpiGuid  ## SOMETIMES CONSUMES
   gEdkiiCryptoPpiGuid             ## PRODUCES
 
 [Pcd]
