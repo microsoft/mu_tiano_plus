@@ -32,7 +32,7 @@ def map_path(path: str):
 
 if __name__ == "__main__":
     clean = False
-    verbose = False
+    verbose = True
     setup = False
     script_dir = os.path.dirname(__file__)    
 
@@ -75,6 +75,13 @@ if __name__ == "__main__":
     services = ["MIN_PEI", "MIN_DXE_MIN_SMM", "ALL"]
     build_command = "stuart_ci_build"
     for service in services:
+        # First we need to clean out the previous builds Build\CryptoPkg\DEBUG_VS2017\X64\CryptoPkg\Driver
+        old_build_folders = glob.iglob(os.path.join(build_output, "*", "*", "CryptoPkg", "Driver"))
+        for old_build_folder in old_build_folders:
+            shutil.rmtree(old_build_folder)
+            if verbose:
+                print(f"Removing {old_build_folder}")
+        
         nuget_output_dir = os.path.join(nuget_collection_dir, service)
         os.mkdir(nuget_output_dir)
         print(f"{build_command}: {service}")
@@ -101,7 +108,7 @@ if __name__ == "__main__":
                 os.makedirs(out_path_dir)
             shutil.copyfile(build_report, out_path)
 
-        efi_files = glob.iglob(os.path.join(build_output, "**", "Crypto*.efi"), recursive=True)
+        efi_files = glob.iglob(os.path.join(build_output, "**", "Crypto*.@(efi|depex|pdb)"), recursive=True)
         for efi_file in efi_files:
             efi_rel_path = efi_file[len(build_output):] # remove the beginning off the found path
             mapped_path = map_path(efi_rel_path)
@@ -117,5 +124,11 @@ if __name__ == "__main__":
                 os.makedirs(out_path_dir)
             shutil.copyfile(efi_file, out_path)
         
+    # time to package it all
+    # nuget-publish --Operation Pack --OutputLog $(Build.StagingDirectory)/NugetPackagingLog.txt --ConfigFilePath $(Build.StagingDirectory)/NugetPackageConfig.json --InputFolderPath $(Build.StagingDirectory)/$(temp_publication_directory) --Version $(release_version) --OutputFolderPath $(Build.StagingDirectory)/PackageOutput;
+    commands = [" --Operation Pack", "--OutputLog", os.path.join(build_output, "NUGET_PACK.txt")]
+    config_file_path = os.path.join(script_dir, "edk2-BaseCryptoDriver.config.json")
+    commands.append(f"--ConfigFilePath {os.path.join(script_dir, )}")
+    ret = RunCmd("nuget-publish", " ".join(commands), workingdir = root_dir)
     print("All done")
     sys.exit(0)

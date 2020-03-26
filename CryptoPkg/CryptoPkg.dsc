@@ -273,9 +273,9 @@
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/DxeCryptLib.inf
 
   # MU_CHANGE START The prebuilt versions of CryptoDriver
-  #CryptoPkg/Driver/Bin/BaseCryptoDriverDxe.inf
-  #CryptoPkg/Driver/Bin/BaseCryptoDriverSmm.inf
-  #CryptoPkg/Driver/Bin/BaseCryptoDriverPei.inf
+  CryptoPkg/Driver/Bin/BaseCryptoDriverDxe.inf
+  CryptoPkg/Driver/Bin/BaseCryptoDriverSmm.inf
+  CryptoPkg/Driver/Bin/BaseCryptoDriverPei.inf
   # MU_CHANGE END
 
 # MU_CHANGE START

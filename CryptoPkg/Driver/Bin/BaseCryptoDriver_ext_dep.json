@@ -3,7 +3,7 @@
     "scope": "global-todo",
     "type": "nuget",
     "name": "edk2-basecrypto-driver-bin",
-    "source": "https://api.nuget.org/v3/index.json",
+    "source": "https://pkgs.dev.azure.com/projectmu/mu/_packaging/Mu-Public/nuget/v3/index.json",
     "version": "2020.02.1.1-beta",
     "flags": []
   }
