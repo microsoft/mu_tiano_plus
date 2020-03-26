@@ -24,20 +24,24 @@
 # if they are not found, check there
 
 [Binaries]
-  DXE_DEPEX|edk2-basecrypto-driver-bin_extdep/DEBUG/X64/CryptoPei.depex|DEBUG
-  DXE_DEPEX|edk2-basecrypto-driver-bin_extdep/DEBUG/X64/CryptoPei.depex|RELEASE
+  DXE_DEPEX|edk2-basecrypto-driver-bin_extdep/MIN_PEI/DEBUG/CryptoPei.depex|DEBUG
+  #DXE_DEPEX|edk2-basecrypto-driver-bin_extdep/MIN_PEI/RELEASE/CryptoPei.depex|RELEASE
+
+[Binaries.IA32]
+  PE32|edk2-basecrypto-driver-bin_extdep/MIN_PEI/DEBUG/IA32/CryptoPei.efi|DEBUG
+  #PE32|edk2-basecrypto-driver-bin_extdep/MIN_PEI/RELEASE/X64/CryptoPei.efi|RELEASE
 
 [Binaries.X64]
-  PE32|edk2-basecrypto-driver-bin_extdep/DEBUG/X64/CryptoPei.efi|DEBUG
-  PE32|edk2-basecrypto-driver-bin_extdep/RELEASE/X64/CryptoPei.efi|RELEASE
+  PE32|edk2-basecrypto-driver-bin_extdep/MIN_PEI/DEBUG/X64/CryptoPei.efi|DEBUG
+  #PE32|edk2-basecrypto-driver-bin_extdep/MIN_PEI/RELEASE/X64/CryptoPei.efi|RELEASE
 
 [Binaries.ARM]
-  PE32|edk2-basecrypto-driver-bin_extdep/DEBUG/Arm/CryptoPei.efi|DEBUG
-  PE32|edk2-basecrypto-driver-bin_extdep/RELEASE/Arm/CryptoPei.efi|RELEASE
+  PE32|edk2-basecrypto-driver-bin_extdep/MIN_PEI/DEBUG/Arm/CryptoPei.efi|DEBUG
+  #PE32|edk2-basecrypto-driver-bin_extdep/MIN_PEI/RELEASE/Arm/CryptoPei.efi|RELEASE
 
 [Binaries.AARCH64]
-  PE32|edk2-basecrypto-driver-bin_extdep/DEBUG/AARCH64/CryptoPei.efi|DEBUG
-  PE32|edk2-basecrypto-driver-bin_extdep/RELEASE/AARCH64/CryptoPei.efi|RELEASE
+  PE32|edk2-basecrypto-driver-bin_extdep/MIN_PEI/DEBUG/AARCH64/CryptoPei.efi|DEBUG
+  #PE32|edk2-basecrypto-driver-bin_extdep/MIN_PEI/RELEASE/AARCH64/CryptoPei.efi|RELEASE
 
 [Packages]
   CryptoPkg/CryptoPkg.dec
