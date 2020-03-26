@@ -18,7 +18,7 @@
   PLATFORM_VERSION               = 0.98
   DSC_SPECIFICATION              = 0x00010005
   OUTPUT_DIRECTORY               = Build/CryptoPkg
-  SUPPORTED_ARCHITECTURES        = IA32|X64|ARM|AARCH64
+  SUPPORTED_ARCHITECTURES        = IA32|X64|AARCH64 # MU_CHANGE turn of ARM
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
   SKUID_IDENTIFIER               = DEFAULT
 
@@ -61,6 +61,7 @@
   HashApiLib|CryptoPkg/Library/BaseHashApiLib/BaseHashApiLib.inf
 
 ##MSCHANGE START Pull in the unit-test library for the VerifyPkcs7EkuUnitTestApp
+  FltUsedLib|MdePkg/Library/FltUsedLib/FltUsedLib.inf
   UnitTestLib|UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.inf
   UnitTestPersistenceLib|UnitTestFrameworkPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
   UnitTestBootLib|UnitTestFrameworkPkg/Library/UnitTestBootLibNull/UnitTestBootLibNull.inf
@@ -68,6 +69,13 @@
   UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
   PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
+
+# Add RNG Libs for ARM
+[LibraryClasses.AARCH64, LibraryClasses.ARM]
+  RngLib|MdePkg/Library/BaseRngLibNull/BaseRngLibNull.inf
+
+[LibraryClasses.X64, LibraryClasses.IA32]
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
 
 [LibraryClasses.AARCH64.DXE_DRIVER, LibraryClasses.ARM.DXE_DRIVER, LibraryClasses.AARCH64.UEFI_APPLICATION, LibraryClasses.ARM.UEFI_APPLICATION]
   RngLib|SecurityPkg/RandomNumberGenerator/RngDxeLib/RngDxeLib.inf
@@ -135,7 +143,7 @@
 [LibraryClasses.ARM.PEIM, LibraryClasses.AARCH64.PEIM]
   PeiServicesTablePointerLib|ArmPkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
 
-[LibraryClasses.common.DXE_DRIVER]
+[LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   TlsLib|CryptoPkg/Library/TlsLib/TlsLib.inf
@@ -245,9 +253,11 @@
 #       generated for it, but the binary will not be put into any firmware volume.
 #
 ###################################################################################################
-!if $(CRYPTO_SERVICES) == PACKAGE
 [Components]
   CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+
+!if $(CRYPTO_SERVICES) == PACKAGE
+[Components]
   CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf
   #CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf #MU_CHANGE
   CryptoPkg/Library/BaseCryptLib/RuntimeCryptLib.inf
@@ -262,6 +272,12 @@
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/PeiCryptLib.inf
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/DxeCryptLib.inf
 
+  # MU_CHANGE START The prebuilt versions of CryptoDriver
+  #CryptoPkg/Driver/Bin/BaseCryptoDriverDxe.inf
+  #CryptoPkg/Driver/Bin/BaseCryptoDriverSmm.inf
+  #CryptoPkg/Driver/Bin/BaseCryptoDriverPei.inf
+  # MU_CHANGE END
+
 # MU_CHANGE START
 [Components.X64, Components.IA32]
   CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf
@@ -271,7 +287,7 @@
 !endif
 
 !if $(CRYPTO_SERVICES) IN "PACKAGE ALL NONE MIN_PEI"
-[Components.IA32, Components.X64, Components.ARM, Components.AARCH64]
+[Components.IA32, Components.X64] # MU_CHANGE remove ARM and AARCH64
   CryptoPkg/Driver/CryptoPei.inf {
     <Defines>
       !if $(CRYPTO_SERVICES) == ALL
@@ -310,7 +326,7 @@
   }
 !endif
 
-[Components.IA32, Components.X64]
+[Components.X64, Components.IA32]
   ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
   # Currently this unit test doesn't work for AARCH64
   CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
