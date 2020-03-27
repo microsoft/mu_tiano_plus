@@ -311,7 +311,7 @@ def read_header_file(options, path):
                 mode = modes.EFI_API
         elif mode == modes.EFI_API:  # make sure EFIAPI is a thing we find
             mode = modes.NAME if sline == "EFIAPI" else modes.UNKNOWN
-        elif mode == modes.NAME: # if we're looking for the name of the function
+        elif mode == modes.NAME:  # if we're looking for the name of the function
             if not sline.endswith("(") != 0:
                 mode = modes.UNKNOWN
             else:
@@ -379,7 +379,7 @@ def generate_file_replacement(replacement_lines, input_path, output_filename, op
             print(f"Warning: failed to find {input_file_path}")
 
     start_index = 0
-    for line in input_lines: # look for the replacement string
+    for line in input_lines:  # look for the replacement string
         start_index += 1
         if line == "<!-- REPLACEMENT -->":
             break
@@ -537,7 +537,8 @@ def get_crypto_h(options, functions):
     for valid_type, funcs in sorted_functions:
         lines.append(f"  // {valid_type}")
         for func in funcs:
-            member_name = func.get_protocoled_name().ljust(49) # make sure they're all the same size
+            member_name = func.get_protocoled_name().ljust(
+                49)  # make sure they're all the same size
             lines.append(f"  {member_name} {func.name};")
     lines.append("};")
 
@@ -586,7 +587,8 @@ def get_crypto_dsc(options, functions):
 
     # now set the PCDS
     lines.append("[PcdsFixedAtBuild]")
-    sorted_functions = sort_functions(functions) # get the functions sorted into a row
+    # get the functions sorted into a row
+    sorted_functions = sort_functions(functions)
     # first the all flavor
     lines.append("!if $(CRYPTO_SERVICES) IN \"PACKAGE ALL\"")
     for function in functions:
