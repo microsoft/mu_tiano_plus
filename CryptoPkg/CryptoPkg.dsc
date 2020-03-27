@@ -201,53 +201,33 @@
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/SmmCryptLib.inf
 # MU_CHANGE END
 
-!endif
-
-!if $(CRYPTO_SERVICES) IN "PACKAGE ALL NONE MIN_PEI"
-[Components.IA32, Components.X64] # MU_CHANGE remove ARM and AARCH64
-  CryptoPkg/Driver/CryptoPei.inf {
-    <Defines>
-      !if $(CRYPTO_SERVICES) == ALL
-        FILE_GUID = 8DF53C2E-3380-495F-A8B7-370CFE28E1C6
-      !elseif $(CRYPTO_SERVICES) == NONE
-        FILE_GUID = E5A97EE3-71CC-407F-9DA9-6BE0C8A6C7DF
-      !elseif $(CRYPTO_SERVICES) == MIN_PEI
-        FILE_GUID = 0F5827A9-35FD-4F41-8D38-9BAFCE594D31
-      !endif
-  }
-!endif
-
-!if $(CRYPTO_SERVICES) IN "PACKAGE ALL NONE MIN_DXE_MIN_SMM"
-[Components.IA32, Components.X64, Components.AARCH64]
-  CryptoPkg/Driver/CryptoDxe.inf {
-    <Defines>
-      !if $(CRYPTO_SERVICES) == ALL
-        FILE_GUID = D9444B06-060D-42C5-9344-F04707BE0169
-      !elseif $(CRYPTO_SERVICES) == NONE
-        FILE_GUID = C7A340F4-A6CC-4F95-A2DA-42BEA4C3944A
-      !elseif $(CRYPTO_SERVICES) == MIN_DXE_MIN_SMM
-        FILE_GUID = DDF5BE9E-159A-4B77-B6D7-82B84B5763A2
-      !endif
-  }
-
-[Components.IA32, Components.X64]
-  CryptoPkg/Driver/CryptoSmm.inf {
-    <Defines>
-      !if $(CRYPTO_SERVICES) == ALL
-        FILE_GUID = A3542CE8-77F7-49DC-A834-45D37D2EC1FA
-      !elseif $(CRYPTO_SERVICES) == NONE
-        FILE_GUID = 6DCB3127-01E7-4131-A487-DC77A965A541
-      !elseif $(CRYPTO_SERVICES) == MIN_DXE_MIN_SMM
-        FILE_GUID = 85F7EA15-3A2B-474A-8875-180542CD6BF3
-      !endif
-  }
-!endif
 
 [Components.X64, Components.IA32]
   ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
   # Currently this unit test doesn't work for AARCH64
   CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
   ## MU_CHANGE [END]
+
+!endif
+
+[Components.IA32, Components.X64] # MU_CHANGE remove ARM and AARCH64
+  CryptoPkg/Driver/CryptoPei.inf {
+    <Defines>
+      FILE_GUID = $(PEI_CRYPTO_DRIVER_FILE_GUID)
+  }
+
+[Components.IA32, Components.X64, Components.AARCH64]
+  CryptoPkg/Driver/CryptoDxe.inf {
+    <Defines>
+      FILE_GUID = $(DXE_CRYPTO_DRIVER_FILE_GUID)
+  }
+
+[Components.IA32, Components.X64]
+  CryptoPkg/Driver/CryptoSmm.inf {
+    <Defines>
+      FILE_GUID = $(SMM_CRYPTO_DRIVER_FILE_GUID)
+  }
+
 
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES

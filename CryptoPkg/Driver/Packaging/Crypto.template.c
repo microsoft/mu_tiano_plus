@@ -62,11 +62,11 @@
 */
 #if DEBUG                                            
 #define NULL_IF_DISABLED(Function)                   \
-  Function
+  CryptoService##Function
 #else                                                
   #define NULL_IF_DISABLED(Function)                \
      EDKII_CRYPTO_PCD(Function)                     \
-      ? Function                                    \
+      ? CryptoService##Function                                    \
       : NULL 
 #endif
 /**
@@ -106,5 +106,6 @@ CryptoServiceGetCryptoVersion (
 {
   return EDKII_CRYPTO_VERSION;
 }
-// MU_CHANGE
+// MU_CHANGE START
 <!-- REPLACEMENT -->
+// MU_CHANGE END

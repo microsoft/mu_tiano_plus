@@ -14,6 +14,7 @@ from edk2toollib.utility_functions import RunCmd
 import logging
 import shutil
 import glob
+from generate_cryptodriver import get_flavors
 
 
 def map_path(path: str):
@@ -55,8 +56,8 @@ if __name__ == "__main__":
     clean = False
     verbose = False
     setup = False
-    script_dir = os.path.dirname(__file__)    
-
+    script_dir = os.path.dirname(__file__)
+    
     root_dir = os.path.abspath(os.path.join(script_dir, "..", "..", ".."))
     nuget_collection_dir = os.path.join(
         root_dir, "Build", "CryptoDriver_Nuget")
@@ -94,9 +95,9 @@ if __name__ == "__main__":
                         os.path.join(nuget_collection_dir, file_name))
 
     # now we do the build
-    services = ["MIN_PEI", "MIN_DXE_MIN_SMM", "ALL"]
+    flavors = list(get_flavors())
     build_command = "stuart_ci_build"
-    for service in services:
+    for service in flavors:
         # First we need to clean out the previous builds Build\CryptoPkg\DEBUG_VS2017\X64\CryptoPkg\Driver
         if clean:
             old_build_folders = glob.iglob(os.path.join(build_output, "*", "*", "CryptoPkg", "Driver"))

@@ -25,21 +25,31 @@ def main():
     # generate the requested files
     if options.c_file:
         get_crypto_c(options, crypto_functions)
+        if options.copy:
+            c_file_path = os.path.join(options.out_dir, "temp_Crypto.c") # TODO: define this somewhere globally
+            shutil.copyfile(c_file_path, os.path.join(ROOT_DIR, "CryptoPkg", "Driver", "Crypto.c"))
     if options.h_file:
         get_crypto_h(options, crypto_functions)
+        if options.copy:
+            h_file_path = os.path.join(options.out_dir, "temp_Crypto.h") # TODO: define this somewhere globally
+            shutil.copyfile(h_file_path, os.path.join(ROOT_DIR, "CryptoPkg", "Private", "Protocol", "Crypto.h"))
     if options.p_file:
         get_crypto_pcds(options, crypto_functions)
     if options.d_file:
         get_crypto_dsc(options, crypto_functions)
     if options.i_file:
         get_crypto_inf(options, crypto_functions)
+    if options.l_file:
+        get_crypto_lib_c(options, crypto_functions)
+        if options.copy:
+            c_lib_file_path = os.path.join(options.out_dir, "temp_CryptLib.c") # TODO: define this somewhere globally
+            shutil.copyfile(c_lib_file_path, os.path.join(ROOT_DIR, "CryptoPkg", "Library", "BaseCryptLibOnProtocolPpi", "CryptLib.c"))
+
 
     if options.copy:
         print("Copying files")
-        c_file_path = os.path.join(options.out_dir, "temp_Crypto.c") # TODO: define this somewhere globally
-        shutil.copyfile(c_file_path, os.path.join(ROOT_DIR, "CryptoPkg", "Driver", "Crypto.c"))
-        h_file_path = os.path.join(options.out_dir, "temp_Crypto.h") # TODO: define this somewhere globally
-        shutil.copyfile(h_file_path, os.path.join(ROOT_DIR, "CryptoPkg", "Private", "Protocol", "Crypto.h"))
+        
+        
 
     print("Success. Thanks for playing :)")
 
@@ -57,6 +67,8 @@ def ParseCommandLineOptions():
                            help="Creates the pcd.inc.dsc file")
     ParserObj.add_argument("-inf", "--inf-file", dest="i_file", default=False, action='store_true',
                            help="Creates the pcd.inc.inf file")
+    ParserObj.add_argument("-lib", "--lib-file", dest="l_file", default=False, action='store_true',
+                           help="Creates the CryptLib.c file")
     ParserObj.add_argument("-a", "--all", dest="all", default=False, action='store_true',
                            help="Creates the crypto.c, crypto.h, and the pcd.inc.dec file")
     ParserObj.add_argument("-v", "--verbose", dest="verbose", default=False, action='store_true',
@@ -77,6 +89,7 @@ def ParseCommandLineOptions():
         options.c_file = True
         options.d_file = True
         options.i_file = True
+        options.l_file = True
 
     options.out_dir = os.path.abspath(
         os.path.join(SCRIPT_DIR, options.out_dir))
@@ -93,10 +106,6 @@ def ParseCommandLineOptions():
     if options.verbose:
         print(f"Writing output to: {options.out_dir}")
 
-    if not options.c_file and not options.h_file and not options.p_file:
-        raise ValueError(
-            "You must specify at least one file to build. Run -h if you're not sure")
-
     return options
 
 def get_flavors():
@@ -104,22 +113,26 @@ def get_flavors():
         "TINY_PEI": {
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384"],
             "individuals": ["Pkcs5HashPassword"],
-            "exclude": ["Sha256HashAll", "Sha1HashAll"]
+            "exclude": ["Sha256HashAll", "Sha1HashAll"],
+            "guid": "1cc4803e-4d5f-4e3a-b14c-a782ea263bd00"
         },
         "MIN_PEI": {
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384", "SHA512", "SM3"],
             "individuals": ["Pkcs5HashPassword"],
-            "exclude": ["Sha256HashAll", "Sha1HashAll"]
+            "exclude": ["Sha256HashAll", "Sha1HashAll"],
+            "guid": "dab4a5f8-f464-4c7d-a9fc-8c48b0f8c700"
         },
         "MIN_PEI_RSA": {
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384", "SHA512", "SM3"],
             "individuals": ["RsaPkcs1Verify", "RsaNew", "RsaFree", "RsaSetKey", "Pkcs5HashPassword"],
-            "exclude": ["Sha256HashAll", "Sha1HashAll"]
+            "exclude": ["Sha256HashAll", "Sha1HashAll"],
+            "guid": "d9a75606-caba-4aa0-80a6-591852335400"
         },
         "MIN_DXE_MIN_SMM": {
             "families": ["HMACSHA1", "HMACSHA256", "PKCS", "SHA1", "SHA256", "RANDOM", "TLS", "TLSGET", "TLSSET"],
             "individuals": ["AesInit", "AesCbcEncrypt", "AesCbcDecrypt", "RsaPkcs1Verify", "RsaNew", "RsaFree", "RsaGetPublicKeyFromX509", "X509GetSubjectName", "X509GetCommonName", "X509GetOrganizationName", "X509GetTBSCert"],
-            "exclude": ["Sha1HashAll", "Sha256HashAll", "Pkcs7Sign", "Pkcs7GetCertificatesList", "ImageTimestampVerify"]
+            "exclude": ["Sha1HashAll", "Sha256HashAll", "Pkcs7Sign", "Pkcs7GetCertificatesList", "ImageTimestampVerify"],
+            "guid": "bdee011f-87f2-4a7f-bc5e-44b6b61fef00"
         }
     }
 
@@ -240,37 +253,38 @@ def read_header_file(options, path):
     all_functions = []
     # iterate through each line in the header
     for index, line in enumerate(header_file.readlines()):
-        line = line.strip()
-        if len(line) == 0 or line.startswith("#") or line.startswith("//"):
+        sline = line.strip()
+        line = line.strip("\n")
+        if len(sline) == 0 or sline.startswith("#") or sline.startswith("//"):
             continue
-        if line.startswith("/**"):  # if we find a comment
+        if sline.startswith("/**"):  # if we find a comment
             cur_function.comment = [line, ]
             mode = modes.COMMENT
-        elif line.endswith("**/"):
+        elif sline.endswith("**/"):
             mode = modes.RETURN_TYPE
             cur_function.comment.append(line)
         elif mode == modes.COMMENT:
             cur_function.comment.append(line)
-        elif mode == modes.PARAMS and line.endswith(";"):
+        elif mode == modes.PARAMS and sline.endswith(";"):
             all_functions.append(cur_function)
             cur_function = crypto_function()
         elif mode == modes.PARAMS:
             cur_function.params.append("  "+line)
         elif mode == modes.RETURN_TYPE:
-            if not cur_function.set_return_type_if_valid(line):
+            if not cur_function.set_return_type_if_valid(sline):
                 if options.verbose:
-                    print(f"{file_name}:{index} Invalid Return type: {line}")
+                    print(f"{file_name}:{index} Invalid Return type: {sline}")
                 mode = modes.UNKNOWN
             else:
                 mode = modes.EFI_API
         elif mode == modes.EFI_API:
-            mode = modes.NAME if line == "EFIAPI" else modes.UNKNOWN
+            mode = modes.NAME if sline == "EFIAPI" else modes.UNKNOWN
         elif mode == modes.NAME:
-            if not line.endswith("(") != 0:
+            if not sline.endswith("(") != 0:
                 mode = modes.UNKNOWN
             else:
                 cur_function.line_no = index
-                cur_function.name = line.strip("(").strip()
+                cur_function.name = sline.strip("(").strip()
                 mode = modes.PARAMS
 
     if options.verbose:
@@ -395,10 +409,52 @@ def get_crypto_c(options, functions):
     for valid_type, funcs in sorted_functions:
         lines.append(f"  // {valid_type} functions")
         for func in funcs:
-            lines.append(f"  CryptoService{func.name},")
+            lines.append(f"  NULL_IF_DISABLED({func.name}),")
     lines.append("};")
 
     generate_file_replacement(lines, "Crypto.template.c", "temp_Crypto.c", options)
+
+def get_crypto_lib_c(options, functions):
+    print("Generating C library file")
+
+    lines = []
+    sorted_functions = sort_functions(functions)
+     # generate the function bodies
+    for valid_type, funcs in sorted_functions:
+        lines.append(
+            "//=============================================================================")
+        lines.append(f"//     {valid_type} functions")
+        lines.append(
+            "//=============================================================================")
+        for func in funcs:
+            lines.append(f"#if FixedPcdGetBool(PcdCryptoService{func.name})")
+            lines.extend(func.comment)
+            lines.append(f"// See {func.source}:{func.line_no}")
+            lines.append(func.return_type)
+            lines.append(f"{func.name} (")
+            lines.extend(func.params if len(func.params) > 0 else ["  VOID", ])
+            lines.append("  )")
+            lines.append("{")
+            params = func.get_params_tuple()
+            if len(params) > 0 and params[-1] == "...":
+                lines.append("  VA_LIST Args;")
+                lines.append("  BOOLEAN Result;")
+                lines.append(f"  VA_START (Args,{params[0]});")
+                lines.append(f"  Result = CryptoService{func.name}V {func.get_params_formatted()};")
+                lines.append("  VA_END (Args);")
+                lines.append("  return Result;")
+            elif (func.return_type == "VOID"):
+                lines.append(
+                    f"  CALL_VOID_CRYPTO_SERVICE ({func.name}, {func.get_params_formatted()});")
+            else:
+                lines.append(
+                    f"  CALL_CRYPTO_SERVICE ({func.name}, {func.get_params_formatted()}, {func.get_default_value()});")
+            lines.append("}")
+            lines.append("#else")
+            # TODO generate something that will cause the linker to have errors?
+            lines.append(f"#endif\n")
+
+    generate_file_replacement(lines, "CryptLib.template.c", "temp_CryptLib.c", options)
 
 
 def get_crypto_h(options, functions):
@@ -460,6 +516,23 @@ def get_crypto_dsc(options, functions):
         f" !error CRYPTO_SERVICES must be set to one of {all_flavors}.")
     lines.append("!endif")
     lines.append("")
+
+    lines.append("  DEFINE PEI_CRYPTO_DRIVER_FILE_GUID = d6f4500f-ad73-4368-9149-842c49f3aa00")
+    lines.append("  DEFINE DXE_CRYPTO_DRIVER_FILE_GUID = 254e0f83-c675-4578-bc16-d44111c34e01")
+    lines.append("  DEFINE SMM_CRYPTO_DRIVER_FILE_GUID = be5b74af-e07f-456b-a9e4-296c8fee9502")
+    lines.append("")
+
+    for flavor in flavors:
+        guid = flavors[flavor]["guid"]
+        pei_guid = guid[0:-2] + '01'
+        dxe_guid = guid[0:-2] + '02'
+        smm_guid = guid[0:-2] + '03'
+        lines.append(f"!if $(CRYPTO_SERVICES) == {flavor}")
+        lines.append(f"  DEFINE PEI_CRYPTO_DRIVER_FILE_GUID = {pei_guid}")
+        lines.append(f"  DEFINE DXE_CRYPTO_DRIVER_FILE_GUID = {dxe_guid}")
+        lines.append(f"  DEFINE SMM_CRYPTO_DRIVER_FILE_GUID = {smm_guid}")
+        lines.append(f"!endif\n")
+
     lines.append("[PcdsFixedAtBuild]")
     # get the functions sorted into a row
     sorted_functions = sort_functions(functions)
@@ -472,6 +545,7 @@ def get_crypto_dsc(options, functions):
     for flavor in flavors:
         lines.append(f"!if $(CRYPTO_SERVICES) == {flavor}")
         families = flavors[flavor]["families"]
+        lines.append("")
         exclude = flavors[flavor]["exclude"]
         for sort_type, funcs in sorted_functions:
             if sort_type not in families:
