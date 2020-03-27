@@ -26,13 +26,34 @@ def map_path(path: str):
         #    return None
     else:
         return None
-    if len(path_parts) > 3:
+    if path.endswith(".depex"):
+        path_parts = [path_parts[0],path_parts[-1]]
+        #\DEBUG_VS2017\X64\CryptoPkg\Driver\85F7EA15-3A2B-474A-8875-180542CD6BF3\OUTPUT\CryptoSmm.depex
+    elif len(path_parts) > 3:
         return None 
     return os.path.sep.join(path_parts)
 
+def move_with_mapping(full_path:str, rel_path:str, output_dir:str, verbose=False):
+    mapped_path = map_path(rel_path)
+    if mapped_path == None:
+        if verbose:
+            print(f"Skipping {rel_path}")
+        return
+    out_path = os.path.join(output_dir, mapped_path)
+    if verbose:
+        print(out_path)
+    out_path_dir = os.path.dirname(out_path)
+    if not os.path.exists(out_path_dir):
+        os.makedirs(out_path_dir)
+    if os.path.exists(out_path):
+        if verbose:
+            print(f"We've already got this one: {out_path}")
+    else:
+        shutil.copyfile(full_path, out_path)
+
 if __name__ == "__main__":
     clean = False
-    verbose = True
+    verbose = False
     setup = False
     script_dir = os.path.dirname(__file__)    
 
@@ -46,9 +67,10 @@ if __name__ == "__main__":
         print(f"Make sure the pytool config is correct: {pytools_config}")
         sys.exit(2)
     # clean out our collection dir
-    if os.path.exists(nuget_collection_dir):
+    if clean and os.path.exists(nuget_collection_dir):
         print(f"Clearing out {nuget_collection_dir}")
         shutil.rmtree(nuget_collection_dir)
+    if not os.path.exists(nuget_collection_dir):
         os.makedirs(nuget_collection_dir)
 
     # make sure we're doing a clean build if requested
@@ -76,17 +98,18 @@ if __name__ == "__main__":
     build_command = "stuart_ci_build"
     for service in services:
         # First we need to clean out the previous builds Build\CryptoPkg\DEBUG_VS2017\X64\CryptoPkg\Driver
-        old_build_folders = glob.iglob(os.path.join(build_output, "*", "*", "CryptoPkg", "Driver"))
-        for old_build_folder in old_build_folders:
-            shutil.rmtree(old_build_folder)
-            if verbose:
-                print(f"Removing {old_build_folder}")
+        if clean:
+            old_build_folders = glob.iglob(os.path.join(build_output, "*", "*", "CryptoPkg", "Driver"))
+            for old_build_folder in old_build_folders:
+                shutil.rmtree(old_build_folder)
+                if verbose:
+                    print(f"Removing {old_build_folder}")
         
         nuget_output_dir = os.path.join(nuget_collection_dir, service)
         os.mkdir(nuget_output_dir)
         print(f"{build_command}: {service}")
-        params = f"-p CryptoPkg BLD_*_CRYPTO_SERVICES={service} BUILDREPORTING=TRUE BUILDREPORT_TYPES=\"LIBRARY DEPEX PCD\""
-        ret = RunCmd(build_command, f"-c {pytools_config} {params}", workingdir=root_dir)
+        params = f"-p CryptoPkg BLD_*_CRYPTO_SERVICES={service} BUILDREPORTING=TRUE BUILDREPORT_TYPES=\"LIBRARY DEPEX PCD BUILD_FLAGS\" TOOL_CHAIN_TAG=VS2017"
+        ret = RunCmd(build_command, f"-c {pytools_config} -t RELEASE,DEBUG {params}", workingdir=root_dir)
         if ret != 0:
             print(f"{build_command} failed with code: {ret}")
             sys.exit(ret)
@@ -95,34 +118,15 @@ if __name__ == "__main__":
         build_reports = glob.iglob(os.path.join(build_output, "*", "Build_REPORT.TXT"), recursive=True)
         for build_report in build_reports:
             build_report_rel_path = build_report[len(build_output):] # remove the beginning off the found path
-            mapped_path = map_path(build_report_rel_path)
-            if mapped_path == None:
-                if verbose:
-                    print(f"Skipping {build_report_rel_path}")
-                continue
-            out_path = os.path.join(nuget_output_dir, mapped_path)
-            if verbose:
-                print(out_path)
-            out_path_dir = os.path.dirname(out_path)
-            if not os.path.exists(out_path_dir):
-                os.makedirs(out_path_dir)
-            shutil.copyfile(build_report, out_path)
+            move_with_mapping(build_report, build_report_rel_path, nuget_output_dir, verbose)
 
-        efi_files = glob.iglob(os.path.join(build_output, "**", "Crypto*.@(efi|depex|pdb)"), recursive=True)
-        for efi_file in efi_files:
-            efi_rel_path = efi_file[len(build_output):] # remove the beginning off the found path
-            mapped_path = map_path(efi_rel_path)
-            if mapped_path == None:
-                if verbose:
-                    print(f"Skipping {efi_rel_path}")
-                continue
-            out_path = os.path.join(nuget_output_dir, mapped_path)
-            if verbose:
-                print(out_path)
-            out_path_dir = os.path.dirname(out_path)
-            if not os.path.exists(out_path_dir):
-                os.makedirs(out_path_dir)
-            shutil.copyfile(efi_file, out_path)
+        efi_searches = [os.path.join(build_output, "**", "Crypto*.efi"),os.path.join(build_output, "**", "Crypto*.depex")]
+        for efi_search in efi_searches:
+            efi_files = glob.iglob(efi_search, recursive=True)
+            for efi_file in efi_files:
+                efi_rel_path = efi_file[len(build_output):] # remove the beginning off the found path
+                move_with_mapping(efi_file, efi_rel_path, nuget_output_dir, verbose)
+           
         
     # time to package it all
     # nuget-publish --Operation Pack --OutputLog $(Build.StagingDirectory)/NugetPackagingLog.txt --ConfigFilePath $(Build.StagingDirectory)/NugetPackageConfig.json --InputFolderPath $(Build.StagingDirectory)/$(temp_publication_directory) --Version $(release_version) --OutputFolderPath $(Build.StagingDirectory)/PackageOutput;
