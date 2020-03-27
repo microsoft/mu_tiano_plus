@@ -20,7 +20,7 @@
 /// the EDK II Crypto Protocol is extended, this version define must be
 /// increased.
 ///
-#define EDKII_CRYPTO_VERSION 6
+#define EDKII_CRYPTO_VERSION 7
 
 ///
 /// EDK II Crypto Protocol forward declaration
