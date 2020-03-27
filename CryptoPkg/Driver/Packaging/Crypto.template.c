@@ -18,7 +18,7 @@
   typecast to its associcted structure type PCD_CRYPTO_SERVICE_FAMILY_ENABLE.
 **/
 #define EDKII_CRYPTO_PCD(Name) \
-  (FixedPcdGetBool (PcdCryptoService(Name))))
+  (FixedPcdGetBool (PcdCryptoService##Name))
 
 /**
   A macro used to call a non-void BaseCryptLib function if it is enabled.
@@ -26,19 +26,14 @@
   If a BaseCryptLib function is not enabled, there will be no references to it
   from this module and will be optimized away reducing the size of this module.
 
-  @param  Enable            The name of the enable field in PCD
-                            PcdCryptoServiceFamilyEnable for the BaseCryptLib
-                            function being called.  If the value of this field
-                            is non-zero, then the BaseCryptLib function is
-                            enabled.
   @param  Function          The name of the BaseCryptLib function.
   @param  Args              The argument list to pass to Function.
   @param  ErrorReturnValue  The value to return if the BaseCryptLib function is
                             not enabled.
 
 **/
-#define CALL_BASECRYPTLIB(Enable, Function, Args, ErrorReturnValue) \
-  EDKII_CRYPTO_PCD(Enable)                                          \
+#define CALL_BASECRYPTLIB(Function, Args, ErrorReturnValue) \
+  EDKII_CRYPTO_PCD(Function)                                          \
     ? Function Args                                                 \
     : (BaseCryptLibServciceNotEnabled (#Function), ErrorReturnValue)
 
@@ -57,15 +52,23 @@
   @param  Args              The argument list to pass to Function.
 
 **/
-#define CALL_VOID_BASECRYPTLIB(Enable, Function, Args)  \
-  EDKII_CRYPTO_PCD(Enable)                              \
+#define CALL_VOID_BASECRYPTLIB( Function, Args)  \
+  EDKII_CRYPTO_PCD(Function)                              \
     ? Function Args                                     \
     : BaseCryptLibServciceNotEnabled (#Function)
 
-#define NULL_OR_NAW(Enable, Function)                   \
-  EDKII_CRYPTO_PCD(Enable) \
-  ? Function                                            \
-  : NULL                                                
+/**
+ * A macro that will check if the PCD is enabled for RELEASE builds
+*/
+#if DEBUG                                            
+#define NULL_IF_DISABLED(Function)                   \
+  Function
+#else                                                
+  #define NULL_IF_DISABLED(Function)                \
+     EDKII_CRYPTO_PCD(Function)                     \
+      ? Function                                    \
+      : NULL 
+#endif
 /**
   Internal worker function that prints a debug message and asserts if a call is
   made to a BaseCryptLib function that is not enabled in the EDK II Crypto
