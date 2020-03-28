@@ -620,7 +620,7 @@ def get_crypto_dsc(options, functions):
                 flavor_lines.append(f"  {function.get_pcd_name().ljust(70)}| TRUE")
         flavor_lines.append("!endif\n")
         flavor_file = f"Crypto.pcd.{flavor}.inc.dsc"
-        generate_file_replacement(lines, None, flavor_file, options, "#")
+        generate_file_replacement(flavor_lines, None, flavor_file, options, "#")
         lines.append(f"!include CryptoPkg/Driver/Packaging/{flavor_file}")
 
     generate_file_replacement(lines, None, "Crypto.inc.dsc", options, "#")
