@@ -125,25 +125,25 @@ def get_flavors():
             the last two digits will be used to tell what type of binary it is (PEI, DXE, SMM, etc)
     '''
     return {
-        "TINY_PEI": {
+        "TINY_SHA": {
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384"],
             "individuals": ["Pkcs5HashPassword"],
             "exclude": ["Sha256HashAll", "Sha1HashAll"],
             "guid": "1cc4803e-4d5f-4e3a-b14c-a782ea263bd00"
         },
-        "MIN_PEI": {
+        "MINIMAL_SHA_SM3": {
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384", "SHA512", "SM3"],
             "individuals": ["Pkcs5HashPassword"],
             "exclude": ["Sha256HashAll", "Sha1HashAll"],
             "guid": "dab4a5f8-f464-4c7d-a9fc-8c48b0f8c700"
         },
-        "MIN_PEI_RSA": {
+        "SMALL_SHA_RSA": {
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384", "SHA512", "SM3"],
             "individuals": ["RsaPkcs1Verify", "RsaNew", "RsaFree", "RsaSetKey", "Pkcs5HashPassword"],
             "exclude": ["Sha256HashAll", "Sha1HashAll"],
             "guid": "d9a75606-caba-4aa0-80a6-591852335400"
         },
-        "MIN_DXE_MIN_SMM": {
+        "STANDARD": {
             "families": ["HMACSHA1", "HMACSHA256", "PKCS", "SHA1", "SHA256", "RANDOM", "TLS", "TLSGET", "TLSSET"],
             "individuals": ["AesInit", "AesCbcEncrypt", "AesCbcDecrypt", "RsaPkcs1Verify", "RsaNew", "RsaFree", "RsaGetPublicKeyFromX509", "X509GetSubjectName", "X509GetCommonName", "X509GetOrganizationName", "X509GetTBSCert"],
             "exclude": ["Sha1HashAll", "Sha256HashAll", "Pkcs7Sign", "Pkcs7GetCertificatesList", "ImageTimestampVerify"],
