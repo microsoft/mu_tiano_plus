@@ -105,11 +105,11 @@ def main():
             uphase = phase.upper()
             dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == \"{flavor}\"")
             if phase == "Pei":
-                dsc_lines.append("  [Components.$(PEI_CRYPTO_ARCH).PEIM]")
+                dsc_lines.append("  [Components.$(PEI_CRYPTO_ARCH)]")
             elif phase == "Smm":
-                dsc_lines.append("  [Components.$(SMM_CRYPTO_ARCH).DXE_SMM_DRIVER]")
+                dsc_lines.append("  [Components.$(SMM_CRYPTO_ARCH)]")
             else:
-                dsc_lines.append("  [Components.$(DXE_CRYPTO_ARCH).DXE_DRIVER]")
+                dsc_lines.append("  [Components.$(DXE_CRYPTO_ARCH)]")
             dsc_lines.append(f"    CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
             dsc_lines.append("")
             # Add the librart as well
