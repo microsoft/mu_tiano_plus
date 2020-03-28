@@ -601,22 +601,27 @@ def get_crypto_dsc(options, functions):
         lines.append("")
         exclude = flavors[flavor]["exclude"]
 
+        flavor_lines = []
+
         # set families
         for sort_type, funcs in sorted_functions:
             if sort_type not in families:
                 continue
-            lines.append(f"# {sort_type} family")
+            flavor_lines.append(f"# {sort_type} family")
             for function in funcs:
                 if function.name not in exclude:
-                    lines.append(
+                    flavor_lines.append(
                         f"  {function.get_pcd_name().ljust(70)}| TRUE")
         # set individuals
         indiv = flavors[flavor]["individuals"]
-        lines.append("# Individuals")
+        flavor_lines.append("# Individuals")
         for function in functions:
             if function.name in indiv and function.name not in exclude:
-                lines.append(f"  {function.get_pcd_name().ljust(70)}| TRUE")
-        lines.append("!endif\n")
+                flavor_lines.append(f"  {function.get_pcd_name().ljust(70)}| TRUE")
+        flavor_lines.append("!endif\n")
+        flavor_file = f"Crypto.pcd.{flavor}.inc.dsc"
+        generate_file_replacement(lines, None, flavor_file, options, "#")
+        lines.append(f"!include CryptoPkg/Driver/Packaging/{flavor_file}")
 
     generate_file_replacement(lines, None, "Crypto.inc.dsc", options, "#")
 
