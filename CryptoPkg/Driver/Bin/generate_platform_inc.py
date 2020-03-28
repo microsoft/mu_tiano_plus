@@ -106,13 +106,11 @@ def main():
     for flavor in flavors:
         for phase in phases:
             uphase = phase.upper()
-            dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == \"{flavor}\"")
-            if phase == "Pei":
-                dsc_lines.append("  [Components.$(PEI_CRYPTO_ARCH)]")
-            elif phase == "Smm":
-                dsc_lines.append("  [Components.$(SMM_CRYPTO_ARCH)]")
-            else:
-                dsc_lines.append("  [Components.$(DXE_CRYPTO_ARCH)]")
+            dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == {flavor}")
+            for arch in arches:
+                dsc_lines.append(f" !if $({uphase}_CRYPTO_ARCH) == {arch}")
+                dsc_lines.append(f"  [Components.{arch}]")
+                dsc_lines.append(" !endif")
             dsc_lines.append(f"    CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
             dsc_lines.append("")
             # Add the librart as well
