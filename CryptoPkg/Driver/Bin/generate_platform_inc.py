@@ -106,14 +106,6 @@ def main():
     for flavor in flavors:
         for phase in phases:
             uphase = phase.upper()
-            dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == {flavor}")
-            for arch in arches:
-                dsc_lines.append(f" !if $({uphase}_CRYPTO_ARCH) == {arch}")
-                dsc_lines.append(f"  [Components.{arch}]")
-                dsc_lines.append(" !endif")
-            dsc_lines.append(f"  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
-            dsc_lines.append("")
-            # Add the librart as well
             comp_types = ["", ]
             if phase == "Pei":
                 comp_types = ["PEIM", ]
@@ -121,8 +113,16 @@ def main():
                 comp_types = ["DXE_DRIVER", "UEFI_DRIVER", "UEFI_APPLICATION"]
             elif phase == "Smm":
                 comp_types = ["DXE_SMM_DRIVER", ]
-            comp_str = ", ".join(
-                map(lambda x: "Components."+x.upper(), comp_types))
+            dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == {flavor}")
+            for arch in arches:
+                comp_str = ", ".join(map(lambda x: "Components."+arch+"."+x.upper(), comp_types))
+                dsc_lines.append(f" !if $({uphase}_CRYPTO_ARCH) == {arch}")
+                dsc_lines.append(f"  [{comp_str}]")
+                dsc_lines.append(" !endif")
+            dsc_lines.append(f"  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
+            dsc_lines.append("")
+            # Add the library as well
+            comp_str = ", ".join(map(lambda x: "Components."+x.upper(), comp_types))
             dsc_lines.append(f" [{comp_str}]")
             dsc_lines.append(f"   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/{phase}CryptLib.inf " + "{")
             dsc_lines.append("     <PcdsFixedAtBuild>")
