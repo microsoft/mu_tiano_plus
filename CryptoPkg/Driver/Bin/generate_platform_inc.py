@@ -47,16 +47,19 @@ def main():
             "Smm": "DXE_SMM_DRIVER"
         }
         mod_type = module_types[phase]
+        origional_guid = guid
         if target == "DEBUG":
-            guid = guid[:-4] + "D00"
+            guid = guid[:-3] + "D00"
         if target == "RELEASE":
-            guid = guid[:-4] + "E00"
+            guid = guid[:-3] + "E00"
         if phase == "Pei":
-            guid = guid[:-3] + '10'
+            guid = guid[:-2] + '10'
         if phase == "Dxe":
-            guid = guid[:-3] + '20'
+            guid = guid[:-2] + '20'
         if phase == "Smm":
-            guid = guid[:-3] + '30'
+            guid = guid[:-2] + '30'
+        if len(guid) != len(origional_guid):
+            raise ValueError(f"{guid} is not long enough. {len(guid)} vs {len(origional_guid)}")
         inf_lines.extend(["[Defines]",
                           "INF_VERSION                    = 0x0001001B",
                           f"BASE_NAME                      = BaseCryptoDriver{phase}",
