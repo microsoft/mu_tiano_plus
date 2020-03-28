@@ -110,7 +110,7 @@ def main():
     fdf_bb_lines.append("!error You need to include CryptoDriver.inc.dsc")
     fdf_bb_lines.append("!endif")
     for flavor in flavors:
-        fdf_bb_lines.append(f"!if $(CRYPTO_SERVICES) == {flavor}")
+        fdf_bb_lines.append(f"!if $(PEI_CRYPTO_SERVICES) == {flavor}")
         for target in targets:
             fdf_bb_lines.append(f" !if $(TARGET) == {target}")
             fdf_bb_lines.append(f"    INF  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_Pei_{target}.inf")
@@ -124,12 +124,13 @@ def main():
     fdf_dxe_lines.append("!error You need to include CryptoDriver.inc.dsc")
     fdf_dxe_lines.append("!endif")
     for flavor in flavors:
-        fdf_dxe_lines.append(f"!if $(CRYPTO_SERVICES) == {flavor}")
-        for target in targets:
-            fdf_dxe_lines.append(f" !if $(TARGET) == {target}")
-            fdf_dxe_lines.append(f"    INF  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_Pei_{target}.inf")
-            fdf_dxe_lines.append("  !endif")
-        fdf_dxe_lines.append("!endif\n")
+        for phase in ["DXE", "SMM"]:
+            fdf_dxe_lines.append(f"!if $({phase}_CRYPTO_SERVICES) == {flavor}")
+            for target in targets:
+                fdf_dxe_lines.append(f" !if $(TARGET) == {target}")
+                fdf_dxe_lines.append(f"    INF  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_{target}.inf")
+                fdf_dxe_lines.append("  !endif")
+            fdf_dxe_lines.append("!endif\n")
     generate_file_replacement(fdf_dxe_lines, None, "CryptoDriver.DXE.inc.fdf", options(), comment="#")
 
 
