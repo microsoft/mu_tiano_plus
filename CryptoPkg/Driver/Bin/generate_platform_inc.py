@@ -103,28 +103,16 @@ def main():
     for flavor in flavors:
         for phase in phases:
             uphase = phase.upper()
-            for target in targets:
-                dsc_lines.append(
-                    f"!if $({uphase}_CRYPTO_SERVICES) == \"{flavor}\" AND $(TARGET) == {target}")
-                if phase == "Pei":
-                    dsc_lines.append(
-                        "    [Components.$(PEI_CRYPTO_ARCH).PEIM]")
-                elif phase == "Smm":
-                    dsc_lines.append(
-                        "    [Components.$(SMM_CRYPTO_ARCH).DXE_SMM_DRIVER]")
-                else:
-                    dsc_lines.append(
-                        "    [Components.$(DXE_CRYPTO_ARCH).DXE_DRIVER]")
-                dsc_lines.append(
-                    f"      CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_{target}.inf ")
-                dsc_lines.append("!endif\n")
-    dsc_lines.append("")
-    # generate the library classes to use
-    for flavor in flavors:
-        for phase in phases:
-            uphase = phase.upper()
-            dsc_lines.append(
-                f"!if $({uphase}_CRYPTO_SERVICES) == \"{flavor}\"")
+            dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == \"{flavor}\"")
+            if phase == "Pei":
+                dsc_lines.append("  [Components.$(PEI_CRYPTO_ARCH).PEIM]")
+            elif phase == "Smm":
+                dsc_lines.append("  [Components.$(SMM_CRYPTO_ARCH).DXE_SMM_DRIVER]")
+            else:
+                dsc_lines.append("  [Components.$(DXE_CRYPTO_ARCH).DXE_DRIVER]")
+            dsc_lines.append(f"    CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
+            dsc_lines.append("")
+            # Add the librart as well
             comp_types = ["", ]
             if phase == "Pei":
                 comp_types = ["PEIM", ]
@@ -134,14 +122,14 @@ def main():
                 comp_types = ["DXE_SMM_DRIVER", ]
             comp_str = ", ".join(
                 map(lambda x: "Components."+x.upper(), comp_types))
-            dsc_lines.append(f"[{comp_str}]")
-            dsc_lines.append(f"  CryptoPkg/Library/BaseCryptLibOnProtocolPpi/{phase}CryptLib.inf " + "{")
-            dsc_lines.append("    <PcdsFixedAtBuild>")
+            dsc_lines.append(f" [{comp_str}]")
+            dsc_lines.append(f"   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/{phase}CryptLib.inf " + "{")
+            dsc_lines.append("     <PcdsFixedAtBuild>")
             dsc_lines.append(f"      !include CryptoPkg/Driver/Packaging/Crypto.pcd.{flavor}.inc.dsc")
-            dsc_lines.append("}")
+            dsc_lines.append("    }")
             dsc_lines.append("!endif\n")
-
-    # generate the library classes
+    dsc_lines.append("")
+    # generate the library classes to include
     generate_file_replacement(
         dsc_lines, None, "CryptoDriver.inc.dsc", options(), comment="#")
 
