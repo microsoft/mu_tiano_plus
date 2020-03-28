@@ -92,7 +92,7 @@ def main():
         for phase in phases:
             uphase = phase.upper()
             for target in targets:
-                dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == {flavor} AND $(TARGET) == {target}")
+                dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == \"{flavor}\" AND $(TARGET) == {target}")
                 if phase == "Pei":
                     dsc_lines.append("    [Components.$(PEI_CRYPTO_ARCH)]")
                 elif phase == "Smm":
