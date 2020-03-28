@@ -47,6 +47,12 @@ def main():
             "Smm": "DXE_SMM_DRIVER"
         }
         mod_type = module_types[phase]
+        if phase == "Pei":
+            guid = guid[:-2] + '10'
+        if phase == "Dxe":
+            guid = guid[:-2] + '20'
+        if phase == "Smm":
+            guid = guid[:-2] + '30'
         inf_lines.extend(["[Defines]",
                           "INF_VERSION                    = 0x0001001B",
                           f"BASE_NAME                      = BaseCryptoDriver{phase}",
