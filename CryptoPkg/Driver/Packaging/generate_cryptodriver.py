@@ -487,7 +487,7 @@ def get_crypto_lib_c(options, functions):
                 lines.append("  BOOLEAN Result;")
                 lines.append(f"  VA_START (Args,{params[0]});")
                 lines.append(
-                    f"  Result = CryptoService{func.name}V {func.get_params_formatted()};")
+                    f"  Result = {func.name}V {func.get_params_formatted()};")
                 lines.append("  VA_END (Args);")
                 lines.append("  return Result;")
             elif (func.return_type == "VOID"):
