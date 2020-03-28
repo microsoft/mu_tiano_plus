@@ -131,13 +131,13 @@ def get_flavors():
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384"],
             "individuals": ["Pkcs5HashPassword"],
             "exclude": ["Sha256HashAll", "Sha1HashAll"],
-            "guid": "1cc4803e-4d5f-4e3a-b14c-a782ea263bd00"
+            "guid": "e6ed744a-8db0-42b8-a507-8909782ed200"
         },
         "MINIMAL_SHA_SM3": {
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384", "SHA512", "SM3"],
             "individuals": ["Pkcs5HashPassword"],
             "exclude": ["Sha256HashAll", "Sha1HashAll"],
-            "guid": "dab4a5f8-f464-4c7d-a9fc-8c48b0f8c700"
+            "guid": "6d653b3b-0654-4eec-8ab3-183a3e061400"
         },
         "SMALL_SHA_RSA": {
             "families": ["HMACSHA256", "SHA1", "SHA256", "SHA384", "SHA512", "SM3"],

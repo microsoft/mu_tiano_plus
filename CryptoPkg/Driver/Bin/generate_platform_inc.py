@@ -53,11 +53,11 @@ def main():
         if target == "RELEASE":
             guid = guid[:-3] + "E00"
         if phase == "Pei":
-            guid = guid[:-2] + '10'
+            guid = guid[:-2] + "10"
         if phase == "Dxe":
-            guid = guid[:-2] + '20'
+            guid = guid[:-2] + "20"
         if phase == "Smm":
-            guid = guid[:-2] + '30'
+            guid = guid[:-2] + "30"
         if len(guid) != len(origional_guid):
             raise ValueError(f"{guid} is not long enough. {len(guid)} vs {len(origional_guid)}")
         inf_lines.extend(["[Defines]",
