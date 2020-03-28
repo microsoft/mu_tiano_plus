@@ -85,6 +85,8 @@ def ParseCommandLineOptions():
                            help="The directory where the template files are stored, relative to this script")
     ParserObj.add_argument("-copy", "--copy", dest="copy", default=False, action='store_true',
                            help="Copy the created files into the correct location (Crypto.c, crypto.h, CryptLib.c)")
+    ParserObj.add_argument("--disable-comp-time", "-dctc", dest="dctc", default=False, action='store_true',
+                           help="Disable Compile Time check for generated library files")
     # parse the args
     options = ParserObj.parse_args()
     if options.all:
@@ -470,7 +472,8 @@ def get_crypto_lib_c(options, functions):
             "//=============================================================================")
         for func in funcs:
             # add a macro that will turn this off if it's not enabled by PCD
-            lines.append(f"#if FixedPcdGetBool(PcdCryptoService{func.name})")
+            if not options.dctc:
+                lines.append(f"#if FixedPcdGetBool(PcdCryptoService{func.name})")
             lines.extend(func.comment)
             lines.append(f"// See {func.source}:{func.line_no}")
             lines.append(func.return_type)
@@ -494,10 +497,11 @@ def get_crypto_lib_c(options, functions):
                 lines.append(
                     f"  CALL_CRYPTO_SERVICE ({func.name}, {func.get_params_formatted()}, {func.get_default_value()});")
             lines.append("}")
-            lines.append("#else")
-            # TODO generate something that will cause the linker to have errors?
-            # we want to generate an error if someone includes this in their binary
-            lines.append(f"#endif\n")
+            if not options.dctc:
+                lines.append("#else")
+                # TODO generate something that will cause the linker to have errors?
+                # we want to generate an error if someone includes this in their binary
+                lines.append(f"#endif\n")
 
     generate_file_replacement(
         lines, "CryptLib.template.c", "temp_CryptLib.c", options)
