@@ -75,7 +75,11 @@ def main():
             inf_lines.append(f"\n[Binaries.{arch}]")
             inf_lines.append(
                 f"  PE32|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/{arch}/Crypto{phase}.efi")
-
+        inf_lines.append("\n[Packages]")
+        inf_lines.append("  CryptoPkg/CryptoPkg.dec")
+        inf_lines.append("")
+        inf_lines.append("[Depex]")
+        inf_lines.append("  TRUE")
         generate_file_replacement(
             inf_lines, None, f"{inf_start}_{flavor}_{phase}_{target}.inf", options(), comment="#")
 
