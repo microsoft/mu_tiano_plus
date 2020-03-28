@@ -106,8 +106,8 @@ def main():
 
     fdf_bb_lines = []
     fdf_bb_lines.append("# this is to be included a platform inside the BOOTBLOCK or other PEI FV")
-    fdf_bb_lines.append("!ifndef CRYPTO_SERVICES")
-    fdf_bb_lines.append("!error You need to include CryptoDriver.inc.dsc")
+    fdf_bb_lines.append("!ifndef PEI_CRYPTO_SERVICES")
+    fdf_bb_lines.append("!error You need to define PEI_CRYPTO_SERVICES")
     fdf_bb_lines.append("!endif")
     for flavor in flavors:
         fdf_bb_lines.append(f"!if $(PEI_CRYPTO_SERVICES) == {flavor}")
@@ -120,8 +120,11 @@ def main():
 
     fdf_dxe_lines = []
     fdf_dxe_lines.append("# this is to be included a platform inside the BOOTBLOCK or other PEI FV")
-    fdf_dxe_lines.append("!ifndef CRYPTO_SERVICES")
-    fdf_dxe_lines.append("!error You need to include CryptoDriver.inc.dsc")
+    fdf_dxe_lines.append("!ifndef DXE_CRYPTO_SERVICES")
+    fdf_dxe_lines.append("!error You need to define in your platform DXE_CRYPTO_SERVICES")
+    fdf_dxe_lines.append("!endif")
+    fdf_dxe_lines.append("!ifndef SMM_CRYPTO_SERVICES")
+    fdf_dxe_lines.append("!error You need to define in your platform SMM_CRYPTO_SERVICES")
     fdf_dxe_lines.append("!endif")
     for flavor in flavors:
         for phase in ["DXE", "SMM"]:
