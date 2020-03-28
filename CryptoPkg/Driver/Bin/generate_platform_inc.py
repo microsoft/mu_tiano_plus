@@ -81,6 +81,10 @@ def main():
         dsc_lines.append("!else")
         dsc_lines.append(f" !error CRYPTO_SERVICES must be set to one of {all_flavors}.")
         dsc_lines.append("!endif")
+        dsc_lines.append(f"!ifndef {phase}_CRYPTO_ARCH")
+        default_arch = "IA32" if phase == "PEI" else "X64"
+        dsc_lines.append(f" DEFINE {phase}_CRYPTO_ARCH = {default_arch}")
+        dsc_lines.append("!endif")
         dsc_lines.append("")
     
     # generate the components to include
@@ -89,10 +93,12 @@ def main():
             uphase = phase.upper()
             for target in targets:
                 dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == {flavor} AND $(TARGET) == {target}")
-                if phase == "Pei" or phase == "Smm":
-                    dsc_lines.append("    [Components.X64, Components.IA32]")
+                if phase == "Pei":
+                    dsc_lines.append("    [Components.$(PEI_CRYPTO_ARCH)]")
+                elif phase == "Smm":
+                    dsc_lines.append("    [Components.$(SMM_CRYPTO_ARCH)]")
                 else:
-                    dsc_lines.append("    [Components.IA32, Components.X64, Components.AARCH64]")
+                    dsc_lines.append("    [Components.$(DXE_CRYPTO_ARCH)]")
                 dsc_lines.append(f"      CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_{target}.inf ")
                 dsc_lines.append("!endif")
             
