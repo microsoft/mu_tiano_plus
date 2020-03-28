@@ -618,10 +618,11 @@ def get_crypto_dsc(options, functions):
         for function in functions:
             if function.name in indiv and function.name not in exclude:
                 flavor_lines.append(f"  {function.get_pcd_name().ljust(70)}| TRUE")
-        flavor_lines.append("!endif\n")
+        
         flavor_file = f"Crypto.pcd.{flavor}.inc.dsc"
         generate_file_replacement(flavor_lines, None, flavor_file, options, "#")
         lines.append(f"!include CryptoPkg/Driver/Packaging/{flavor_file}")
+        lines.append("!endif\n")
 
     generate_file_replacement(lines, None, "Crypto.inc.dsc", options, "#")
 
