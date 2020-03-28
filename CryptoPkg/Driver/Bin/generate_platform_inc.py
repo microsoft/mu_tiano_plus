@@ -127,8 +127,8 @@ def main():
     fdf_dxe_lines.append("!error You need to define in your platform SMM_CRYPTO_SERVICES")
     fdf_dxe_lines.append("!endif")
     for flavor in flavors:
-        for phase in ["DXE", "SMM"]:
-            fdf_dxe_lines.append(f"!if $({phase}_CRYPTO_SERVICES) == {flavor}")
+        for phase in ["Dxe", "Smm"]:
+            fdf_dxe_lines.append(f"!if $({phase.upper()}_CRYPTO_SERVICES) == {flavor}")
             for target in targets:
                 fdf_dxe_lines.append(f" !if $(TARGET) == {target}")
                 fdf_dxe_lines.append(f"    INF  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_{target}.inf")
