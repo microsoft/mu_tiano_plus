@@ -70,7 +70,7 @@ def main():
                           f"ENTRY_POINT                    = Crypto{phase}Entry"])
         inf_lines.append("\n[Binaries]")
         inf_lines.append(
-            f"  DXE_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
+            f"  {phase.upper()}_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
         for arch in arches:
             inf_lines.append(f"\n[Binaries.{arch}]")
             inf_lines.append(
