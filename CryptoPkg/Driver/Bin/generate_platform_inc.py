@@ -94,8 +94,8 @@ def main():
                 else:
                     dsc_lines.append("    [Components.IA32, Components.X64, Components.AARCH64]")
                 dsc_lines.append(f"      CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_{target}.inf ")
-                dsc_lines.append("  !endif")
-            dsc_lines.append("!endif\n")
+                dsc_lines.append("!endif")
+            
     
     # generate the library classes
 
