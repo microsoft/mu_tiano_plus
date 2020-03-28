@@ -111,7 +111,7 @@ def main():
                 dsc_lines.append(f" !if $({uphase}_CRYPTO_ARCH) == {arch}")
                 dsc_lines.append(f"  [Components.{arch}]")
                 dsc_lines.append(" !endif")
-            dsc_lines.append(f"    CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
+            dsc_lines.append(f"  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
             dsc_lines.append("")
             # Add the librart as well
             comp_types = ["", ]
