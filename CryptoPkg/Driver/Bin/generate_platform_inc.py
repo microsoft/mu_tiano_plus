@@ -71,27 +71,34 @@ def main():
     dsc_lines.append("# this is to be included by a platform :)")
     dsc_lines.append("[Defines]")
     all_flavors = "ALL "+" ".join(list(flavors))
-    dsc_lines.append("!ifndef CRYPTO_SERVICES")
-    dsc_lines.append(" DEFINE CRYPTO_SERVICES = ALL")
-    dsc_lines.append("!endif")
-    dsc_lines.append(f"!if $(CRYPTO_SERVICES) IN \"{all_flavors}\"")
-    dsc_lines.append(" # we don't have a problem")
-    dsc_lines.append("!else")
-    dsc_lines.append(f" !error CRYPTO_SERVICES must be set to one of {all_flavors}.")
-    dsc_lines.append("!endif")
-    dsc_lines.append("")
+    for phase in phases:
+        phase = phase.upper()
+        dsc_lines.append(f"!ifndef {phase}_CRYPTO_SERVICES")
+        dsc_lines.append(f" DEFINE {phase}_CRYPTO_SERVICES = ALL")
+        dsc_lines.append("!endif")
+        dsc_lines.append(f"!if $({phase}_CRYPTO_SERVICES) IN \"{all_flavors}\"")
+        dsc_lines.append(" # we don't have a problem")
+        dsc_lines.append("!else")
+        dsc_lines.append(f" !error CRYPTO_SERVICES must be set to one of {all_flavors}.")
+        dsc_lines.append("!endif")
+        dsc_lines.append("")
     
+    # generate the components to include
     for flavor in flavors:
-        dsc_lines.append(f"!if $(CRYPTO_SERVICES) == {flavor}")
-        for target in targets:
-            dsc_lines.append(f" !if $(TARGET) == {target}")
-            dsc_lines.append("    [Components.X64, Components.IA32]")
-            dsc_lines.append(f"      CryptoPkg/Driver/Bin/{inf_start}_{flavor}_Pei_{target}.inf")
-            dsc_lines.append(f"      CryptoPkg/Driver/Bin/{inf_start}_{flavor}_Smm_{target}.inf")
-            dsc_lines.append("    [Components.IA32, Components.X64, Components.AARCH64]")
-            dsc_lines.append(f"      CryptoPkg/Driver/Bin/{inf_start}_{flavor}_Dxe_{target}.inf")
-            dsc_lines.append("  !endif")
-        dsc_lines.append("!endif\n")
+        for phase in phases:
+            uphase = phase.upper()
+            for target in targets:
+                dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == {flavor} AND $(TARGET) == {target}")
+                if phase == "Pei" or phase == "Smm":
+                    dsc_lines.append("    [Components.X64, Components.IA32]")
+                else:
+                    dsc_lines.append("    [Components.IA32, Components.X64, Components.AARCH64]")
+                dsc_lines.append(f"      CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_{target}.inf ")
+                dsc_lines.append("  !endif")
+            dsc_lines.append("!endif\n")
+    
+    # generate the library classes
+
 
     generate_file_replacement(dsc_lines, None, "CryptoDriver.inc.dsc", options(), comment="#")
 
