@@ -59,15 +59,17 @@ def main():
         if phase == "Smm":
             guid = guid[:-2] + "30"
         if len(guid) != len(origional_guid):
-            raise ValueError(f"{guid} is not long enough. {len(guid)} vs {len(origional_guid)}")
+            raise ValueError(f"{guid} is not long enough. {len(guid)} vs {len(origional_guid)}")        
         inf_lines.extend(["[Defines]",
-                          "INF_VERSION                    = 0x0001001B",
-                          f"BASE_NAME                      = BaseCryptoDriver{phase}",
-                          "MODULE_UNI_FILE                = Crypto.uni",
-                          f"FILE_GUID                      = {guid}",
-                          f"MODULE_TYPE                    = {mod_type}",
-                          "VERSION_STRING                 = 1.0",
-                          f"ENTRY_POINT                    = Crypto{phase}Entry"])
+                          "  INF_VERSION                    = 0x0001001B",
+                          f"  BASE_NAME                      = BaseCryptoDriver{phase}",
+                          "  MODULE_UNI_FILE                = Crypto.uni",
+                          f"  FILE_GUID                      = {guid}",
+                          f"  MODULE_TYPE                    = {mod_type}",
+                          "  VERSION_STRING                 = 1.0",
+                          f"  ENTRY_POINT                    = Crypto{phase}Entry"])
+        if phase == "Smm":
+            inf_lines.append("  PI_SPECIFICATION_VERSION       = 0x00010014")
         inf_lines.append("\n[Binaries]")
         inf_lines.append(
             f"  {phase.upper()}_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
