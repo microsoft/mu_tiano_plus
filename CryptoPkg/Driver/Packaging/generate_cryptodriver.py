@@ -35,15 +35,13 @@ def main():
         if options.copy:
             # TODO: define this somewhere globally
             c_file_path = os.path.join(options.out_dir, "temp_Crypto.c")
-            shutil.copyfile(c_file_path, os.path.join(
-                ROOT_DIR, "CryptoPkg", "Driver", "Crypto.c"))
+            shutil.copyfile(c_file_path, os.path.join(ROOT_DIR, "CryptoPkg", "Driver", "Crypto.c"))
     if options.h_file:
         get_crypto_h(options, crypto_functions)
         if options.copy:
             # TODO: define this somewhere globally
             h_file_path = os.path.join(options.out_dir, "temp_Crypto.h")
-            shutil.copyfile(h_file_path, os.path.join(
-                ROOT_DIR, "CryptoPkg", "Private", "Protocol", "Crypto.h"))
+            shutil.copyfile(h_file_path, os.path.join(ROOT_DIR, "CryptoPkg", "Private", "Protocol", "Crypto.h"))
     if options.p_file:
         get_crypto_pcds(options, crypto_functions)
     if options.d_file:
@@ -55,8 +53,7 @@ def main():
         if options.copy:
             # TODO: define this somewhere globally
             c_lib_file_path = os.path.join(options.out_dir, "temp_CryptLib.c")
-            shutil.copyfile(c_lib_file_path, os.path.join(
-                ROOT_DIR, "CryptoPkg", "Library", "BaseCryptLibOnProtocolPpi", "CryptLib.c"))
+            shutil.copyfile(c_lib_file_path, os.path.join(ROOT_DIR, "CryptoPkg", "Library", "BaseCryptLibOnProtocolPpi", "CryptLib.c"))
 
     print("Success. Thanks for playing :)")
 
@@ -101,18 +98,14 @@ def ParseCommandLineOptions():
         options.l_file = True
 
     # resolve the paths against our current directory
-    options.out_dir = os.path.abspath(
-        os.path.join(SCRIPT_DIR, options.out_dir))
-    options.in_dir = os.path.abspath(
-        os.path.join(SCRIPT_DIR, options.in_dir))
+    options.out_dir = os.path.abspath(os.path.join(SCRIPT_DIR, options.out_dir))
+    options.in_dir = os.path.abspath(os.path.join(SCRIPT_DIR, options.in_dir))
 
     # make sure our output and input paths are real places
     if not os.path.exists(options.out_dir):
-        raise FileNotFoundError(
-            f"Make sure your output directory exists: {options.out_dir}")
+        raise FileNotFoundError(f"Make sure your output directory exists: {options.out_dir}")
     if not os.path.exists(options.in_dir):
-        raise FileNotFoundError(
-            f"Make sure your output directory exists: {options.in_dir}")
+        raise FileNotFoundError(f"Make sure your output directory exists: {options.in_dir}")
 
     if options.verbose:
         print(f"Writing output to: {options.out_dir}")
@@ -126,7 +119,7 @@ def get_flavors():
     The flavors of shared crypto to use.
     families are the types to turn on (SHA1 for example), it must be uppercase
     individuals are the functions to turn on and must be spelled correctly
-    exlude are the functions that will always off and take prescedence
+    exclude are the functions that will always off and take precedence
     guid is the guid to use for the binaries that get generated
             the last two digits will be used to tell what type of binary it is (PEI, DXE, SMM, etc)
     '''
@@ -190,8 +183,7 @@ def read_header_file(options, path):
             lines.extend(self.comment)
             lines.append(self.return_type)
             lines.append("EFI_API")
-            lines.append(
-                f"{self.name} ( // From {self.source}:{self.line_no}")
+            lines.append(f"{self.name} ( // From {self.source}:{self.line_no}")
             lines.extend(self.params)
             lines.append("  );")
 
@@ -246,8 +238,7 @@ def read_header_file(options, path):
 
         def get_params_tuple(self):
             ''' get the parameters as a tuple. If there aren't any, it returns ["VOID"] '''
-            param_names = list(
-                map(lambda x: x.strip(",").strip().strip(" OPTIONAL").strip("[]").strip().split()[-1].strip("*").strip(","), self.params))
+            param_names = list(map(lambda x: x.strip(",").strip().strip(" OPTIONAL").strip("[]").strip().split()[-1].strip("*").strip(","), self.params))
             if len(param_names) == 1 and param_names[0] == 'VOID':
                 return []
             return param_names
@@ -277,11 +268,9 @@ def read_header_file(options, path):
             possible_types = filter(lambda x: name.startswith(x), valid_types)
             self.type = ""
             for possible_type in possible_types:
-                self.type = possible_type if len(
-                    possible_type) > len(self.type) else self.type
+                self.type = possible_type if len(possible_type) > len(self.type) else self.type
             if self.type == "":
-                raise ValueError(
-                    f"{self.source}:{self.line_no} Unknown type: {name}")
+                raise ValueError(f"{self.source}:{self.line_no} Unknown type: {name}")
 
             return self.type
 
@@ -334,8 +323,7 @@ def read_basecryptlib_and_tlslib(options):
     ''' reads in the BaseCryptLib and TlsLib header to generate the protocol '''
     # first we must find the BaseCryptLib and TlsLib
     # we can assume that it's located in ..\..\Include\Library\BaseCryptLib.h
-    library_dir = os.path.abspath(os.path.join(
-        SCRIPT_DIR, "..", "..", "Include", "Library"))
+    library_dir = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "Include", "Library"))
     if options.verbose:
         print(f"Looking for BaseCryptLib.h and TlsLib.h at: {library_dir}")
     # check that the directory exists
@@ -357,8 +345,7 @@ def sort_functions(functions):
         return []
     sorted_functions = []
     for valid_type in functions[0].valid_types():
-        funcs_of_type = list(
-            filter(lambda x: x.get_type() == valid_type, functions))
+        funcs_of_type = list(filter(lambda x: x.get_type() == valid_type, functions))
         sorted_functions.append((valid_type, funcs_of_type))
     return sorted_functions
 
@@ -376,8 +363,7 @@ def generate_file_replacement(replacement_lines, input_path, output_filename, op
 
     if input_path is not None:
         # read in the input file
-        input_file_path = os.path.abspath(
-            os.path.join(options.in_dir, input_path))
+        input_file_path = os.path.abspath(os.path.join(options.in_dir, input_path))
         if os.path.exists(input_file_path):
             input_file = open(input_file_path)
             input_lines = input_file.read().splitlines()
@@ -416,11 +402,9 @@ def get_crypto_c(options, functions):
 
     # generate the function bodies
     for valid_type, funcs in sorted_functions:
-        lines.append(
-            "//=============================================================================")
+        lines.append("//=============================================================================")
         lines.append(f"//     {valid_type} functions")
-        lines.append(
-            "//=============================================================================")
+        lines.append("//=============================================================================")
         for func in funcs:
             lines.extend(func.comment)
             lines.append(f"// See {func.source}:{func.line_no}")
@@ -434,16 +418,13 @@ def get_crypto_c(options, functions):
                 lines.append("  VA_LIST Args;")
                 lines.append("  BOOLEAN Result;")
                 lines.append(f"  VA_START (Args,{params[0]});")
-                lines.append(
-                    f"  Result = CryptoService{func.name}V {func.get_params_formatted()};")
+                lines.append(f"  Result = CryptoService{func.name}V {func.get_params_formatted()};")
                 lines.append("  VA_END (Args);")
                 lines.append("  return Result;")
             elif (func.return_type == "VOID"):
-                lines.append(
-                    f"  CALL_VOID_BASECRYPTLIB ({func.name}, {func.get_params_formatted()});")
+                lines.append(f"  CALL_VOID_BASECRYPTLIB ({func.name}, {func.get_params_formatted()});")
             else:
-                lines.append(
-                    f"  return CALL_BASECRYPTLIB ({func.name}, {func.get_params_formatted()}, {func.get_default_value()});")
+                lines.append(f"  return CALL_BASECRYPTLIB ({func.name}, {func.get_params_formatted()}, {func.get_default_value()});")
 
             lines.append("}")
 
@@ -457,8 +438,7 @@ def get_crypto_c(options, functions):
             lines.append(f"  NULL_IF_DISABLED({func.name}),")
     lines.append("};")
 
-    generate_file_replacement(
-        lines, "Crypto.template.c", "temp_Crypto.c", options)
+    generate_file_replacement(lines, "Crypto.template.c", "temp_Crypto.c", options)
 
 
 def get_crypto_lib_c(options, functions):
@@ -469,16 +449,13 @@ def get_crypto_lib_c(options, functions):
     sorted_functions = sort_functions(functions)
     # generate the function bodies
     for valid_type, funcs in sorted_functions:
-        lines.append(
-            "//=============================================================================")
+        lines.append("//=============================================================================")
         lines.append(f"//     {valid_type} functions")
-        lines.append(
-            "//=============================================================================")
+        lines.append("//=============================================================================")
         for func in funcs:
             # add a macro that will turn this off if it's not enabled by PCD
             if options.ctc:
-                lines.append(
-                    f"#if FixedPcdGetBool(PcdCryptoService{func.name})")
+                lines.append(f"#if FixedPcdGetBool(PcdCryptoService{func.name})")
             lines.extend(func.comment)  # add the function comment
             lines.append(f"// See {func.source}:{func.line_no}")
             lines.append(func.return_type)  # return type
@@ -492,16 +469,13 @@ def get_crypto_lib_c(options, functions):
                 lines.append("  VA_LIST Args;")
                 lines.append("  BOOLEAN Result;")
                 lines.append(f"  VA_START (Args,{params[0]});")
-                lines.append(
-                    f"  Result = {func.name}V {func.get_params_formatted()};")
+                lines.append(f"  Result = {func.name}V {func.get_params_formatted()};")
                 lines.append("  VA_END (Args);")
                 lines.append("  return Result;")
             elif (func.return_type == "VOID"):
-                lines.append(
-                    f"  CALL_VOID_CRYPTO_SERVICE ({func.name}, {func.get_params_formatted()});")
+                lines.append(f"  CALL_VOID_CRYPTO_SERVICE ({func.name}, {func.get_params_formatted()});")
             else:
-                lines.append(
-                    f"  CALL_CRYPTO_SERVICE ({func.name}, {func.get_params_formatted()}, {func.get_default_value()});")
+                lines.append(f"  CALL_CRYPTO_SERVICE ({func.name}, {func.get_params_formatted()}, {func.get_default_value()});")
             lines.append("}")
             # if we're doing compile time checking, have an else statement
             if options.ctc:
@@ -510,8 +484,7 @@ def get_crypto_lib_c(options, functions):
                 # we want to generate an error if someone includes this in their binary
                 lines.append(f"#endif\n")
 
-    generate_file_replacement(
-        lines, "CryptLib.template.c", "temp_CryptLib.c", options)
+    generate_file_replacement(lines, "CryptLib.template.c", "temp_CryptLib.c", options)
 
 
 def get_crypto_h(options, functions):
@@ -523,11 +496,9 @@ def get_crypto_h(options, functions):
 
     # Generate the function prototypes
     for valid_type, funcs in sorted_functions:
-        lines.append(
-            "//=============================================================================")
+        lines.append("//=============================================================================")
         lines.append(f"//     {valid_type} functions")
-        lines.append(
-            "//=============================================================================")
+        lines.append("//=============================================================================")
         for func in funcs:
             lines.extend(func.comment)
             lines.append(f"// FROM {func.source}:{func.line_no}")
@@ -542,19 +513,16 @@ def get_crypto_h(options, functions):
     lines.append("///\n/// EDK II Crypto Protocol\n///")
     lines.append("struct _EDKII_CRYPTO_PROTOCOL {")
     lines.append(" // VERSION")
-    lines.append(
-        "  EDKII_CRYPTO_GET_VERSION                          GetVersion;")
+    lines.append("  EDKII_CRYPTO_GET_VERSION                          GetVersion;")
     # generate the struct memebers
     for valid_type, funcs in sorted_functions:
         lines.append(f"  // {valid_type}")
         for func in funcs:
-            member_name = func.get_protocoled_name().ljust(
-                49)  # make sure they're all the same size
+            member_name = func.get_protocoled_name().ljust(49)  # make sure they're all the same size
             lines.append(f"  {member_name} {func.name};")
     lines.append("};")
 
-    generate_file_replacement(
-        lines, "Crypto.template.h", "temp_Crypto.h", options)
+    generate_file_replacement(lines, "Crypto.template.h", "temp_Crypto.h", options)
 
 
 def get_crypto_dsc(options, functions):
@@ -571,17 +539,13 @@ def get_crypto_dsc(options, functions):
     lines.append(f"!if $(CRYPTO_SERVICES) IN \"{all_flavors}\"")
     lines.append(" # we don't have a problem")
     lines.append("!else")
-    lines.append(
-        f" !error CRYPTO_SERVICES must be set to one of {all_flavors}.")
+    lines.append(f" !error CRYPTO_SERVICES must be set to one of {all_flavors}.")
     lines.append("!endif")
     lines.append("")
     # Set the default file guids
-    lines.append(
-        "  DEFINE PEI_CRYPTO_DRIVER_FILE_GUID = d6f4500f-ad73-4368-9149-842c49f3aa00")
-    lines.append(
-        "  DEFINE DXE_CRYPTO_DRIVER_FILE_GUID = 254e0f83-c675-4578-bc16-d44111c34e01")
-    lines.append(
-        "  DEFINE SMM_CRYPTO_DRIVER_FILE_GUID = be5b74af-e07f-456b-a9e4-296c8fee9502")
+    lines.append("  DEFINE PEI_CRYPTO_DRIVER_FILE_GUID = d6f4500f-ad73-4368-9149-842c49f3aa00")
+    lines.append("  DEFINE DXE_CRYPTO_DRIVER_FILE_GUID = 254e0f83-c675-4578-bc16-d44111c34e01")
+    lines.append("  DEFINE SMM_CRYPTO_DRIVER_FILE_GUID = be5b74af-e07f-456b-a9e4-296c8fee9502")
     lines.append("")
 
     # set the file guid for the different flavors
@@ -621,19 +585,16 @@ def get_crypto_dsc(options, functions):
             flavor_lines.append(f"# {sort_type} family")
             for function in funcs:
                 if function.name not in exclude:
-                    flavor_lines.append(
-                        f"  {function.get_pcd_name().ljust(70)}| TRUE")
+                    flavor_lines.append(f"  {function.get_pcd_name().ljust(70)}| TRUE")
         # set individuals
         indiv = flavors[flavor]["individuals"]
         flavor_lines.append("# Individuals")
         for function in functions:
             if function.name in indiv and function.name not in exclude:
-                flavor_lines.append(
-                    f"  {function.get_pcd_name().ljust(70)}| TRUE")
+                flavor_lines.append(f"  {function.get_pcd_name().ljust(70)}| TRUE")
 
         flavor_file = f"Crypto.pcd.{flavor}.inc.dsc"
-        generate_file_replacement(
-            flavor_lines, None, flavor_file, options, "#")
+        generate_file_replacement(flavor_lines, None, flavor_file, options, "#")
         lines.append(f"!include CryptoPkg/Driver/Packaging/{flavor_file}")
         lines.append("!endif\n")
 
@@ -650,12 +611,10 @@ def get_crypto_pcds(options, functions):
     for valid_type, funcs in sorted_functions:
         lines.append(f"# {valid_type}")
         for func in funcs:
-            lines.append(
-                f"  {func.get_pcd_name()}|FALSE|BOOLEAN|{hex(index)}")
+            lines.append(f"  {func.get_pcd_name()}|FALSE|BOOLEAN|{hex(index)}")
             index += 1
 
-    generate_file_replacement(
-        lines, None, "temp_crypto_pcd.inc.dec", options, "#")
+    generate_file_replacement(lines, None, "temp_crypto_pcd.inc.dec", options, "#")
 
 
 def get_crypto_inf(options, functions):
@@ -665,8 +624,7 @@ def get_crypto_inf(options, functions):
     lines.append("[Pcd]")
     for func in functions:
         lines.append(f"  {func.get_pcd_name().ljust(50)} # CONSUMES")
-    generate_file_replacement(
-        lines, None, "temp_crypto_pcd.inc.inf", options, "#")
+    generate_file_replacement(lines, None, "temp_crypto_pcd.inc.inf", options, "#")
 
 
 if __name__ == "__main__":

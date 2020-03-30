@@ -26,6 +26,28 @@ def delete_files_of_pattern(pattern):
         os.remove(file_path)
 
 
+def get_supported_module_types(phase):
+    phase = phase.upper()
+    if phase == "PEI":
+        return ["PEIM", ]
+    elif phase == "DXE":
+        return ["DXE_DRIVER", "UEFI_DRIVER", "UEFI_APPLICATION"]
+    elif phase == "SMM":
+        return ["DXE_SMM_DRIVER", ]
+    return ["", ]
+
+def get_supported_library_types(phase):
+    phase = phase.upper()
+    if phase == "PEI":
+        return ["PEIM", "PEI_CORE"]
+    elif phase == "DXE":
+        return ["DXE_DRIVER", "UEFI_DRIVER", "UEFI_APPLICATION", "DXE_CORE"]
+    elif phase == "SMM":
+        return ["DXE_SMM_DRIVER", "SMM_CORE", "MM_STANDALONE"]
+    return ["", ]
+
+
+
 def main():
     class options():
         out_dir = SCRIPT_DIR
@@ -47,6 +69,7 @@ def main():
     inf_start = "CryptoDriverBin"
     delete_files_of_pattern(f"{inf_start}*.inf")
 
+    # generate the inf files that include the binary files from nuget
     for flavor, phase, target in inf_files:
         inf_lines = []
         guid = flavors[flavor]["guid"]
@@ -56,7 +79,7 @@ def main():
             "Smm": "DXE_SMM_DRIVER"
         }
         mod_type = module_types[phase]
-        origional_guid = guid
+        original_guid = guid
         if target == "DEBUG":
             guid = guid[:-3] + "D00"
         if target == "RELEASE":
@@ -67,8 +90,8 @@ def main():
             guid = guid[:-2] + "20"
         if phase == "Smm":
             guid = guid[:-2] + "30"
-        if len(guid) != len(origional_guid):
-            raise ValueError(f"{guid} is not long enough. {len(guid)} vs {len(origional_guid)}")        
+        if len(guid) != len(original_guid):
+            raise ValueError(f"{guid} is not long enough. {len(guid)} vs {len(original_guid)}")
         inf_lines.extend(["[Defines]",
                           "  INF_VERSION                    = 0x0001001B",
                           f"  BASE_NAME                      = BaseCryptoDriver{phase}",
@@ -80,21 +103,19 @@ def main():
         if phase == "Smm":
             inf_lines.append("  PI_SPECIFICATION_VERSION       = 0x00010014")
         inf_lines.append("\n[Binaries]")
-        inf_lines.append(
-            f"  {phase.upper()}_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
+        inf_lines.append(f"  {phase.upper()}_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
         for arch in arches:
             inf_lines.append(f"\n[Binaries.{arch}]")
-            inf_lines.append(
-                f"  PE32|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/{arch}/Crypto{phase}.efi")
+            inf_lines.append(f"  PE32|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/{arch}/Crypto{phase}.efi")
         inf_lines.append("\n[Packages]")
         inf_lines.append("  CryptoPkg/CryptoPkg.dec")
         inf_lines.append("")
         inf_lines.append("[Depex]")
         inf_lines.append("  TRUE")
-        generate_file_replacement(
-            inf_lines, None, f"{inf_start}_{flavor}_{phase}_{target}.inf", options(), comment="#")
+        generate_file_replacement(inf_lines, None, f"{inf_start}_{flavor}_{phase}_{target}.inf", options(), comment="#")
 
     # now we generate the DSC include
+    # start with making sure variables are defined
     dsc_lines = []
     dsc_lines.append("# this is to be included by a platform :)")
     dsc_lines.append("[Defines]")
@@ -104,12 +125,10 @@ def main():
         dsc_lines.append(f"!ifndef {phase}_CRYPTO_SERVICES")
         dsc_lines.append(f" DEFINE {phase}_CRYPTO_SERVICES = ALL")
         dsc_lines.append("!endif")
-        dsc_lines.append(
-            f"!if $({phase}_CRYPTO_SERVICES) IN \"{all_flavors}\"")
+        dsc_lines.append(f"!if $({phase}_CRYPTO_SERVICES) IN \"{all_flavors}\"")
         dsc_lines.append(" # we don't have a problem")
         dsc_lines.append("!else")
-        dsc_lines.append(
-            f" !error CRYPTO_SERVICES must be set to one of {all_flavors}.")
+        dsc_lines.append(f" !error CRYPTO_SERVICES must be set to one of {all_flavors}.")
         dsc_lines.append("!endif")
         dsc_lines.append(f"!ifndef {phase}_CRYPTO_ARCH")
         default_arch = "IA32" if phase == "PEI" else "X64"
@@ -117,21 +136,16 @@ def main():
         dsc_lines.append("!endif")
         dsc_lines.append("")
 
-    # generate the components to include
+    # generate the components to include in the DSC
     for flavor in flavors:
         for phase in phases:
-            uphase = phase.upper()
-            comp_types = ["", ]
-            if phase == "Pei":
-                comp_types = ["PEIM", ]
-            elif phase == "Dxe":
-                comp_types = ["DXE_DRIVER", "UEFI_DRIVER", "UEFI_APPLICATION"]
-            elif phase == "Smm":
-                comp_types = ["DXE_SMM_DRIVER", ]
-            dsc_lines.append(f"!if $({uphase}_CRYPTO_SERVICES) == {flavor}")
+            upper_phase = phase.upper()
+            comp_types = get_supported_module_types(phase)
+
+            dsc_lines.append(f"!if $({upper_phase}_CRYPTO_SERVICES) == {flavor}")
             for arch in arches:
                 comp_str = ", ".join(map(lambda x: "Components."+arch+"."+x.upper(), comp_types))
-                dsc_lines.append(f" !if $({uphase}_CRYPTO_ARCH) == {arch}")
+                dsc_lines.append(f" !if $({upper_phase}_CRYPTO_ARCH) == {arch}")
                 dsc_lines.append(f"  [{comp_str}]")
                 dsc_lines.append(" !endif")
             dsc_lines.append(f"  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
@@ -146,14 +160,24 @@ def main():
             dsc_lines.append("!endif\n")
     dsc_lines.append("")
     # generate the library classes to include
-    generate_file_replacement(
-        dsc_lines, None, "CryptoDriver.inc.dsc", options(), comment="#")
+    for phase in phases:
+        comp_types = get_supported_module_types(phase)
+        upper_phase = phase.upper()
+        
+        for arch in arches:
+            dsc_lines.append(f"!if $({upper_phase}_CRYPTO_ARCH) == {arch}")
+            lib_class_str = ", ".join(map(lambda x: ".".join(["LibraryClasses", arch, x.upper()]), comp_types))
+            dsc_lines.append(f"  [{lib_class_str}]")
+            dsc_lines.append(f"    BaseCryptLib|CryptoPkg/Library/BaseCryptLibOnProtocolPpi/{phase}CryptLib.inf")
+            dsc_lines.append(f"    TlsLib|CryptoPkg/Library/BaseCryptLibOnProtocolPpi/{phase}CryptLib.inf")
+            dsc_lines.append("")
+            dsc_lines.append("!endif\n")
+
+    generate_file_replacement(dsc_lines, None, "CryptoDriver.inc.dsc", options(), comment="#")
 
     # now we generate the FDF includes (there should be two, one for BOOTBLOCK and one for DXE)
-
     fdf_bb_lines = []
-    fdf_bb_lines.append(
-        "# this is to be included a platform inside the BOOTBLOCK or other PEI FV")
+    fdf_bb_lines.append("# this is to be included a platform inside the BOOTBLOCK or other PEI FV")
     fdf_bb_lines.append("!ifndef PEI_CRYPTO_SERVICES")
     fdf_bb_lines.append("!error You need to define PEI_CRYPTO_SERVICES")
     fdf_bb_lines.append("!endif")
@@ -161,36 +185,28 @@ def main():
         fdf_bb_lines.append(f"!if $(PEI_CRYPTO_SERVICES) == {flavor}")
         for target in targets:
             fdf_bb_lines.append(f" !if $(TARGET) == {target}")
-            fdf_bb_lines.append(
-                f"    INF  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_Pei_{target}.inf")
+            fdf_bb_lines.append(f"    INF  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_Pei_{target}.inf")
             fdf_bb_lines.append("  !endif")
         fdf_bb_lines.append("!endif\n")
-    generate_file_replacement(
-        fdf_bb_lines, None, "CryptoDriver.BOOTBLOCK.inc.fdf", options(), comment="#")
+    generate_file_replacement(fdf_bb_lines, None, "CryptoDriver.BOOTBLOCK.inc.fdf", options(), comment="#")
 
     fdf_dxe_lines = []
-    fdf_dxe_lines.append(
-        "# this is to be included a platform inside the BOOTBLOCK or other PEI FV")
+    fdf_dxe_lines.append("# this is to be included a platform inside the BOOTBLOCK or other PEI FV")
     fdf_dxe_lines.append("!ifndef DXE_CRYPTO_SERVICES")
-    fdf_dxe_lines.append(
-        "!error You need to define in your platform DXE_CRYPTO_SERVICES")
+    fdf_dxe_lines.append("!error You need to define in your platform DXE_CRYPTO_SERVICES")
     fdf_dxe_lines.append("!endif")
     fdf_dxe_lines.append("!ifndef SMM_CRYPTO_SERVICES")
-    fdf_dxe_lines.append(
-        "!error You need to define in your platform SMM_CRYPTO_SERVICES")
+    fdf_dxe_lines.append("!error You need to define in your platform SMM_CRYPTO_SERVICES")
     fdf_dxe_lines.append("!endif")
     for flavor in flavors:
         for phase in ["Dxe", "Smm"]:
-            fdf_dxe_lines.append(
-                f"!if $({phase.upper()}_CRYPTO_SERVICES) == {flavor}")
+            fdf_dxe_lines.append(f"!if $({phase.upper()}_CRYPTO_SERVICES) == {flavor}")
             for target in targets:
                 fdf_dxe_lines.append(f" !if $(TARGET) == {target}")
-                fdf_dxe_lines.append(
-                    f"    INF  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_{target}.inf")
+                fdf_dxe_lines.append(f"    INF  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_{target}.inf")
                 fdf_dxe_lines.append("  !endif")
             fdf_dxe_lines.append("!endif\n")
-    generate_file_replacement(
-        fdf_dxe_lines, None, "CryptoDriver.DXE.inc.fdf", options(), comment="#")
+    generate_file_replacement(fdf_dxe_lines, None, "CryptoDriver.DXE.inc.fdf", options(), comment="#")
 
 
 if __name__ == "__main__":

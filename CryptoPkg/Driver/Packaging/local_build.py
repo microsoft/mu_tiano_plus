@@ -61,8 +61,7 @@ if __name__ == "__main__":
     script_dir = os.path.dirname(__file__)
 
     root_dir = os.path.abspath(os.path.join(script_dir, "..", "..", ".."))
-    nuget_collection_dir = os.path.join(
-        root_dir, "Build", "CryptoDriver_Nuget")
+    nuget_collection_dir = os.path.join(root_dir, "Build", "CryptoDriver_Nuget")
     pytools_config = os.path.join(root_dir, ".pytool", "CISettings.py")
     build_output = os.path.join(root_dir, "Build", "CryptoPkg")
     # check if we have the pytool config as a sanity check
@@ -105,8 +104,7 @@ if __name__ == "__main__":
     for service in flavors:
         # First we need to clean out the previous builds Build\CryptoPkg\DEBUG_VS2017\X64\CryptoPkg\Driver
         if clean:
-            old_build_folders = glob.iglob(os.path.join(
-                build_output, "*", "*", "CryptoPkg", "Driver"))
+            old_build_folders = glob.iglob(os.path.join(build_output, "*", "*", "CryptoPkg", "Driver"))
             for old_build_folder in old_build_folders:
                 shutil.rmtree(old_build_folder)
                 if verbose:
@@ -116,23 +114,19 @@ if __name__ == "__main__":
         os.mkdir(nuget_output_dir)
         print(f"{build_command}: {service}")
         params = f"-p CryptoPkg BLD_*_CRYPTO_SERVICES={service} BUILDREPORTING=TRUE BUILDREPORT_TYPES=\"LIBRARY DEPEX PCD BUILD_FLAGS\" TOOL_CHAIN_TAG=VS2017"
-        ret = RunCmd(
-            build_command, f"-c {pytools_config} -t RELEASE,DEBUG {params}", workingdir=root_dir)
+        ret = RunCmd(build_command, f"-c {pytools_config} -t RELEASE,DEBUG {params}", workingdir=root_dir)
         if ret != 0:
             print(f"{build_command} failed with code: {ret}")
             sys.exit(ret)
 
         # find all the things we want to find
-        build_reports = glob.iglob(os.path.join(
-            build_output, "*", "Build_REPORT.TXT"), recursive=True)
+        build_reports = glob.iglob(os.path.join(build_output, "*", "Build_REPORT.TXT"), recursive=True)
         for build_report in build_reports:
             # remove the beginning off the found path
             build_report_rel_path = build_report[len(build_output):]
-            move_with_mapping(
-                build_report, build_report_rel_path, nuget_output_dir, verbose)
+            move_with_mapping(build_report, build_report_rel_path, nuget_output_dir, verbose)
 
-        efi_searches = [os.path.join(
-            build_output, "**", "Crypto*.efi"), os.path.join(build_output, "**", "Crypto*.depex")]
+        efi_searches = [os.path.join(build_output, "**", "Crypto*.efi"), os.path.join(build_output, "**", "Crypto*.depex")]
         for efi_search in efi_searches:
             efi_files = glob.iglob(efi_search, recursive=True)
             for efi_file in efi_files:
@@ -145,8 +139,7 @@ if __name__ == "__main__":
     # nuget-publish --Operation Pack --OutputLog $(Build.StagingDirectory)/NugetPackagingLog.txt --ConfigFilePath $(Build.StagingDirectory)/NugetPackageConfig.json --InputFolderPath $(Build.StagingDirectory)/$(temp_publication_directory) --Version $(release_version) --OutputFolderPath $(Build.StagingDirectory)/PackageOutput;
     commands = [" --Operation Pack", "--OutputLog",
                 os.path.join(build_output, "NUGET_PACK.txt")]
-    config_file_path = os.path.join(
-        script_dir, "edk2-BaseCryptoDriver.config.json")
+    config_file_path = os.path.join(script_dir, "edk2-BaseCryptoDriver.config.json")
     commands.append(f"--ConfigFilePath {os.path.join(script_dir, )}")
     ret = RunCmd("nuget-publish", " ".join(commands), workingdir=root_dir)
     print("All done")
