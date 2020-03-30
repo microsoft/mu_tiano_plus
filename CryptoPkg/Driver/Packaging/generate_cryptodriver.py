@@ -88,8 +88,8 @@ def ParseCommandLineOptions():
                            help="The directory where the template files are stored, relative to this script")
     ParserObj.add_argument("-copy", "--copy", dest="copy", default=False, action='store_true',
                            help="Copy the created files into the correct location (Crypto.c, crypto.h, CryptLib.c)")
-    ParserObj.add_argument("--disable-comp-time", "-dctc", dest="dctc", default=False, action='store_true',
-                           help="Disable Compile Time check for generated library files")
+    ParserObj.add_argument("--enable-comp-time", "-ctc", dest="ctc", default=False, action='store_true',
+                           help="Enable Compile Time check for generated library files")
     # parse the args
     options = ParserObj.parse_args()
     if options.all:
@@ -151,7 +151,7 @@ def get_flavors():
         },
         "STANDARD": {
             "families": ["HMACSHA1", "HMACSHA256", "PKCS", "SHA1", "SHA256", "RANDOM", "TLS", "TLSGET", "TLSSET"],
-            "individuals": ["AesInit", "AesCbcEncrypt", "AesCbcDecrypt", "RsaPkcs1Verify", "RsaNew", "RsaFree", "RsaGetPublicKeyFromX509", "X509GetSubjectName", "X509GetCommonName", "X509GetOrganizationName", "X509GetTBSCert"],
+            "individuals": ["RsaPkcs1Verify", "RsaNew", "RsaFree", "RsaGetPublicKeyFromX509", "X509GetSubjectName", "X509GetCommonName", "X509GetOrganizationName", "X509GetTBSCert"],
             "exclude": ["Sha1HashAll", "Sha256HashAll", "Pkcs7Sign", "Pkcs7GetCertificatesList", "ImageTimestampVerify"],
             "guid": "bdee011f-87f2-4a7f-bc5e-44b6b61fef00"
         }
@@ -476,17 +476,18 @@ def get_crypto_lib_c(options, functions):
             "//=============================================================================")
         for func in funcs:
             # add a macro that will turn this off if it's not enabled by PCD
-            if not options.dctc:
+            if options.ctc:
                 lines.append(
                     f"#if FixedPcdGetBool(PcdCryptoService{func.name})")
-            lines.extend(func.comment)
+            lines.extend(func.comment)  # add the function comment
             lines.append(f"// See {func.source}:{func.line_no}")
-            lines.append(func.return_type)
+            lines.append(func.return_type)  # return type
             lines.append(f"{func.name} (")
             lines.extend(func.params if len(func.params) > 0 else ["  VOID", ])
             lines.append("  )")
             lines.append("{")
             params = func.get_params_tuple()
+            # we need to do something special for variable args
             if len(params) > 0 and params[-1] == "...":
                 lines.append("  VA_LIST Args;")
                 lines.append("  BOOLEAN Result;")
@@ -502,7 +503,8 @@ def get_crypto_lib_c(options, functions):
                 lines.append(
                     f"  CALL_CRYPTO_SERVICE ({func.name}, {func.get_params_formatted()}, {func.get_default_value()});")
             lines.append("}")
-            if not options.dctc:
+            # if we're doing compile time checking, have an else statement
+            if options.ctc:
                 lines.append("#else")
                 # TODO generate something that will cause the linker to have errors?
                 # we want to generate an error if someone includes this in their binary
