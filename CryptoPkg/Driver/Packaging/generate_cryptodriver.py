@@ -1,9 +1,12 @@
 ##
-# This file creates three files for the CryptoDriver
+# This file creates three files for the CryptoDriver. These files are placed inside the CryptoPkg itself.
 # - The Crypto.c file that populates the protocol struct
 # - The Crypto.h file which contains defintions for the protocol itself and the functions
-# - The Pcd.inc.dec file which has a list of all the PCD's the will get defined
+# - The Pcd.inc.dec file which has a list of all the PCD's the will get defined. This is meant to be copied into the CryptoPkg.dec
 # - The CryptoPkg.inc.dsc which is included in the DSC that configures that various flavors
+#            (it's split up into different flavors for easier including by other platforms)
+# - The Crypto.inc.inf file which ic meant to be copied into an inf file (CryptoSmm.inf for example)
+#
 # If you wish to add or tweak a flavor, this is the place to do it
 #
 # Copyright (c) Microsoft Corporation
@@ -117,6 +120,7 @@ def ParseCommandLineOptions():
     return options
 
 
+# This is the place to define the flavors
 def get_flavors():
     ''' 
     The flavors of shared crypto to use.
@@ -473,7 +477,8 @@ def get_crypto_lib_c(options, functions):
         for func in funcs:
             # add a macro that will turn this off if it's not enabled by PCD
             if not options.dctc:
-                lines.append(f"#if FixedPcdGetBool(PcdCryptoService{func.name})")
+                lines.append(
+                    f"#if FixedPcdGetBool(PcdCryptoService{func.name})")
             lines.extend(func.comment)
             lines.append(f"// See {func.source}:{func.line_no}")
             lines.append(func.return_type)
@@ -621,10 +626,12 @@ def get_crypto_dsc(options, functions):
         flavor_lines.append("# Individuals")
         for function in functions:
             if function.name in indiv and function.name not in exclude:
-                flavor_lines.append(f"  {function.get_pcd_name().ljust(70)}| TRUE")
-        
+                flavor_lines.append(
+                    f"  {function.get_pcd_name().ljust(70)}| TRUE")
+
         flavor_file = f"Crypto.pcd.{flavor}.inc.dsc"
-        generate_file_replacement(flavor_lines, None, flavor_file, options, "#")
+        generate_file_replacement(
+            flavor_lines, None, flavor_file, options, "#")
         lines.append(f"!include CryptoPkg/Driver/Packaging/{flavor_file}")
         lines.append("!endif\n")
 

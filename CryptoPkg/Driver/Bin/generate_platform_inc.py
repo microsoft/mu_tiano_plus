@@ -1,3 +1,12 @@
+##
+# This file creates files for a platform to include
+# - The CryptoDriverBin_.inf files (one for each flavor, phase, and target) that pulls in the right binary from the nuget ext_dep
+# - The CryptoDriver FDF includes, which are included by a platform FDF (BOOTBLOCK and DXE)
+# - The CryptoDrive.inc.dsc which is a file included by the platform DSC that setups a platform to use the binary pre-packaged version
+#
+# Copyright (c) Microsoft Corporation
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
 import os
 import sys
 import glob
