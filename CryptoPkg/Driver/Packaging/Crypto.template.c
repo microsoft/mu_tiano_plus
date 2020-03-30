@@ -60,15 +60,11 @@
 /**
  * A macro that will check if the PCD is enabled for RELEASE builds
 */
-#if DEBUG                                            
-#define NULL_IF_DISABLED(Function)                   \
-  CryptoService##Function
-#else                                                
-  #define NULL_IF_DISABLED(Function)                \
-     EDKII_CRYPTO_PCD(Function)                     \
-      ? CryptoService##Function                                    \
-      : NULL 
-#endif
+#define NULL_IF_DISABLED(Function)                \
+    EDKII_CRYPTO_PCD(Function)                     \
+    ? CryptoService##Function                                    \
+    : NULL 
+
 /**
   Internal worker function that prints a debug message and asserts if a call is
   made to a BaseCryptLib function that is not enabled in the EDK II Crypto
