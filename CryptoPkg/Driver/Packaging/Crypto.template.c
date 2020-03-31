@@ -35,7 +35,7 @@
 #define CALL_BASECRYPTLIB(Function, Args, ErrorReturnValue) \
   EDKII_CRYPTO_PCD(Function)                                          \
     ? Function Args                                                 \
-    : (BaseCryptLibServciceNotEnabled (#Function), ErrorReturnValue)
+    : (BaseCryptLibServiceNotEnabled (#Function), ErrorReturnValue)
 
 /**
   A macro used to call a void BaseCryptLib function if it is enabled.
@@ -55,7 +55,7 @@
 #define CALL_VOID_BASECRYPTLIB( Function, Args)  \
   EDKII_CRYPTO_PCD(Function)                              \
     ? Function Args                                     \
-    : BaseCryptLibServciceNotEnabled (#Function)
+    : BaseCryptLibServiceNotEnabled (#Function)
 
 /**
  * A macro that will check if the PCD is enabled for RELEASE builds
@@ -80,7 +80,7 @@
 **/
 static
 VOID
-BaseCryptLibServciceNotEnabled (
+BaseCryptLibServiceNotEnabled (
   IN CONST CHAR8  *FunctionName
   )
 {
