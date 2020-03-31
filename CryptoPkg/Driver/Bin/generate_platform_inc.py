@@ -63,14 +63,15 @@ def main():
     for flavor in flavors:
         for phase in phases:
             for target in targets:
-                inf_files.append((flavor, phase, target))
+                for arch in arches:
+                    inf_files.append((flavor, phase, target, arch))
     print(f"Generating {len(inf_files)} inf files")
     # first delete any files that we don't need
     inf_start = "CryptoDriverBin"
     delete_files_of_pattern(f"{inf_start}*.inf")
 
     # generate the inf files that include the binary files from nuget
-    for flavor, phase, target in inf_files:
+    for flavor, phase, target, arch in inf_files:
         inf_lines = []
         guid = flavors[flavor]["guid"]
         module_types = {
@@ -80,21 +81,31 @@ def main():
         }
         mod_type = module_types[phase]
         original_guid = guid
-        if target == "DEBUG":
-            guid = guid[:-3] + "D00"
+        if arch == "IA32":
+            guid = guid[:-4] + "1000"
+        elif arch == "X64":
+            guid = guid[:-4] + "2000"
+        elif arch == "ARM":
+            guid = guid[:-4] + "3000"
+        elif arch == "AARCH64":
+            guid = guid[:-4] + "4000"
+
         if target == "RELEASE":
             guid = guid[:-3] + "E00"
+        elif target == "DEBUG":
+            guid = guid[:-3] + "D00"
+
         if phase == "Pei":
             guid = guid[:-2] + "10"
-        if phase == "Dxe":
+        elif phase == "Dxe":
             guid = guid[:-2] + "20"
-        if phase == "Smm":
+        elif phase == "Smm":
             guid = guid[:-2] + "30"
         if len(guid) != len(original_guid):
             raise ValueError(f"{guid} is not long enough. {len(guid)} vs {len(original_guid)}")
         inf_lines.extend(["[Defines]",
                           "  INF_VERSION                    = 0x0001001B",
-                          f"  BASE_NAME                      = BaseCryptoDriver{phase}",
+                          f"  BASE_NAME                      = BaseCryptoDriver{phase}{arch}",
                           "  MODULE_UNI_FILE                = Crypto.uni",
                           f"  FILE_GUID                      = {guid}",
                           f"  MODULE_TYPE                    = {mod_type}",
@@ -102,18 +113,15 @@ def main():
                           f"  ENTRY_POINT                    = Crypto{phase}Entry"])
         if phase == "Smm":
             inf_lines.append("  PI_SPECIFICATION_VERSION       = 0x00010014")
-        inf_lines.append("\n[Binaries]")
-        inf_lines.append(
-            f"  {phase.upper()}_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
-        for arch in arches:
-            inf_lines.append(f"\n[Binaries.{arch}]")
-            inf_lines.append(f"  PE32|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/{arch}/Crypto{phase}.efi")
+        inf_lines.append(f"\n[Binaries.{arch}]")
+        inf_lines.append(f"  PE32|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/{arch}/Crypto{phase}.efi|{target}")
+        inf_lines.append(f"  {phase.upper()}_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
         inf_lines.append("\n[Packages]")
         inf_lines.append("  CryptoPkg/CryptoPkg.dec")
         inf_lines.append("")
         inf_lines.append("[Depex]")
         inf_lines.append("  TRUE")
-        generate_file_replacement(inf_lines, None, f"{inf_start}_{flavor}_{phase}_{target}.inf", options(), comment="#")
+        generate_file_replacement(inf_lines, None, f"{inf_start}_{flavor}_{phase}_{target}_{arch}.inf", options(), comment="#")
 
     # now we generate the DSC include
     # start with making sure variables are defined
@@ -148,7 +156,7 @@ def main():
                 dsc_lines.append(f" !if $({upper_phase}_CRYPTO_ARCH) == {arch}")
                 dsc_lines.append(f"  [{comp_str}]")
                 dsc_lines.append(" !endif")
-            dsc_lines.append(f"  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET).inf ")
+            dsc_lines.append(f"  CryptoPkg/Driver/Bin/{inf_start}_{flavor}_{phase}_$(TARGET)_{arch}.inf ")
             dsc_lines.append("")
             # Add the library as well
             comp_str = ", ".join(map(lambda x: "Components."+x.upper(), comp_types))
