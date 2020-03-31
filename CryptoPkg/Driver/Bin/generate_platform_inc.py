@@ -44,7 +44,7 @@ def get_supported_library_types(phase):
     elif phase == "DXE":
         return ["DXE_DRIVER", "UEFI_DRIVER", "UEFI_APPLICATION", "DXE_CORE"]
     elif phase == "SMM":
-        return ["DXE_SMM_DRIVER", "SMM_CORE", "MM_STANDALONE"]
+        return ["DXE_SMM_DRIVER", "SMM_CORE"]
     return ["", ]
 
 
@@ -159,6 +159,7 @@ def main():
                 dsc_lines.append(" !endif")
             dsc_lines.append("")
             # Add the library as well
+            comp_types = get_supported_module_types(phase)
             comp_str = ", ".join(map(lambda x: "Components."+x.upper(), comp_types))
             dsc_lines.append(f" [{comp_str}]")
             dsc_lines.append(f"   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/{phase}CryptLib.inf " + "{")
@@ -170,7 +171,7 @@ def main():
     # generate the library classes to include
     dsc_lines.append("# LibraryClasses for ")
     for phase in phases:
-        comp_types = get_supported_module_types(phase)
+        comp_types = get_supported_library_types(phase)
         upper_phase = phase.upper()
         for arch in arches:
             dsc_lines.append(f"!if $({upper_phase}_CRYPTO_ARCH) == {arch}")
