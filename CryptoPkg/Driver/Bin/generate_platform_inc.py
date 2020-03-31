@@ -124,7 +124,7 @@ def main():
     for phase in phases:
         phase = phase.upper()
         dsc_lines.append(f"!ifndef {phase}_CRYPTO_SERVICES")
-        dsc_lines.append(f" !DEFINE {phase}_CRYPTO_SERVICES = ALL")
+        dsc_lines.append(f" !error Please define {phase}_CRYPTO_SERVICES")
         dsc_lines.append("!endif")
         dsc_lines.append(f"!if $({phase}_CRYPTO_SERVICES) IN \"{all_flavors}\"")
         dsc_lines.append(" # we don't have a problem")
