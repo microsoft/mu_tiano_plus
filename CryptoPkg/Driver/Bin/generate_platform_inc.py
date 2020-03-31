@@ -36,6 +36,7 @@ def get_supported_module_types(phase):
         return ["DXE_SMM_DRIVER", ]
     return ["", ]
 
+
 def get_supported_library_types(phase):
     phase = phase.upper()
     if phase == "PEI":
@@ -45,7 +46,6 @@ def get_supported_library_types(phase):
     elif phase == "SMM":
         return ["DXE_SMM_DRIVER", "SMM_CORE", "MM_STANDALONE"]
     return ["", ]
-
 
 
 def main():
@@ -103,7 +103,8 @@ def main():
         if phase == "Smm":
             inf_lines.append("  PI_SPECIFICATION_VERSION       = 0x00010014")
         inf_lines.append("\n[Binaries]")
-        inf_lines.append(f"  {phase.upper()}_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
+        inf_lines.append(
+            f"  {phase.upper()}_DEPEX|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/Crypto{phase}.depex|{target}")
         for arch in arches:
             inf_lines.append(f"\n[Binaries.{arch}]")
             inf_lines.append(f"  PE32|edk2-basecrypto-driver-bin_extdep/{flavor}/{target}/{arch}/Crypto{phase}.efi")
@@ -160,17 +161,16 @@ def main():
             dsc_lines.append("!endif\n")
     dsc_lines.append("")
     # generate the library classes to include
+    dsc_lines.append("# LibraryClasses for ")
     for phase in phases:
         comp_types = get_supported_module_types(phase)
         upper_phase = phase.upper()
-        
         for arch in arches:
             dsc_lines.append(f"!if $({upper_phase}_CRYPTO_ARCH) == {arch}")
             lib_class_str = ", ".join(map(lambda x: ".".join(["LibraryClasses", arch, x.upper()]), comp_types))
             dsc_lines.append(f"  [{lib_class_str}]")
             dsc_lines.append(f"    BaseCryptLib|CryptoPkg/Library/BaseCryptLibOnProtocolPpi/{phase}CryptLib.inf")
             dsc_lines.append(f"    TlsLib|CryptoPkg/Library/BaseCryptLibOnProtocolPpi/{phase}CryptLib.inf")
-            dsc_lines.append("")
             dsc_lines.append("!endif\n")
 
     generate_file_replacement(dsc_lines, None, "CryptoDriver.inc.dsc", options(), comment="#")
