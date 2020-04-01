@@ -55,7 +55,8 @@ def main():
         verbose = False
     flavors = get_flavors()
     phases = ["Pei", "Dxe", "Smm"]
-    arches = ["X64", "ARM", "AARCH64", "IA32"]
+    # Arm is currently disabled
+    arches = ["X64", "AARCH64", "IA32", ]  # "ARM"
     targets = ["DEBUG", "RELEASE"]
 
     # first we need to generate the INF files
@@ -64,11 +65,16 @@ def main():
         for phase in phases:
             for target in targets:
                 for arch in arches:
+                    if arch == "ARM":
+                        continue
+                    if arch == "AARCH64" and phase != "Dxe":
+                        continue
                     inf_files.append((flavor, phase, target, arch))
     print(f"Generating {len(inf_files)} inf files")
     # first delete any files that we don't need
     inf_start = "CryptoDriverBin"
     delete_files_of_pattern(f"{inf_start}*.inf")
+    dsc_ci_lines = []
 
     # generate the inf files that include the binary files from nuget
     for flavor, phase, target, arch in inf_files:
@@ -121,7 +127,14 @@ def main():
         inf_lines.append("")
         inf_lines.append("[Depex]")
         inf_lines.append("  TRUE")
-        generate_file_replacement(inf_lines, None, f"{inf_start}_{flavor}_{phase}_{target}_{arch}.inf", options(), comment="#")
+        inf_filename = f"{inf_start}_{flavor}_{phase}_{target}_{arch}.inf"
+        # Add to the CI 
+        dsc_ci_lines.append(f"[Components.{arch}]")
+        dsc_ci_lines.append("  CryptoPkg/Driver/Bin/" + inf_filename)
+        generate_file_replacement(inf_lines, None, inf_filename, options(), comment="#")
+    
+    # now we generate the CI DSC include     
+    generate_file_replacement(dsc_ci_lines, None, "CryptoPkg.ci.inc.dsc", options(), comment="#")
 
     # now we generate the DSC include
     # start with making sure variables are defined
