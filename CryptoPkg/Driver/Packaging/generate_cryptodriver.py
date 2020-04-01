@@ -409,6 +409,7 @@ def get_crypto_c(options, functions):
             lines.extend(func.comment)
             lines.append(f"// See {func.source}:{func.line_no}")
             lines.append(func.return_type)
+            lines.append("EFIAPI")
             lines.append(f"CryptoService{func.name} (")
             lines.extend(func.params if len(func.params) > 0 else ["  VOID", ])
             lines.append("  )")
@@ -459,6 +460,7 @@ def get_crypto_lib_c(options, functions):
             lines.extend(func.comment)  # add the function comment
             lines.append(f"// See {func.source}:{func.line_no}")
             lines.append(func.return_type)  # return type
+            lines.append("EFIAPI")
             lines.append(f"{func.name} (")
             lines.extend(func.params if len(func.params) > 0 else ["  VOID", ])
             lines.append("  )")
