@@ -40,7 +40,7 @@
   TlsLib
 
 [Ppis]
-  gEfiPeiMemoryDiscoveredPpiGuid  ## SOMETIMES CONSUMES
+  gEfiPeiMemoryDiscoveredPpiGuid  ## CONSUMES
   gEdkiiCryptoPpiGuid             ## PRODUCES
 
 # MU_CHANGE
