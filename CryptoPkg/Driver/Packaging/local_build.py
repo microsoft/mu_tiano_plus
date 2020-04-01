@@ -99,7 +99,6 @@ if __name__ == "__main__":
     # now we do the build
     flavors = list(get_flavors())
     flavors.append("ALL")  # the all flavor is implicitly defined
-    flavors = ("STANDARD", )
     build_command = "stuart_ci_build"
     for service in flavors:
         # First we need to clean out the previous builds Build\CryptoPkg\DEBUG_VS2017\X64\CryptoPkg\Driver
@@ -135,12 +134,5 @@ if __name__ == "__main__":
                 move_with_mapping(efi_file, efi_rel_path,
                                   nuget_output_dir, verbose)
 
-    # time to package it all
-    # nuget-publish --Operation Pack --OutputLog $(Build.StagingDirectory)/NugetPackagingLog.txt --ConfigFilePath $(Build.StagingDirectory)/NugetPackageConfig.json --InputFolderPath $(Build.StagingDirectory)/$(temp_publication_directory) --Version $(release_version) --OutputFolderPath $(Build.StagingDirectory)/PackageOutput;
-    commands = [" --Operation Pack", "--OutputLog",
-                os.path.join(build_output, "NUGET_PACK.txt")]
-    config_file_path = os.path.join(script_dir, "edk2-BaseCryptoDriver.config.json")
-    commands.append(f"--ConfigFilePath {os.path.join(script_dir, )}")
-    ret = RunCmd("nuget-publish", " ".join(commands), workingdir=root_dir)
     print("All done")
     sys.exit(0)
