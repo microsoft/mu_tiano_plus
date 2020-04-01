@@ -28,8 +28,7 @@
     },
     "DscCompleteCheck": {
         "DscPath": "CryptoPkg.dsc",
-        "IgnoreInf": [            
-        ]
+        "IgnoreInf": []
     },
     "GuidCheck": {
         "IgnoreGuidName": [],

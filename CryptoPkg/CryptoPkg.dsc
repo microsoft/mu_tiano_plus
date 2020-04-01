@@ -69,6 +69,9 @@
 [LibraryClasses.X64, LibraryClasses.IA32]
   NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
   BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+[LibraryClasses.X64.DXE_CORE, LibraryClasses.X64.UEFI_DRIVER, LibraryClasses.X64.DXE_DRIVER, LibraryClasses.X64.UEFI_APPLICATION]
+  # this is currently X64 only because MSVC doesn't support BaseMemoryLibOptDxe for AARCH64
+  BaseMemoryLib|MdePkg/Library/BaseMemoryLibOptDxe/BaseMemoryLibOptDxe.inf
 !endif ##MSCHANGE
 
 ##MSCHANGE End
@@ -97,11 +100,8 @@
 [LibraryClasses.common.DXE_SMM_DRIVER]
   SmmServicesTableLib|MdePkg/Library/SmmServicesTableLib/SmmServicesTableLib.inf
   MemoryAllocationLib|MdePkg/Library/SmmMemoryAllocationLib/SmmMemoryAllocationLib.inf
-  BaseMemoryLib|MdePkg/Library/BaseMemoryLibRepStr/BaseMemoryLibRepStr.inf
+  BaseMemoryLib|MdePkg/Library/BaseMemoryLibRepStr/BaseMemoryLibRepStr.inf # MU_CHANGE added to match current platforms
 
-[LibraryClasses.X64.DXE_CORE, LibraryClasses.X64.UEFI_DRIVER, LibraryClasses.X64.DXE_DRIVER, LibraryClasses.X64.UEFI_APPLICATION]
-  # this is currently X64 only because MSVC doesn't support BaseMemoryLibOptDxe for AARCH64
-  BaseMemoryLib|MdePkg/Library/BaseMemoryLibOptDxe/BaseMemoryLibOptDxe.inf
 
 !if $(CRYPTO_SERVICES) != "PACKAGE" # MU_CHANGE
 [LibraryClasses]
@@ -134,7 +134,7 @@
 [LibraryClasses.ARM.PEIM, LibraryClasses.AARCH64.PEIM]
   PeiServicesTablePointerLib|ArmPkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
 
-[LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
+[LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION] #MU_CHANGE
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   TlsLib|CryptoPkg/Library/TlsLib/TlsLib.inf
@@ -178,7 +178,7 @@
 #
 ###################################################################################################
 [Components]
-  CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+  CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf # MU_CHANGE add this to pass CI
 
 !if $(CRYPTO_SERVICES) == PACKAGE
 [Components]
@@ -217,19 +217,19 @@
 [Components.IA32, Components.X64] # MU_CHANGE remove ARM and AARCH64
   CryptoPkg/Driver/CryptoPei.inf {
     <Defines>
-      FILE_GUID = $(PEI_CRYPTO_DRIVER_FILE_GUID)
+      FILE_GUID = $(PEI_CRYPTO_DRIVER_FILE_GUID)  # MU_CHANGE updated File GUID
   }
 
 [Components.IA32, Components.X64, Components.AARCH64]
   CryptoPkg/Driver/CryptoDxe.inf {
     <Defines>
-      FILE_GUID = $(DXE_CRYPTO_DRIVER_FILE_GUID)
+      FILE_GUID = $(DXE_CRYPTO_DRIVER_FILE_GUID)  # MU_CHANGE updated File GUID
   }
 
 [Components.IA32, Components.X64]
   CryptoPkg/Driver/CryptoSmm.inf {
     <Defines>
-      FILE_GUID = $(SMM_CRYPTO_DRIVER_FILE_GUID)
+      FILE_GUID = $(SMM_CRYPTO_DRIVER_FILE_GUID)# MU_CHANGE updated File GUID
   }
 
 
