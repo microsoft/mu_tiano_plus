@@ -28,6 +28,8 @@
 #include <Library/FmpDeviceLib.h>
 #include <Library/FmpPayloadHeaderLib.h>
 #include <Library/CapsuleUpdatePolicyLib.h>
+#include <Library/FmpDependencyLib.h>
+#include <Library/FmpDependencyCheckLib.h>
 // MU_CHANGE Starts
 #include <Library/ReportStatusCodeLib.h>
 // MU_CHANGE Ends
@@ -69,6 +71,7 @@ typedef struct {
   CHAR16                                       *LastAttemptStatusVariableName;
   CHAR16                                       *LastAttemptVersionVariableName;
   CHAR16                                       *FmpStateVariableName;
+  BOOLEAN                                      DependenciesSatisfied;
 } FIRMWARE_MANAGEMENT_PRIVATE_DATA;
 
 ///
