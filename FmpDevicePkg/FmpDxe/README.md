@@ -1,5 +1,5 @@
-# Introduction 
-TODO: Give a short introduction of FmpDxe driver. 
+# Introduction
+TODO: Give a short introduction of FmpDxe driver.
 
 # Getting Started
 TODO: Guide users through getting code up and running on their own system. Ideally including:
@@ -12,6 +12,23 @@ TODO: Guide users through getting code up and running on their own system. Ideal
 TODO: Describe and show how to build code and run the tests.
 
 # Design Changes
+---
+
+- **Date:** 06/15/2020
+- **Description/Rationale:** Extending on the more granular LastAttemptStatus support added in FmpDeviceSetImage (),
+FmpDeviceCheckImage () also has a LastAttemptStatus parameter added. An image check is always performed by a set
+image operation. A more granular status code from the check image path greatly improves overall error isolation when
+applying an image.
+- **Changes:** This change allows the FmpDeviceLib implementation to return a last attempt status code in the range
+LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE to LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE. Furthermore,
+an internal wrapper for CheckTheImage () in FmpDxe was added called CheckTheImageInternal (). This function can return
+a last attempt status code for an error in the driver prior to invoking FmpDeviceCheckImage (). These driver error
+codes will be in the range of LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN to
+LAST_ATTEMPT_STATUS_DRIVER_ERROR_MAX_ERROR_CODE.
+- **Impact/Mitigation:**
+The change break the build for all FmpDeviceLib instances due to the API change. Each FmpDeviceLib should change to
+the new API definition and implement support to return unique values for LastAttemptStatus when appropriate.
+
 ---
 
 - **Date:** 10/07/2019
