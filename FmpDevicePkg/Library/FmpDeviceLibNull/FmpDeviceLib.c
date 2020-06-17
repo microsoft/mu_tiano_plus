@@ -2,7 +2,9 @@
   Provides firmware device specific services to support updates of a firmware
   image stored in a firmware device.
 
-  Copyright (c) 2016, Microsoft Corporation. All rights reserved.<BR>
+// MU_CHANGE Starts
+  Copyright (c) Microsoft Corporation.<BR>
+// MU_CHANGE Ends
   Copyright (c) 2018 - 2019, Intel Corporation. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -380,17 +382,24 @@ FmpDeviceGetImage (
   function allows firmware update operation to validate the firmware image
   before FmpDeviceSetImage() is called.
 
-  @param[in]  Image           Points to a new firmware image.
-  @param[in]  ImageSize       Size, in bytes, of a new firmware image.
-  @param[out] ImageUpdatable  Indicates if a new firmware image is valid for
-                              a firmware update to the firmware device.  The
-                              following values from the Firmware Management
-                              Protocol are supported:
-                                IMAGE_UPDATABLE_VALID
-                                IMAGE_UPDATABLE_INVALID
-                                IMAGE_UPDATABLE_INVALID_TYPE
-                                IMAGE_UPDATABLE_INVALID_OLD
-                                IMAGE_UPDATABLE_VALID_WITH_VENDOR_CODE
+  @param[in]  Image               Points to a new firmware image.
+  @param[in]  ImageSize           Size, in bytes, of a new firmware image.
+  @param[out] ImageUpdatable      Indicates if a new firmware image is valid for
+                                  a firmware update to the firmware device.  The
+                                  following values from the Firmware Management
+                                  Protocol are supported:
+                                    IMAGE_UPDATABLE_VALID
+                                    IMAGE_UPDATABLE_INVALID
+                                    IMAGE_UPDATABLE_INVALID_TYPE
+                                    IMAGE_UPDATABLE_INVALID_OLD
+                                    IMAGE_UPDATABLE_VALID_WITH_VENDOR_CODE
+// MU_CHANGE Starts
+  @param[out] LastAttemptStatus   A pointer to a UINT32 that holds the last attempt
+                                  status to report back to the ESRT table in case
+                                  of error. The return status code must fall in the range of
+                                  LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE to
+                                  LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE.
+// MU_CHANGE Ends
 
   @retval EFI_SUCCESS            The image was successfully checked.  Additional
                                  status information is returned in
@@ -404,7 +413,10 @@ EFIAPI
 FmpDeviceCheckImage (
   IN  CONST VOID  *Image,
   IN  UINTN       ImageSize,
-  OUT UINT32      *ImageUpdatable
+// MU_CHANGE Starts
+  OUT UINT32      *ImageUpdatable,
+  OUT UINT32      *LastAttemptStatus
+// MU_CHANGE Ends
   )
 {
   return EFI_SUCCESS;
@@ -457,7 +469,7 @@ FmpDeviceCheckImage (
   @param[out] LastAttemptStatus A pointer to a UINT32 that holds the last attempt
                                 status to report back to the ESRT table in case
                                 of error. Will only be checked when this funtions
-                                returns error. Returned status code falls outside of 
+                                returns error. Returned status code falls outside of
                                 LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE and
                                 LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE
                                 will be converted to LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL
