@@ -53,11 +53,12 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
     def GetArchitecturesSupported(self):
         ''' return iterable of edk2 architectures supported by this build '''
         return (
-                "IA32",
-                "X64",
-                "ARM",
-                "AARCH64",
-                "RISCV64")
+            "IA32",
+            "X64",
+            "ARM",
+            "AARCH64",
+            # MU_CHANGE remove RISC-V
+        )
 
     def GetTargetsSupported(self):
         ''' return iterable of edk2 target tags supported by this build '''
