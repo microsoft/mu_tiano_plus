@@ -38,6 +38,10 @@
   #
   HashApiLib|Include/Library/HashApiLib.h
 
+  ##  @libraryclass  Provides HmacSha1 functionality
+  #
+  HmacSha1Lib|Include/Library/HmacSha1Lib.h
+
 [Protocols]
   ## EDK II Crypto DXE protocol
   # 2C2275C9-3A7B-426F-BE54-2D22BD9D1092
