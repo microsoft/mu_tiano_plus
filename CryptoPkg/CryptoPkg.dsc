@@ -24,6 +24,8 @@
 
 # MU_CHANGE
 !include CryptoPkg/Driver/Packaging/Crypto.inc.dsc
+# MU_CHANGE include unittest stuff
+!include UnitTestFrameworkPkg/UnitTestFrameworkPkgTarget.dsc.inc
 
 ################################################################################
 #
@@ -179,6 +181,7 @@
 ###################################################################################################
 [Components]
   CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf # MU_CHANGE add this to pass CI
+  CryptoPkg/Test/UnitTest/Library/BaseCryptLib/TestBaseCryptLibUefiShell.inf
 
 !if $(CRYPTO_SERVICES) == PACKAGE
 [Components]
@@ -237,7 +240,7 @@
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
 
 #MU_CHANGE START
-[BuildOptions.common.EDKII.DXE_RUNTIME_DRIVER, BuildOptions.common.EDKII.DXE_SMM_DRIVER, BuildOptions.common.EDKII.SMM_CORE, BuildOptions.common.EDKII.DXE_DRIVER] 
+[BuildOptions.common.EDKII.DXE_RUNTIME_DRIVER, BuildOptions.common.EDKII.DXE_SMM_DRIVER, BuildOptions.common.EDKII.SMM_CORE, BuildOptions.common.EDKII.DXE_DRIVER]
   MSFT:*_*_IA32_DLINK_FLAGS = /ALIGN:4096 # enable 4k alignment for MAT and other protections.
   MSFT:*_*_X64_DLINK_FLAGS = /ALIGN:4096 # enable 4k alignment for MAT and other protections.
 #MU_CHANGE END
