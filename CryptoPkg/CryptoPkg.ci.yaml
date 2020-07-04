@@ -8,10 +8,6 @@
     "CompilerPlugin": {
         "DscPath": "CryptoPkg.dsc"
     },
-    ## options defined .pytool/Plugin/HostUnitTestCompilerPlugin
-    "HostUnitTestCompilerPlugin": {
-        "DscPath": "Test/UnitTest/CryptoPkgHostUnitTest.dsc"
-    },
     "CharEncodingCheck": {
         "IgnoreFiles": []
     },
@@ -32,9 +28,7 @@
     },
     "DscCompleteCheck": {
         "DscPath": "CryptoPkg.dsc",
-        "IgnoreInf": [
-            "CryptoPkg/Library/BaseCryptLib/UnitTestHostBaseCryptLib.inf"
-        ]
+        "IgnoreInf": []
     },
     "GuidCheck": {
         "IgnoreGuidName": [],
