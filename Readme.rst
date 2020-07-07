@@ -12,31 +12,31 @@ Branch Status - release/200202
 ==============================
 
 Status:
-  In Development
+  Stabilized
 
 Entered Development:
   2020/03/06
 
-Anticipated Stabilization:
-  April 2020
+Stabilized:
+  2020/07/06
 
 Branch Changes - release/202002
 ===============================
 
-Breaking Changes-dev
---------------------
+Breaking Changes
+----------------
 
 - Removed HmacXXXGetContextSize
 - Changed HmacXXXInit with HmacXXXSetKey
 
-Main Changes-dev
-----------------
+Main Changes
+------------
 
 - New BaseCryptLibOnProtocol (SharedCrypto) in CryptoPkg
 - Added Unified Hashing API https://bugzilla.tianocore.org/show_bug.cgi?id=2151
 
-Bug Fixes-dev
--------------
+Bug Fixes
+---------
 
 - None
 
