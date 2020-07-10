@@ -17,20 +17,27 @@ Largely copied from BaseCryptLib from release/202002
 #include <Uefi/UefiBaseType.h>
 
 /**
-  Retrieves the size, in bytes, of the context buffer required for HMAC-SHA1 operations.
-  (NOTE: This API is deprecated.
-         Use HmacSha1New() / HmacSha1Free() for HMAC-SHA1 Context operations.)
+  Set user-supplied key for subsequent use. It must be done before any
+  calling to HmacSha1Update().
 
-  If this interface is not supported, then return zero.
+  If HmacSha1Context is NULL, then return FALSE.
+  If this interface is not supported, then return FALSE.
 
-  @return  The size, in bytes, of the context buffer required for HMAC-SHA1 operations.
-  @retval  0   This interface is not supported.
+  @param[out]  HmacSha1Context    Pointer to HMAC-Sha1 context.
+  @param[in]   Key                Pointer to the user-supplied key.
+  @param[in]   KeySize            Key size in bytes.
+
+  @retval TRUE   The Key is set successfully.
+  @retval FALSE  The Key is set unsuccessfully.
+  @retval FALSE  This interface is not supported.
 
 **/
-UINTN
+BOOLEAN
 EFIAPI
-HmacSha1GetContextSize (
-  VOID
+HmacSha1SetKey (
+  OUT  VOID         *HmacSha1Context,
+  IN   CONST UINT8  *Key,
+  IN   UINTN        KeySize
   );
 
 /**

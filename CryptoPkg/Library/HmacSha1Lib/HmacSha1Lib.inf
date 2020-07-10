@@ -29,6 +29,11 @@
 
 [Sources]
   CryptHmacSha1.c
+  # This whole lib is a (hopefully) temporary workaround- this is not best practices
+  ../BaseCryptLib/SysCall/CrtWrapper.c
+  ../BaseCryptLib/SysCall/TimerWrapper.c
+  ../BaseCryptLib/SysCall/BaseMemAllocation.c
+
 
 [Packages]
   MdePkg/MdePkg.dec
