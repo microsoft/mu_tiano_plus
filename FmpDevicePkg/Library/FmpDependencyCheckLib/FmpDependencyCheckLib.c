@@ -2,6 +2,9 @@
   Provides FMP capsule dependency check services when updating the firmware
   image of a FMP device.
 
+// MU_CHANGE Starts
+  Copyright (c) Microsoft Corporation.<BR>
+// MU_CHANGE Ends
   Copyright (c) 2020, Intel Corporation. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -16,6 +19,10 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiLib.h>
 #include <Library/UefiBootServicesTableLib.h>
+// MU_CHANGE Starts
+#include <Guid/SystemResourceTable.h>
+#include <LastAttemptStatus.h>
+// MU_CHANGE Ends
 
 /**
   Check dependency for firmware update.
@@ -24,6 +31,12 @@
   @param[in]  Version            New version.
   @param[in]  Dependencies       Fmp dependency.
   @param[in]  DependenciesSize   Size, in bytes, of the Fmp dependency.
+//MU_CHANGE Starts
+  @param[out] LastAttemptStatus  An optional pointer to a UINT32 that holds the
+                                 last attempt status to report back to the caller.
+                                 A function error code may not always be accompanied
+                                 by a last attempt status code.
+// MU_CHANGE Ends
 
   @retval  TRUE    Dependencies are satisfied.
   @retval  FALSE   Dependencies are unsatisfied or dependency check fails.
@@ -35,7 +48,10 @@ CheckFmpDependency (
   IN  EFI_GUID                ImageTypeId,
   IN  UINT32                  Version,
   IN  EFI_FIRMWARE_IMAGE_DEP  *Dependencies,    OPTIONAL
-  IN  UINT32                  DependenciesSize
+//MU_CHANGE Starts
+  IN  UINT32                  DependenciesSize,
+  OUT UINT32                  *LastAttemptStatus OPTIONAL
+//MU_CHANGE Ends
   )
 {
   EFI_STATUS                        Status;
@@ -43,6 +59,9 @@ CheckFmpDependency (
   UINTN                             Index;
   EFI_FIRMWARE_MANAGEMENT_PROTOCOL  *Fmp;
   UINTN                             ImageInfoSize;
+//MU_CHANGE Starts
+  UINT32                            LocalLastAttemptStatus;
+//MU_CHANGE Ends
   UINT32                            *DescriptorVer;
   UINT8                             FmpImageInfoCount;
   UINTN                             *DescriptorSize;
@@ -54,14 +73,17 @@ CheckFmpDependency (
   UINTN                             FmpVersionsCount;
   BOOLEAN                           IsSatisfied;
 
-  FmpImageInfoBuf     = NULL;
-  DescriptorVer       = NULL;
-  DescriptorSize      = NULL;
-  NumberOfFmpInstance = 0;
-  FmpVersions         = NULL;
-  FmpVersionsCount    = 0;
-  IsSatisfied         = TRUE;
-  PackageVersionName  = NULL;
+//MU_CHANGE Starts
+  LocalLastAttemptStatus  = LAST_ATTEMPT_STATUS_SUCCESS;
+  FmpImageInfoBuf         = NULL;
+  DescriptorVer           = NULL;
+  DescriptorSize          = NULL;
+  NumberOfFmpInstance     = 0;
+  FmpVersions             = NULL;
+  FmpVersionsCount        = 0;
+  IsSatisfied             = TRUE;
+  PackageVersionName      = NULL;
+//MU_CHANGE Ends
 
   //
   // Get ImageDescriptors of all FMP instances, and archive them for dependency evaluation.
@@ -75,30 +97,46 @@ CheckFmpDependency (
                 );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "CheckFmpDependency: Get Firmware Management Protocol failed. (%r)", Status));
+//MU_CHANGE Starts
+    IsSatisfied = FALSE;
+    LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_MEMORY_ALLOCATION_FAILED;
+//MU_CHANGE Ends
     goto cleanup;
   }
 
   FmpImageInfoBuf = AllocateZeroPool (sizeof(EFI_FIRMWARE_IMAGE_DESCRIPTOR *) * NumberOfFmpInstance);
   if (FmpImageInfoBuf == NULL) {
     IsSatisfied = FALSE;
+//MU_CHANGE Starts
+    LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_MEMORY_ALLOCATION_FAILED;
+//MU_CHANGE Ends
     goto cleanup;
   }
 
   DescriptorVer = AllocateZeroPool (sizeof(UINT32) * NumberOfFmpInstance);
   if (DescriptorVer == NULL ) {
     IsSatisfied = FALSE;
+//MU_CHANGE Starts
+    LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_MEMORY_ALLOCATION_FAILED;
+//MU_CHANGE Ends
     goto cleanup;
   }
 
   DescriptorSize = AllocateZeroPool (sizeof(UINTN) * NumberOfFmpInstance);
   if (DescriptorSize == NULL ) {
     IsSatisfied = FALSE;
+//MU_CHANGE Starts
+    LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_MEMORY_ALLOCATION_FAILED;
+//MU_CHANGE Ends
     goto cleanup;
   }
 
   FmpVersions = AllocateZeroPool (sizeof(FMP_DEPEX_CHECK_VERSION_DATA) * NumberOfFmpInstance);
   if (FmpVersions == NULL) {
     IsSatisfied = FALSE;
+//MU_CHANGE Starts
+    LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_MEMORY_ALLOCATION_FAILED;
+//MU_CHANGE Ends
     goto cleanup;
   }
 
@@ -162,7 +200,9 @@ CheckFmpDependency (
   // Evaluate firmware image's depex, against the version of other Fmp instances.
   //
   if (Dependencies != NULL) {
-    IsSatisfied = EvaluateDependency (Dependencies, DependenciesSize, FmpVersions, FmpVersionsCount);
+//MU_CHANGE Starts
+    IsSatisfied = EvaluateDependency (Dependencies, DependenciesSize, FmpVersions, FmpVersionsCount, &LocalLastAttemptStatus);
+//MU_CHANGE Ends
   }
 
   if (!IsSatisfied) {
@@ -191,6 +231,12 @@ cleanup:
   if (FmpVersions != NULL) {
     FreePool (FmpVersions);
   }
+
+//MU_CHANGE Starts
+  if (LastAttemptStatus != NULL && LocalLastAttemptStatus != LAST_ATTEMPT_STATUS_SUCCESS) {
+    *LastAttemptStatus = LocalLastAttemptStatus;
+  }
+//MU_CHANGE Ends
 
   return IsSatisfied;
 }

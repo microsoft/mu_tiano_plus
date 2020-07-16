@@ -743,6 +743,9 @@ CheckTheImageInternal (
   )
 {
   EFI_STATUS                        Status;
+// MU_CHANGE Starts
+  UINT32                            LocalLastAttemptStatus;
+// MU_CHANGE Ends
   FIRMWARE_MANAGEMENT_PRIVATE_DATA  *Private;
   UINTN                             RawSize;
   VOID                              *FmpPayloadHeader;
@@ -758,15 +761,18 @@ CheckTheImageInternal (
   EFI_FIRMWARE_IMAGE_DEP            *Dependencies;
   UINT32                            DependenciesSize;
 
-  Status           = EFI_SUCCESS;
-  RawSize          = 0;
-  FmpPayloadHeader = NULL;
-  FmpPayloadSize   = 0;
-  Version          = 0;
-  FmpHeaderSize    = 0;
-  AllHeaderSize    = 0;
-  Dependencies     = NULL;
-  DependenciesSize = 0;
+// MU_CHANGE Starts
+  Status                  = EFI_SUCCESS;
+  LocalLastAttemptStatus  = LAST_ATTEMPT_STATUS_SUCCESS;
+  RawSize                 = 0;
+  FmpPayloadHeader        = NULL;
+  FmpPayloadSize          = 0;
+  Version                 = 0;
+  FmpHeaderSize           = 0;
+  AllHeaderSize           = 0;
+  Dependencies            = NULL;
+  DependenciesSize        = 0;
+// MU_CHANGE Ends
 
   if (!FeaturePcdGet (PcdFmpDeviceStorageAccessEnable)) {
     return EFI_UNSUPPORTED;
@@ -846,7 +852,7 @@ CheckTheImageInternal (
         DEBUG ((DEBUG_ERROR, "FmpDxe(%s): Certificate size extends beyond end of PCD, skipping it.\n", mImageIdName));
         Status = EFI_ABORTED;
 // MU_CHANGE Starts
-        *LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_INVALID_KEY_LENGTH_VALUE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_INVALID_KEY_LENGTH_VALUE;
 // MU_CHANGE Ends
         break;
       }
@@ -865,7 +871,7 @@ CheckTheImageInternal (
         DEBUG ((DEBUG_ERROR, "FmpDxe(%s): Certificate extends beyond end of PCD, skipping it.\n", mImageIdName));
         Status = EFI_ABORTED;
 // MU_CHANGE Starts
-        *LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_INVALID_KEY_LENGTH;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_INVALID_KEY_LENGTH;
 // MU_CHANGE Ends
         break;
       }
@@ -886,6 +892,13 @@ CheckTheImageInternal (
 
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): CheckTheImage() - Authentication Failed %r.\n", mImageIdName, Status));
+// MU_CHANGE Starts
+    if (LocalLastAttemptStatus != LAST_ATTEMPT_STATUS_SUCCESS) {
+      *LastAttemptStatus = LocalLastAttemptStatus;
+    } else {
+      *LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_IMAGE_AUTH_FAILURE;
+    }
+// MU_CHANGE Ends
     goto cleanup;
   }
 
@@ -905,7 +918,19 @@ CheckTheImageInternal (
   //
   // Get the dependency from Image.
   //
-  Dependencies = GetImageDependency ((EFI_FIRMWARE_IMAGE_AUTHENTICATION *)Image, ImageSize, &DependenciesSize);
+// MU_CHANGE Starts
+  Dependencies =  GetImageDependency (
+                    (EFI_FIRMWARE_IMAGE_AUTHENTICATION *) Image,
+                    ImageSize,
+                    &DependenciesSize,
+                    &LocalLastAttemptStatus
+                    );
+  if (LocalLastAttemptStatus != LAST_ATTEMPT_STATUS_SUCCESS) {
+    Status = EFI_ABORTED;
+    *LastAttemptStatus = LocalLastAttemptStatus;
+    goto cleanup;
+  }
+// MU_CHANGE Ends
 
   //
   // Check the FmpPayloadHeader
@@ -950,13 +975,23 @@ CheckTheImageInternal (
   //
   // Evaluate dependency expression
   //
-  Private->DependenciesSatisfied = CheckFmpDependency (Private->Descriptor.ImageTypeId, Version, Dependencies, DependenciesSize);
+// MU_CHANGE Starts
+  Private->DependenciesSatisfied =  CheckFmpDependency (
+                                      Private->Descriptor.ImageTypeId,
+                                      Version,
+                                      Dependencies,
+                                      DependenciesSize,
+                                      &LocalLastAttemptStatus
+                                      );
+// MU_CHANGE Ends
   if (!Private->DependenciesSatisfied) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): CheckTheImage() - Dependency check failed.\n", mImageIdName));
     *ImageUpdatable = IMAGE_UPDATABLE_INVALID;
     Status = EFI_SUCCESS;
 // MU_CHANGE Starts
-    *LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_DEPENDENCY_UNSATISFIED;
+    if (LocalLastAttemptStatus != LAST_ATTEMPT_STATUS_SUCCESS) {
+      *LastAttemptStatus = LocalLastAttemptStatus;
+    }
 // MU_CHANGE Ends
     goto cleanup;
   }
@@ -1158,6 +1193,9 @@ SetTheImage (
   //
   if (Private->FmpDeviceLocked) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - Device is already locked.  Can't update.\n", mImageIdName));
+    // MU_CHANGE Starts
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_DEVICE_LOCKED;
+    // MU_CHANGE Ends
     Status = EFI_UNSUPPORTED;
     goto cleanup;
   }
@@ -1174,7 +1212,9 @@ SetTheImage (
   //
   // Get the dependency from Image.
   //
-  Dependencies = GetImageDependency ((EFI_FIRMWARE_IMAGE_AUTHENTICATION *)Image, ImageSize, &DependenciesSize);
+// MU_CHANGE Starts
+  Dependencies = GetImageDependency ((EFI_FIRMWARE_IMAGE_AUTHENTICATION *)Image, ImageSize, &DependenciesSize, &LastAttemptStatus);
+// MU_CHANGE Ends
 
   //
   // No functional error in CheckTheImage.  Attempt to get the Version to

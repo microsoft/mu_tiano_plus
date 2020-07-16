@@ -1,6 +1,9 @@
 /** @file
   Supports Fmp Capsule Dependency Expression.
 
+// MU_CHANGE Starts
+  Copyright (c) Microsoft Corporation.<BR>
+// MU_CHANGE Ends
   Copyright (c) 2020, Intel Corporation. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -12,6 +15,10 @@
 #include <Library/DebugLib.h>
 #include <Library/FmpDependencyLib.h>
 #include <Library/MemoryAllocationLib.h>
+// MU_CHANGE Starts
+#include <Guid/SystemResourceTable.h>
+#include <LastAttemptStatus.h>
+// MU_CHANGE Ends
 
 //
 // Define the initial size of the dependency expression evaluation stack
@@ -202,6 +209,12 @@ Pop (
                                   parameter is optional and can be set to NULL.
   @param[in]   FmpVersionsCount   Element count of the array. When FmpVersions
                                   is NULL, FmpVersionsCount must be 0.
+// MU_CHANGE Starts
+  @param[out]  LastAttemptStatus  An optional pointer to a UINT32 that holds the
+                                  last attempt status to report back to the caller.
+                                  A function error code may not always be accompanied
+                                  by a last attempt status code.
+// MU_CHANGE Ends
 
   @retval TRUE    Dependency expressions evaluate to TRUE.
   @retval FALSE   Dependency expressions evaluate to FALSE.
@@ -210,10 +223,13 @@ Pop (
 BOOLEAN
 EFIAPI
 EvaluateDependency (
-  IN EFI_FIRMWARE_IMAGE_DEP        *Dependencies,
-  IN UINTN                         DependenciesSize,
-  IN FMP_DEPEX_CHECK_VERSION_DATA  *FmpVersions      OPTIONAL,
-  IN UINTN                         FmpVersionsCount
+// MU_CHANGE Starts
+  IN  EFI_FIRMWARE_IMAGE_DEP        *Dependencies,
+  IN  UINTN                         DependenciesSize,
+  IN  FMP_DEPEX_CHECK_VERSION_DATA  *FmpVersions,      OPTIONAL
+  IN  UINTN                         FmpVersionsCount,
+  OUT UINT32                        *LastAttemptStatus OPTIONAL
+// MU_CHANGE Ends
   )
 {
   EFI_STATUS                        Status;
@@ -223,6 +239,11 @@ EvaluateDependency (
   DEPEX_ELEMENT                     Element2;
   GUID                              ImageTypeId;
   UINT32                            Version;
+// MU_CHANGE Starts
+  UINT32                            LocalLastAttemptStatus;
+
+  LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_SUCCESS;
+// MU_CHANGE Ends
 
   //
   // Check if parameter is valid.
@@ -248,6 +269,9 @@ EvaluateDependency (
     case EFI_FMP_DEP_PUSH_GUID:
       if (Iterator + sizeof (EFI_GUID) >= (UINT8 *) Dependencies->Dependencies + DependenciesSize) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: GUID extends beyond end of dependency expression!\n"));
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_GUID_BEYOND_DEPEX;
+// MU_CHANGE Ends
         goto Error;
       }
 
@@ -258,6 +282,9 @@ EvaluateDependency (
         if(CompareGuid (&FmpVersions[Index].ImageTypeId, &ImageTypeId)){
           Status = Push (FmpVersions[Index].Version, VersionType);
           if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+            LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
             goto Error;
           }
           break;
@@ -265,18 +292,27 @@ EvaluateDependency (
       }
       if (Index == FmpVersionsCount) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: %g is not found!\n", &ImageTypeId));
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_FMP_NOT_FOUND;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_PUSH_VERSION:
       if (Iterator + sizeof (UINT32) >= (UINT8 *) Dependencies->Dependencies + DependenciesSize ) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: VERSION extends beyond end of dependency expression!\n"));
+// MU_CHANGE Starts
+        *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_VERSION_BEYOND_DEPEX;
+// MU_CHANGE Ends
         goto Error;
       }
 
       Version = *(UINT32 *) (Iterator + 1);
       Status = Push (Version, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Iterator = Iterator + sizeof (UINT32);
@@ -285,156 +321,258 @@ EvaluateDependency (
       Iterator += AsciiStrnLenS ((CHAR8 *) Iterator, DependenciesSize - (Iterator - Dependencies->Dependencies));
       if (Iterator == (UINT8 *) Dependencies->Dependencies + DependenciesSize) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: STRING extends beyond end of dependency expression!\n"));
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_VERSION_STR_BEYOND_DEPEX;
+        goto Error;
+// MU_CHANGE Ends
       }
       break;
     case EFI_FMP_DEP_AND:
       Status = Pop (&Element1, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Push (Element1.Value.Boolean & Element2.Value.Boolean, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_OR:
       Status = Pop (&Element1, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Pop(&Element2, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Push (Element1.Value.Boolean | Element2.Value.Boolean, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_NOT:
       Status = Pop (&Element1, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Push (!(Element1.Value.Boolean), BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_TRUE:
       Status = Push (TRUE, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_FALSE:
       Status = Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_EQ:
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version == Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_GT:
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version >  Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_GTE:
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version >= Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_LT:
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus= LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version <  Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_LTE:
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version <= Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       break;
     case EFI_FMP_DEP_END:
       Status = Pop (&Element1, BooleanType);
       if (EFI_ERROR (Status)) {
+// MU_CHANGE Starts
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+// MU_CHANGE Ends
         goto Error;
       }
       return Element1.Value.Boolean;
     default:
       DEBUG ((DEBUG_ERROR, "EvaluateDependency: Unknown Opcode - %02x!\n", *Iterator));
+// MU_CHANGE Starts
+      LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_UNKNOWN_OPCODE;
+// MU_CHANGE Ends
       goto Error;
     }
     Iterator++;
   }
 
-  DEBUG ((DEBUG_ERROR, "EvaluateDependency: No EFI_FMP_DEP_END Opcode in exression!\n"));
+// MU_CHANGE Starts
+  DEBUG ((DEBUG_ERROR, "EvaluateDependency: No EFI_FMP_DEP_END Opcode in expression!\n"));
+  LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_NO_END_OPCODE;
+// MU_CHANGE Ends
 
 Error:
+// MU_CHANGE Starts
+  if (LastAttemptStatus != NULL && LocalLastAttemptStatus != LAST_ATTEMPT_STATUS_SUCCESS) {
+    *LastAttemptStatus = LocalLastAttemptStatus;
+  }
+// MU_CHANGE Ends
+
   return FALSE;
 }
 
 /**
   Validate the dependency expression and output its size.
 
-  @param[in]   Dependencies   Pointer to the EFI_FIRMWARE_IMAGE_DEP.
-  @param[in]   MaxDepexSize   Max size of the dependency.
-  @param[out]  DepexSize      Size of dependency.
+// MU_CHANGE Starts
+  @param[in]   Dependencies       Pointer to the EFI_FIRMWARE_IMAGE_DEP.
+  @param[in]   MaxDepexSize       Max size of the dependency.
+  @param[out]  DepexSize          Size of dependency.
+  @param[out]  LastAttemptStatus  An optional pointer to a UINT32 that holds the
+                                  last attempt status to report back to the caller.
+                                  A function error code may not always be accompanied
+                                  by a last attempt status code.
+// MU_CHANGE Ends
 
-  @retval TRUE    The capsule is valid.
-  @retval FALSE   The capsule is invalid.
+// MU_CHANGE Starts
+  @retval TRUE    The dependency expression is valid.
+  @retval FALSE   The dependency expression is invalid.
+// MU_CHANGE Ends
 
 **/
 BOOLEAN
@@ -442,7 +580,10 @@ EFIAPI
 ValidateDependency (
   IN  EFI_FIRMWARE_IMAGE_DEP  *Dependencies,
   IN  UINTN                   MaxDepexSize,
-  OUT UINT32                  *DepexSize
+// MU_CHANGE Starts
+  OUT UINT32                  *DepexSize,
+  OUT UINT32                  *LastAttemptStatus OPTIONAL
+// MU_CHANGE Ends
   )
 {
   UINT8  *Depex;
@@ -487,9 +628,20 @@ ValidateDependency (
       }
       return TRUE;
     default:
+// MU_CHANGE Starts
+      if (LastAttemptStatus != NULL) {
+        *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_UNKNOWN_OPCODE;
+      }
+// MU_CHANGE Ends
       return FALSE;
     }
   }
+
+// MU_CHANGE Starts
+   if (LastAttemptStatus != NULL) {
+     *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_NO_END_OPCODE;
+   }
+// MU_CHANGE Ends
 
   return FALSE;
 }
@@ -497,10 +649,15 @@ ValidateDependency (
 /**
   Get dependency from firmware image.
 
-  @param[in]  Image       Points to the firmware image.
-  @param[in]  ImageSize   Size, in bytes, of the firmware image.
-  @param[out] DepexSize   Size, in bytes, of the dependency.
-
+// MU_CHANGE Starts
+  @param[in]  Image               Points to the firmware image.
+  @param[in]  ImageSize           Size, in bytes, of the firmware image.
+  @param[out] DepexSize           Size, in bytes, of the dependency.
+  @param[out] LastAttemptStatus   An optional pointer to a UINT32 that holds the
+                                  last attempt status to report back to the caller.
+                                  A function error code may not always be accompanied
+                                  by a last attempt status code.
+// MU_CHANGE Ends
   @retval  The pointer to dependency.
   @retval  Null
 
@@ -510,7 +667,10 @@ EFIAPI
 GetImageDependency (
   IN  EFI_FIRMWARE_IMAGE_AUTHENTICATION *Image,
   IN  UINTN                             ImageSize,
-  OUT UINT32                            *DepexSize
+// MU_CHANGE Starts
+  OUT UINT32                            *DepexSize,
+  OUT UINT32                            *LastAttemptStatus  OPTIONAL
+// MU_CHANGE Ends
   )
 {
   EFI_FIRMWARE_IMAGE_DEP *Depex;
@@ -528,6 +688,11 @@ GetImageDependency (
     //
     // Pointer overflow. Invalid image.
     //
+// MU_CHANGE Starts
+    if (LastAttemptStatus != NULL) {
+      *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_GET_DEPEX_FAILURE;
+    }
+// MU_CHANGE Ends
     return NULL;
   }
 
@@ -537,7 +702,7 @@ GetImageDependency (
   //
   // Validate the dependency and get the size of dependency
   //
-  if (ValidateDependency (Depex, MaxDepexSize, DepexSize)) {
+  if (ValidateDependency (Depex, MaxDepexSize, DepexSize, LastAttemptStatus)) {
     return Depex;
   }
 
