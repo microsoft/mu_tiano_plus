@@ -1,12 +1,16 @@
 /** @file
   Unit tests of EvaluateDependency API in FmpDependencyLib.
 
+// MU_CHANGE Starts
+  Copyright (c) Microsoft Corporation.<BR>
+// MU_CHANGE Ends
   Copyright (c) 2020, Intel Corporation. All rights reserved.<BR>
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
 #include <Uefi.h>
+
 #include <Library/BaseLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/DebugLib.h>
@@ -162,6 +166,9 @@ EvaluateDependencyTest (
 {
   BASIC_TEST_CONTEXT  *TestContext;
   BOOLEAN             EvaluationResult;
+// MU_CHANGE Starts
+  UINT32              LastAttemptStatus;
+// MU_CHANGE Ends
 
   TestContext = (BASIC_TEST_CONTEXT *)Context;
 
@@ -169,7 +176,10 @@ EvaluateDependencyTest (
                        (EFI_FIRMWARE_IMAGE_DEP *)TestContext->Dependencies,
                        TestContext->DependenciesSize,
                        mFmpVersions,
-                       sizeof(mFmpVersions)/sizeof(FMP_DEPEX_CHECK_VERSION_DATA)
+                       sizeof(mFmpVersions)/sizeof(FMP_DEPEX_CHECK_VERSION_DATA),
+// MU_CHANGE Starts
+                       &LastAttemptStatus
+// MU_CHANGE Ends
                      );
 
   UT_ASSERT_EQUAL (EvaluationResult, TestContext->ExpectedResult);
