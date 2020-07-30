@@ -302,7 +302,7 @@ EvaluateDependency (
       if (Iterator + sizeof (UINT32) >= (UINT8 *) Dependencies->Dependencies + DependenciesSize ) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: VERSION extends beyond end of dependency expression!\n"));
 // MU_CHANGE Starts
-        *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_VERSION_BEYOND_DEPEX;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_VERSION_BEYOND_DEPEX;
 // MU_CHANGE Ends
         goto Error;
       }
