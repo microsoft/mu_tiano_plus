@@ -283,6 +283,13 @@ PopulateDescriptor (
   EFI_STATUS  Status;
   UINT32      DependenciesSize;
 
+// MU_CHANGE Starts
+  if (Private == NULL) {
+    DEBUG ((DEBUG_ERROR, "FmpDxe(%s): PopulateDescriptor() - Private is NULL\n", mImageIdName));
+    return;
+  }
+// MU_CHANGE Ends
+
   if (Private->DescriptorPopulated) {
     return;
   }
@@ -456,6 +463,14 @@ GetTheImageInfo (
 
   Status = EFI_SUCCESS;
 
+// MU_CHANGE Starts
+  if (This == NULL) {
+    DEBUG ((DEBUG_ERROR, "FmpDxe(%s): GetImageInfo() - This is NULL.\n", mImageIdName));
+    Status = EFI_INVALID_PARAMETER;
+    goto cleanup;
+  }
+// MU_CHANGE Ends
+
   //
   // Retrieve the private context structure
   //
@@ -566,6 +581,14 @@ GetTheImage (
 
   Status = EFI_SUCCESS;
 
+// MU_CHANGE Starts
+  if (This == NULL) {
+    DEBUG ((DEBUG_ERROR, "FmpDxe(%s): GetImage() - This is NULL.\n", mImageIdName));
+    Status = EFI_INVALID_PARAMETER;
+    goto cleanup;
+  }
+// MU_CHANGE Ends
+
   //
   // Retrieve the private context structure
   //
@@ -620,7 +643,10 @@ cleanup:
   @param[in]   Image                 Pointer to the image.
   @param[in]   ImageSize             Size of the image.
   @param[in]   AdditionalHeaderSize  Size of any headers that cannot be calculated by this function.
-  @param[out]  PayloadSize
+// MU_CHANGE Starts
+  @param[out]  PayloadSize           An optional pointer to a UINTN that holds the size of the payload
+                                     (image size minus headers)
+// MU_CHANGE Ends
 
   @retval  !NULL  Valid pointer to the header.
   @retval  NULL   Structure is bad and pointer cannot be found.
@@ -631,7 +657,7 @@ GetFmpHeader (
   IN  CONST EFI_FIRMWARE_IMAGE_AUTHENTICATION  *Image,
   IN  CONST UINTN                              ImageSize,
   IN  CONST UINTN                              AdditionalHeaderSize,
-  OUT UINTN                                    *PayloadSize
+  OUT UINTN                                    *PayloadSize   OPTIONAL  // MU_CHANGE
   )
 {
   //
@@ -645,7 +671,11 @@ GetFmpHeader (
     return NULL;
   }
 
-  *PayloadSize = ImageSize - (sizeof (Image->MonotonicCount) + Image->AuthInfo.Hdr.dwLength + AdditionalHeaderSize);
+// MU_CHANGE Starts
+  if (PayloadSize != NULL) {
+    *PayloadSize = ImageSize - (sizeof (Image->MonotonicCount) + Image->AuthInfo.Hdr.dwLength + AdditionalHeaderSize);
+  }
+// MU_CHANGE Ends
   return (VOID *)((UINT8 *)Image + sizeof (Image->MonotonicCount) + Image->AuthInfo.Hdr.dwLength  + AdditionalHeaderSize);
 }
 
@@ -667,6 +697,12 @@ GetAllHeaderSize (
   )
 {
   UINT32  CalculatedSize;
+
+// MU_CHANGE Starts
+  if (Image == NULL) {
+    return 0;
+  }
+// MU_CHANGE Ends
 
   CalculatedSize = sizeof (Image->MonotonicCount) +
                    AdditionalHeaderSize +
@@ -777,6 +813,21 @@ CheckTheImageInternal (
   if (!FeaturePcdGet (PcdFmpDeviceStorageAccessEnable)) {
     return EFI_UNSUPPORTED;
   }
+
+// MU_CHANGE Starts
+  if (LastAttemptStatus == NULL) {
+    DEBUG ((DEBUG_ERROR, "FmpDxe(%s): CheckTheImageInternal() - LastAttemptStatus is NULL.\n", mImageIdName));
+    Status = EFI_INVALID_PARAMETER;
+    goto cleanup;
+  }
+
+  if (This == NULL) {
+    DEBUG ((DEBUG_ERROR, "FmpDxe(%s): CheckImage() - This is NULL.\n", mImageIdName));
+    Status = EFI_INVALID_PARAMETER;
+    *LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_PROTOCOL_ARG_MISSING;
+    goto cleanup;
+  }
+// MU_CHANGE Ends
 
   //
   // Retrieve the private context structure
@@ -1170,6 +1221,15 @@ SetTheImage (
   if (!FeaturePcdGet (PcdFmpDeviceStorageAccessEnable)) {
     return EFI_UNSUPPORTED;
   }
+
+// MU_CHANGE Starts
+  if (This == NULL) {
+    DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() - This is NULL.\n", mImageIdName));
+    Status = EFI_INVALID_PARAMETER;
+    LastAttemptStatus = LAST_ATTEMPT_STATUS_DRIVER_ERROR_PROTOCOL_ARG_MISSING;
+    goto cleanup;
+  }
+// MU_CHANGE Ends
 
   //
   // Retrieve the private context structure
@@ -1569,6 +1629,12 @@ FmpDxeLockEventNotify (
 {
   EFI_STATUS                        Status;
   FIRMWARE_MANAGEMENT_PRIVATE_DATA  *Private;
+
+// MU_CHANGE Starts
+  if (Context == NULL) {
+    return;
+  }
+// MU_CHANGE Ends
 
   Private = (FIRMWARE_MANAGEMENT_PRIVATE_DATA *)Context;
 
