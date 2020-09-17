@@ -628,11 +628,6 @@ ValidateDependency (
       }
       return TRUE;
     default:
-// MU_CHANGE Starts
-      if (LastAttemptStatus != NULL) {
-        *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_UNKNOWN_OPCODE;
-      }
-// MU_CHANGE Ends
       return FALSE;
     }
   }
