@@ -79,6 +79,9 @@
   TdxLib|MdePkg/Library/TdxLib/TdxLib.inf
   OemTpm2InitLib|SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf               ## MS_CHANGE_?
   SourceDebugEnabledLib|SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf ## MS_CHANGE_?
+  ## MU_CHANGE TEMP
+  ## NOTE: This is a temporary shim to resolve a build error while a more permanent solution is tested!
+  Tcg2PreUefiEventLogLib|SecurityPkg/Library/TempPreUefiEventLogLib/TempPreUefiEventLogLib.inf
 
 ## MU_CHANGE [BEGIN]
 [LibraryClasses.X64, LibraryClasses.IA32]
