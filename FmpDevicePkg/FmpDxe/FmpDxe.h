@@ -43,6 +43,7 @@
 #include <Guid/EventGroup.h>
 // MU_CHANGE Starts
 #include <LastAttemptStatus.h>
+#include <FmpLastAttemptStatus.h>
 // MU_CHANGE Ends
 
 #define VERSION_STRING_NOT_SUPPORTED  L"VERSION STRING NOT SUPPORTED"

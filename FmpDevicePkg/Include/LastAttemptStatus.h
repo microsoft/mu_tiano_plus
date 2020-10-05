@@ -1,5 +1,6 @@
 /** @file
-  Defines last attempt status codes used in the FmpDevicePkg.
+  Defines last attempt status code ranges within the UEFI Specification
+  defined unsuccessful vendor range.
 
   Copyright (c) Microsoft Corporation.<BR>
 
@@ -9,77 +10,75 @@
 
 // MU_CHANGE Starts
 
-#ifndef __FMP_LAST_ATTEMPT_STATUS_H__
-#define __FMP_LAST_ATTEMPT_STATUS_H__
+#ifndef __LAST_ATTEMPT_STATUS_H__
+#define __LAST_ATTEMPT_STATUS_H__
 
-//
-// Size of the error code range for FMP driver-specific errors
-//
-#define LAST_ATTEMPT_STATUS_DRIVER_ERROR_COUNT              0x80
+///
+/// Last Attempt Status Unsuccessful Vendor Range Map
+///
+/// Update this map any time new ranges are added. Pre-existing range definitions cannot be modified
+/// to keep status code definitions consistent over time.
+///
+/// START     | END       | Usage
+/// ------------------------------------------------------------------|
+/// 0x1000    | 0x17FF    | FmpDevicePkg                              |
+///    0x1000 |    0x107F | FmpDxe driver                             |
+///    0x1080 |    0x109F | FmpDependencyLib                          |
+///    0x10A0 |    0x10BF | FmpDependencyCheckLib                     |
+///    0x10C0 |    0x17FF | Unused. Available for future expansion.   |
+/// 0x1800    | 0x1FFF    | FmpDeviceLib instances implementation     |
+/// 0x2000    | 0x3FFF    | Unused. Available for future expansion.   |
+///
 
-//
-// Size of the error code range for FMP dependency related errors
-//
-#define LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_COUNT          0x20
+///
+/// The minimum value of the FMP reserved range.
+///
+#define LAST_ATTEMPT_STATUS_FMP_RESERVED_MIN_ERROR_CODE_VALUE               0x1000
 
-#define LAST_ATTEMPT_STATUS_DRIVER_MAX_ERROR_CODE_VALUE     LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN + \
-                                                            LAST_ATTEMPT_STATUS_DRIVER_ERROR_COUNT
+///
+/// The maximum value of the FMP reserved range.
+///
+#define LAST_ATTEMPT_STATUS_FMP_RESERVED_MAX_ERROR_CODE_VALUE               0x1FFF
 
-#define LAST_ATTEMPT_STATUS_DEPENDENCY_MAX_ERROR_CODE_VALUE LAST_ATTEMPT_STATUS_DRIVER_MAX_ERROR_CODE_VALUE + \
-                                                            LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_COUNT
+///
+/// The minimum value allowed for FmpDxe driver-specific errors.
+///
+#define LAST_ATTEMPT_STATUS_DRIVER_MIN_ERROR_CODE_VALUE                     0x1000
 
-#define LAST_ATTEMPT_STATUS_LIBRARY_MAX_ERROR_CODE_VALUE    LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MAX
+///
+/// The maximum value allowed for FmpDxe driver-specific errors.
+///
+#define LAST_ATTEMPT_STATUS_DRIVER_MAX_ERROR_CODE_VALUE                     0x107F
 
-//
-// Last attempt status codes defined for additional granularity in the FMP driver stack.
-//
-// These codes are defined within the higher-level UEFI specification defined UNSUCCESSFUL_VENDOR_RANGE.
-//
-// The following last attempt status code ranges are defined for the following corresponding component:
-//   * LAST_ATTEMPT_STATUS_DRIVER - FMP driver
-//   * LAST_ATTEMPT_STATUS_DEPENDENCY - FMP dependency functionality
-//   * LAST_ATTEMPT_STATUS_LIBRARY - FMP device library instances
-//
-enum LAST_ATTEMPT_STATUS_EXPANDED_ERROR_LIST
-{
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETFMPHEADER             = LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL_VENDOR_RANGE_MIN,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_IMAGE_INVALID            ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_PROGRESS_CALLBACK_ERROR  ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKPWR_API             ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKSYSTHERMAL_API      ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_THERMAL                  ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_CHECKSYSENV_API          ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_SYSTEM_ENV               ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETFMPHEADERSIZE         ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETALLHEADERSIZE         ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_GETFMPHEADER_VERSION     ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_IMAGE_NOT_PROVIDED       ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_IMAGE_NOT_UPDATABLE      ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_INVALID_CERTIFICATE      ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_INVALID_IMAGE_INDEX      ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_INVALID_KEY_LENGTH       ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_INVALID_KEY_LENGTH_VALUE ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_VERSION_TOO_LOW          ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_DEVICE_LOCKED            ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_IMAGE_AUTH_FAILURE       ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_PROTOCOL_ARG_MISSING     ,
-  LAST_ATTEMPT_STATUS_DRIVER_ERROR_MAX_ERROR_CODE           = LAST_ATTEMPT_STATUS_DRIVER_MAX_ERROR_CODE_VALUE,
+///
+/// The minimum value allowed for FmpDependencyLib related errors.
+///
+#define LAST_ATTEMPT_STATUS_FMP_DEPENDENCY_LIB_MIN_ERROR_CODE_VALUE         0x1080
 
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_GET_DEPEX_FAILURE,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_NO_END_OPCODE,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_UNKNOWN_OPCODE,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_MEMORY_ALLOCATION_FAILED,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_GUID_BEYOND_DEPEX,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_VERSION_BEYOND_DEPEX,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_VERSION_STR_BEYOND_DEPEX,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_FMP_NOT_FOUND,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE,
-  LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_MAX_ERROR_CODE       = LAST_ATTEMPT_STATUS_DEPENDENCY_MAX_ERROR_CODE_VALUE,
+///
+/// The maximum value allowed for FmpDependencyLib related errors.
+///
+#define LAST_ATTEMPT_STATUS_FMP_DEPENDENCY_LIB_MAX_ERROR_CODE_VALUE         0x109F
 
-  LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE,
-  LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE          = LAST_ATTEMPT_STATUS_LIBRARY_MAX_ERROR_CODE_VALUE
-};
+///
+/// The minimum value allowed for FmpDependencyCheckLib related errors.
+///
+#define LAST_ATTEMPT_STATUS_FMP_DEPENDENCY_CHECK_LIB_MIN_ERROR_CODE_VALUE   0x10A0
+
+///
+/// The maximum value allowed for FmpDependencyCheckLib related errors.
+///
+#define LAST_ATTEMPT_STATUS_FMP_DEPENDENCY_CHECK_LIB_MAX_ERROR_CODE_VALUE   0x10BF
+
+///
+/// The minimum value allowed for FMP device library errors.
+///
+#define LAST_ATTEMPT_STATUS_DEVICE_LIBRARY_MIN_ERROR_CODE_VALUE             0x1800
+
+///
+/// The maximum value allowed for FMP device library errors.
+///
+#define LAST_ATTEMPT_STATUS_DEVICE_LIBRARY_MAX_ERROR_CODE_VALUE             0x1FFF
 
 #endif
 
