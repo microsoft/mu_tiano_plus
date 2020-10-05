@@ -34,8 +34,8 @@ typedef struct {
   @param[out]  DepexSize          Size of dependency.
   @param[out]  LastAttemptStatus  An optional pointer to a UINT32 that holds the
                                   last attempt status to report back to the caller.
-                                  A function error code may not always be accompanied
-                                  by a last attempt status code.
+                                  If a last attempt status error code is not returned,
+                                  this function will not modify the LastAttemptStatus value.
 // MU_CHANGE Ends
 
 // MU_CHANGE Starts
@@ -64,8 +64,8 @@ ValidateDependency (
   @param[out] DepexSize           Size, in bytes, of the dependency.
   @param[out] LastAttemptStatus   An optional pointer to a UINT32 that holds the
                                   last attempt status to report back to the caller.
-                                  A function error code may not always be accompanied
-                                  by a last attempt status code.
+                                  If a last attempt status error code is not returned,
+                                  this function will not modify the LastAttemptStatus value.
 // MU_CHANGE Ends
   @retval  The pointer to dependency.
   @retval  Null
@@ -97,8 +97,8 @@ GetImageDependency (
 // MU_CHANGE Starts
   @param[out]  LastAttemptStatus  An optional pointer to a UINT32 that holds the
                                   last attempt status to report back to the caller.
-                                  A function error code may not always be accompanied
-                                  by a last attempt status code.
+                                  This function will set the value to LAST_ATTEMPT_STATUS_SUCCESS
+                                  if an error code is not set.
 // MU_CHANGE Ends
 
   @retval TRUE    Dependency expressions evaluate to TRUE.

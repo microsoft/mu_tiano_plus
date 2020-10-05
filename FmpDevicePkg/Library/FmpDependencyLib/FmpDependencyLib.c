@@ -18,6 +18,7 @@
 // MU_CHANGE Starts
 #include <Guid/SystemResourceTable.h>
 #include <LastAttemptStatus.h>
+#include <FmpLastAttemptStatus.h>
 // MU_CHANGE Ends
 
 //
@@ -212,8 +213,8 @@ Pop (
 // MU_CHANGE Starts
   @param[out]  LastAttemptStatus  An optional pointer to a UINT32 that holds the
                                   last attempt status to report back to the caller.
-                                  A function error code may not always be accompanied
-                                  by a last attempt status code.
+                                  This function will set the value to LAST_ATTEMPT_STATUS_SUCCESS
+                                  if an error code is not set.
 // MU_CHANGE Ends
 
   @retval TRUE    Dependency expressions evaluate to TRUE.
@@ -270,7 +271,7 @@ EvaluateDependency (
       if (Iterator + sizeof (EFI_GUID) >= (UINT8 *) Dependencies->Dependencies + DependenciesSize) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: GUID extends beyond end of dependency expression!\n"));
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_GUID_BEYOND_DEPEX;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_GUID_BEYOND_DEPEX;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -283,7 +284,7 @@ EvaluateDependency (
           Status = Push (FmpVersions[Index].Version, VersionType);
           if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-            LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+            LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
             goto Error;
           }
@@ -293,7 +294,7 @@ EvaluateDependency (
       if (Index == FmpVersionsCount) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: %g is not found!\n", &ImageTypeId));
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_FMP_NOT_FOUND;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_FMP_NOT_FOUND;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -302,7 +303,7 @@ EvaluateDependency (
       if (Iterator + sizeof (UINT32) >= (UINT8 *) Dependencies->Dependencies + DependenciesSize ) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: VERSION extends beyond end of dependency expression!\n"));
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_VERSION_BEYOND_DEPEX;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_VERSION_BEYOND_DEPEX;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -311,7 +312,7 @@ EvaluateDependency (
       Status = Push (Version, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -322,7 +323,8 @@ EvaluateDependency (
       if (Iterator == (UINT8 *) Dependencies->Dependencies + DependenciesSize) {
         DEBUG ((DEBUG_ERROR, "EvaluateDependency: STRING extends beyond end of dependency expression!\n"));
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_VERSION_STR_BEYOND_DEPEX;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_VERSION_STR_BEYOND_DEPEX;
+// MU_CHANGE Ends
         goto Error;
 // MU_CHANGE Ends
       }
@@ -331,21 +333,21 @@ EvaluateDependency (
       Status = Pop (&Element1, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Push (Element1.Value.Boolean & Element2.Value.Boolean, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -354,21 +356,21 @@ EvaluateDependency (
       Status = Pop (&Element1, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Pop(&Element2, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Push (Element1.Value.Boolean | Element2.Value.Boolean, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -377,14 +379,14 @@ EvaluateDependency (
       Status = Pop (&Element1, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Push (!(Element1.Value.Boolean), BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -393,7 +395,7 @@ EvaluateDependency (
       Status = Push (TRUE, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -402,7 +404,7 @@ EvaluateDependency (
       Status = Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -411,21 +413,21 @@ EvaluateDependency (
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version == Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -434,21 +436,21 @@ EvaluateDependency (
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version >  Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -457,21 +459,20 @@ EvaluateDependency (
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
-// MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version >= Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -480,21 +481,21 @@ EvaluateDependency (
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus= LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus= LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version <  Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -503,21 +504,21 @@ EvaluateDependency (
       Status = Pop (&Element1, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = Pop (&Element2, VersionType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
       Status = (Element1.Value.Version <= Element2.Value.Version) ? Push (TRUE, BooleanType) : Push (FALSE, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_PUSH_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_PUSH_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -526,7 +527,7 @@ EvaluateDependency (
       Status = Pop (&Element1, BooleanType);
       if (EFI_ERROR (Status)) {
 // MU_CHANGE Starts
-        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_POP_FAILURE;
+        LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_POP_FAILURE;
 // MU_CHANGE Ends
         goto Error;
       }
@@ -534,7 +535,7 @@ EvaluateDependency (
     default:
       DEBUG ((DEBUG_ERROR, "EvaluateDependency: Unknown Opcode - %02x!\n", *Iterator));
 // MU_CHANGE Starts
-      LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_UNKNOWN_OPCODE;
+      LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_UNKNOWN_OPCODE;
 // MU_CHANGE Ends
       goto Error;
     }
@@ -543,12 +544,12 @@ EvaluateDependency (
 
 // MU_CHANGE Starts
   DEBUG ((DEBUG_ERROR, "EvaluateDependency: No EFI_FMP_DEP_END Opcode in expression!\n"));
-  LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_NO_END_OPCODE;
+  LocalLastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_NO_END_OPCODE;
 // MU_CHANGE Ends
 
 Error:
 // MU_CHANGE Starts
-  if (LastAttemptStatus != NULL && LocalLastAttemptStatus != LAST_ATTEMPT_STATUS_SUCCESS) {
+  if (LastAttemptStatus != NULL) {
     *LastAttemptStatus = LocalLastAttemptStatus;
   }
 // MU_CHANGE Ends
@@ -565,8 +566,8 @@ Error:
   @param[out]  DepexSize          Size of dependency.
   @param[out]  LastAttemptStatus  An optional pointer to a UINT32 that holds the
                                   last attempt status to report back to the caller.
-                                  A function error code may not always be accompanied
-                                  by a last attempt status code.
+                                  If a last attempt status error code is not returned,
+                                  this function will not modify the LastAttemptStatus value.
 // MU_CHANGE Ends
 
 // MU_CHANGE Starts
@@ -633,9 +634,9 @@ ValidateDependency (
   }
 
 // MU_CHANGE Starts
-   if (LastAttemptStatus != NULL) {
-     *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_NO_END_OPCODE;
-   }
+  if (LastAttemptStatus != NULL) {
+    *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_NO_END_OPCODE;
+  }
 // MU_CHANGE Ends
 
   return FALSE;
@@ -650,8 +651,8 @@ ValidateDependency (
   @param[out] DepexSize           Size, in bytes, of the dependency.
   @param[out] LastAttemptStatus   An optional pointer to a UINT32 that holds the
                                   last attempt status to report back to the caller.
-                                  A function error code may not always be accompanied
-                                  by a last attempt status code.
+                                  If a last attempt status error code is not returned,
+                                  this function will not modify the LastAttemptStatus value.
 // MU_CHANGE Ends
   @retval  The pointer to dependency.
   @retval  Null
@@ -685,7 +686,7 @@ GetImageDependency (
     //
 // MU_CHANGE Starts
     if (LastAttemptStatus != NULL) {
-      *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_ERROR_GET_DEPEX_FAILURE;
+      *LastAttemptStatus = LAST_ATTEMPT_STATUS_DEPENDENCY_LIB_ERROR_GET_DEPEX_FAILURE;
     }
 // MU_CHANGE Ends
     return NULL;
