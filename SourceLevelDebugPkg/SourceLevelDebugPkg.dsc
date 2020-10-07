@@ -44,6 +44,9 @@
   PciLib|MdePkg/Library/BasePciLibCf8/BasePciLibCf8.inf
   PciCf8Lib|MdePkg/Library/BasePciCf8Lib/BasePciCf8Lib.inf
   PlatformHookLib|MdeModulePkg/Library/BasePlatformHookLibNull/BasePlatformHookLibNull.inf
+##MSCHANGE Begin
+  SourceDebugEnabledLib|SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf ## MS_CHANGE_?
+##MSCHANGE End
 
 !ifdef $(SOURCE_DEBUG_USE_USB)
   DebugCommunicationLib|SourceLevelDebugPkg/Library/DebugCommunicationLibUsb/DebugCommunicationLibUsb.inf
@@ -107,6 +110,10 @@
   SourceLevelDebugPkg/Library/DebugAgent/SmmDebugAgentLib.inf
   SourceLevelDebugPkg/DebugAgentPei/DebugAgentPei.inf
   SourceLevelDebugPkg/DebugAgentDxe/DebugAgentDxe.inf
+
+##MSCHANGE BEGIN
+  SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf
+##MSCHANGE END
 
 [BuildOptions]
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES

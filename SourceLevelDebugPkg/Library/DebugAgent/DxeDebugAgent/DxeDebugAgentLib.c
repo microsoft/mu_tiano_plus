@@ -7,6 +7,7 @@
 **/
 
 #include "DxeDebugAgentLib.h"
+#include <Library/SourceDebugEnabledLib.h>       // MS_CHANGE_217204
 
 DEBUG_AGENT_MAILBOX       mMailbox;
 DEBUG_AGENT_MAILBOX       *mMailboxPointer = NULL;
@@ -363,6 +364,15 @@ InitializeDebugAgent (
   IA32_IDT_ENTRY       *Ia32IdtEntry;
   BOOLEAN              PeriodicMode;
   UINTN                TimerCycle;
+
+  // MS_CHANGE_217204
+  DEBUG ((DEBUG_INFO, "%a [DXE]: enter...\n", __FUNCTION__));
+  if (IsSourceDebugEnabled (InitFlag) == FALSE) {
+    DEBUG ((DEBUG_INFO, "%a [DXE]: source debug not enabled\n", __FUNCTION__));
+    return;
+  }
+
+  // END
 
   if (InitFlag == DEBUG_AGENT_INIT_DXE_AP) {
     //

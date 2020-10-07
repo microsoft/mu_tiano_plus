@@ -68,6 +68,7 @@
   MemoryAllocationLib
   PeCoffGetEntryPointLib
   PeCoffExtraActionLib
+  SourceDebugEnabledLib  # MSCHANGE - runtime check if source debug is enabled ## MS_CHANGE_?
 
 [Ppis]
   gEfiPeiMemoryDiscoveredPpiGuid                ## NOTIFY
