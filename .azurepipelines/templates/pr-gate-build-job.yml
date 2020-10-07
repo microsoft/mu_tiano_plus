@@ -12,6 +12,7 @@ parameters:
   tool_chain_tag: ''
   vm_image: ''
   arch_list: ''
+  extra_steps: []   # MU_CHANGE
 
 # Build step
 jobs:
@@ -22,8 +23,8 @@ jobs:
   strategy:
     matrix:
       TARGET_OTHER:
-        Build.Pkgs: 'EmbeddedPkg,SourceLevelDebugPkg'
-        Build.Targets: 'DEBUG,RELEASE,NO-TARGET'
+        Build.Pkgs: 'EmbeddedPkg,PrmPkg,SourceLevelDebugPkg'
+        Build.Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
       TARGET_FMP_FAT:
         Build.Pkgs: 'FmpDevicePkg,FatPkg'
         Build.Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
@@ -40,9 +41,11 @@ jobs:
     container: ${{ parameters.container }}
 
   steps:
-  - template: pr-gate-steps.yml
+  - ${{ parameters.extra_steps }}                                   # MU_CHANGE
+  - template: .azurepipelines/templates/pr-gate-steps.yml@basecore  # MU_CHANGE
     parameters:
       tool_chain_tag: ${{ parameters.tool_chain_tag }}
       build_pkgs: $(Build.Pkgs)
       build_targets: $(Build.Targets)
       build_archs: ${{ parameters.arch_list }}
+      has_ci_dependencies: true                                     # MU_CHANGE
