@@ -1,0 +1,33 @@
+## @file
+# MS_CHANGE_?
+#
+#  MsSourceDebugEnableLib.inf
+#
+#  Description:    Checks if source debugging is runtime enabled.
+#
+#  Copyright (c) Microsoft Corporation. All rights reserved.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SourceDebugEnabledLib
+  FILE_GUID                      = 328de004-43b7-42fe-8dcb-fee65a37de75
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SourceDebugEnabledLib
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources.Common]
+  SourceDebugEnabledLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  SourceLevelDebugPkg/SourceLevelDebugPkg.dec

@@ -32,6 +32,10 @@
   ##
   DebugCommunicationLib|Include/Library/DebugCommunicationLib.h
 
+  ## @libraryclass  Provides an interface to determine at runtime if source debugging is enabled
+  #
+  SourceDebugEnabledLib|Include/Library/SourceDebugEnabledLib.h
+
 [Guids]
   ## MdeModule package token space guid
   # Include/Guid/DebugAgentGuid.h
