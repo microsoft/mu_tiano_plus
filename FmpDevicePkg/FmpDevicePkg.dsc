@@ -6,7 +6,7 @@
 # Capsules.  The behavior of the Firmware Management Protocol instance is
 # customized using libraries and PCDs.
 #
-# Copyright (c) 2016, Microsoft Corporation. All rights reserved.<BR>
+# Copyright (c) Microsoft Corporation. All rights reserved.<BR>
 # Copyright (c) 2018 - 2020, Intel Corporation. All rights reserved.<BR>
 # Copyright (c) 2020, Hewlett Packard Enterprise Development LP. All rights reserved.<BR>
 #
@@ -66,6 +66,21 @@
   FmpDependencyCheckLib|FmpDevicePkg/Library/FmpDependencyCheckLibNull/FmpDependencyCheckLibNull.inf
   FmpDependencyDeviceLib|FmpDevicePkg/Library/FmpDependencyDeviceLibNull/FmpDependencyDeviceLibNull.inf
   TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
+
+## MU_CHANGE Begin
+  [LibraryClasses.common]
+    BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
+  !if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
+  !if $(TARGET) == DEBUG
+  [LibraryClasses.X64, LibraryClasses.IA32]
+    #if debug is enabled provide StackCookie support lib so that we can link to /GS exports on MSVC
+    RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+  [LibraryClasses.X64]
+    BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+    NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+  !endif
+  !endif
+## MU_CHANGE End
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
