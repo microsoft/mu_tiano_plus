@@ -55,6 +55,8 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                 "FmpDevicePkg",
                 "ShellPkg",
                 "FatPkg",
+                "SourceLevelDebugPkg",
+                "EmbeddedPkg"
                 )
 
     def GetArchitecturesSupported(self):
@@ -63,9 +65,7 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                 "IA32",
                 "X64",
                 "ARM",
-                "AARCH64",
-                # "RISCV64"     # MU_CHANGE remove RISC-V
-                )
+                "AARCH64")
 
     def GetTargetsSupported(self):
         ''' return iterable of edk2 target tags supported by this build '''
