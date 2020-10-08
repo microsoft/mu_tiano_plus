@@ -537,8 +537,8 @@
   $(OPENSSL_PATH)/crypto/conf/conf_local.h
   $(OPENSSL_PATH)/crypto/dh/dh_local.h
   $(OPENSSL_PATH)/crypto/dso/dso_local.h
-  $(OPENSSL_PATH)/crypto/ec/ec_lcl.h
-  $(OPENSSL_PATH)/crypto/ec/curve448/curve448_lcl.h
+  $(OPENSSL_PATH)/crypto/ec/ec_local.h
+  $(OPENSSL_PATH)/crypto/ec/curve448/curve448_local.h
   $(OPENSSL_PATH)/crypto/ec/curve448/curve448utils.h
   $(OPENSSL_PATH)/crypto/ec/curve448/ed448.h
   $(OPENSSL_PATH)/crypto/ec/curve448/field.h

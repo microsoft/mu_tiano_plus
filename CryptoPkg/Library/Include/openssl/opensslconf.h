@@ -55,7 +55,6 @@ extern "C" {
 #ifndef OPENSSL_NO_DSA
 # define OPENSSL_NO_DSA
 #endif
-// MU_CHANGE remove OPENSSL_NO_EC
 #ifndef OPENSSL_NO_IDEA
 # define OPENSSL_NO_IDEA
 #endif
@@ -85,7 +84,6 @@ extern "C" {
 #endif
 #ifndef OPENSSL_NO_SEED
 # define OPENSSL_NO_SEED
-// MU_CHANGE remove OPENSSL_NO_SM2
 #endif
 #ifndef OPENSSL_NO_SRP
 # define OPENSSL_NO_SRP
@@ -153,8 +151,6 @@ extern "C" {
 #ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
 # define OPENSSL_NO_EC_NISTP_64_GCC_128
 #endif
-// MU_CHANGE remove OPENSSL_NO_ECDH
-// MU_CHANGE remove OPENSSL_NO_ECDSA
 #ifndef OPENSSL_NO_EGD
 # define OPENSSL_NO_EGD
 #endif
@@ -220,7 +216,6 @@ extern "C" {
 #endif
 #ifndef OPENSSL_NO_TESTS
 # define OPENSSL_NO_TESTS
-// MU_CHANGE OPENSSL_NO_TLS1_3
 #endif
 #ifndef OPENSSL_NO_UBSAN
 # define OPENSSL_NO_UBSAN
