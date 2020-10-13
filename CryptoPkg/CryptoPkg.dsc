@@ -57,13 +57,10 @@
 
 # MU_CHANGE [BEGIN]
 # Add RNG Libs for ARM
-[LibraryClasses.AARCH64, LibraryClasses.ARM]
+[LibraryClasses]
   RngLib|MdePkg/Library/BaseRngLibNull/BaseRngLibNull.inf
 
-[LibraryClasses.X64, LibraryClasses.IA32]
-  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
-
-[LibraryClasses.AARCH64.DXE_DRIVER, LibraryClasses.ARM.DXE_DRIVER, LibraryClasses.AARCH64.UEFI_APPLICATION, LibraryClasses.ARM.UEFI_APPLICATION]
+[LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   RngLib|SecurityPkg/RandomNumberGenerator/RngDxeLib/RngDxeLib.inf
 
 !if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019 ##MSCHANGE

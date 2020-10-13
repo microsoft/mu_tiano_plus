@@ -56,8 +56,8 @@ def move_with_mapping(full_path: str, rel_path: str, output_dir: str, verbose=Fa
 
 if __name__ == "__main__":
     clean = True
-    verbose = False
-    setup = False
+    verbose = True
+    setup = True
     script_dir = os.path.dirname(__file__)
 
     root_dir = os.path.abspath(os.path.join(script_dir, "..", "..", ".."))
@@ -71,13 +71,16 @@ if __name__ == "__main__":
     # clean out our collection dir
     if clean and os.path.exists(nuget_collection_dir):
         print(f"Clearing out {nuget_collection_dir}")
-        shutil.rmtree(nuget_collection_dir)
+        shutil.rmtree(nuget_collection_dir, ignore_errors=True)
     if not os.path.exists(nuget_collection_dir):
         os.makedirs(nuget_collection_dir)
 
+    if verbose:
+        logging.getLogger().setLevel(logging.INFO)
+
     # make sure we're doing a clean build if requested
     if clean:
-        shutil.rmtree(build_output)
+        shutil.rmtree(build_output, ignore_errors=True)
 
     commands = ["stuart_setup", "stuart_ci_setup",
                 "stuart_update"] if setup else []
@@ -99,6 +102,7 @@ if __name__ == "__main__":
     # now we do the build
     flavors = list(get_flavors())
     flavors.append("ALL")  # the all flavor is implicitly defined
+    flavors = ["STANDARD", ]
     build_command = "stuart_ci_build"
     for service in flavors:
         # First we need to clean out the previous builds Build\CryptoPkg\DEBUG_VS2017\X64\CryptoPkg\Driver
