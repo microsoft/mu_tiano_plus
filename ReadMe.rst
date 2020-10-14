@@ -14,13 +14,13 @@ This repository is part of Project Mu.  Please see Project Mu for details https:
 Branch Status - release/202008
 ==============================
 
-Status:
+:Status:
   In Development
 
-Entered Development:
+:Entered Development:
   2020/10/05
 
-Anticipated Stabilization:
+:Anticipated Stabilization:
   November 2020
 
 Branch Changes - release/202008
@@ -44,7 +44,7 @@ Bug Fixes-dev
 2008_RefBoot Changes
 --------------------
 
-- Incomplete
+- None
 
 2008_CIBuild Changes
 --------------------
@@ -82,8 +82,8 @@ Please open any issues in the Project Mu GitHub tracker and read https://microso
 Copyright & License
 ===================
 
-Copyright (c) Microsoft Corporation. All rights reserved.
-SPDX-License-Identifier: BSD-2-Clause-Patent
+| Copyright (C) Microsoft Corporation
+| SPDX-License-Identifier: BSD-2-Clause-Patent
 
 Upstream License (TianoCore)
 ============================
@@ -146,14 +146,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 .. CoreCI
 
-.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/
-.. |WindowsCiBuild| image:: https://img.shields.io/badge/build-coming_soon-red
-.. |WindowsCiTest| image:: https://img.shields.io/badge/tests-coming_soon-green
+.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=55&&branchName=release%2F202008
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20VS2019?branchName=release%2F202008
+.. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/55.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
-.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/
-.. |UbuntuCiBuild| image:: https://img.shields.io/badge/build-coming_soon-red
-.. |UbuntuCiTest| image:: https://img.shields.io/badge/tests-coming_soon-green
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=56&branchName=release%2F202008
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20Ubuntu%20GCC5?branchName=release%2F202008
+.. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/56.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
-
-.. |build_status_windows| image:: https://img.shields.io/badge/build-coming_soon-red
