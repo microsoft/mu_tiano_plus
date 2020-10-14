@@ -51,12 +51,6 @@ steps:
     arguments: -c .pytool/CISettings.py -p ${{ parameters.build_pkgs }} --pr-target $(pr_compare_branch) --output-csv-format-string "##vso[task.setvariable variable=pkgs_to_build;isOutpout=true]{pkgcsv}" --output-count-format-string "##vso[task.setvariable variable=pkg_count;isOutpout=true]{pkgcount}"
   condition: eq(variables['Build.Reason'], 'PullRequest')
 
-# MU_CHANGE - We use binary BaseTools
-# build basetools
-# - template: basetools-build-steps.yml
-#   parameters:
-#     tool_chain_tag: ${{ parameters.tool_chain_tag }}
-
 # install spell check prereqs
 - template: spell-check-prereq-steps.yml
 
