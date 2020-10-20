@@ -180,6 +180,26 @@
 ###################################################################################################
 [Components]
   CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf # MU_CHANGE add this to pass CI
+  CryptoPkg/Test/UnitTest/Library/BaseCryptLib/TestBaseCryptLibShell.inf {
+    <LibraryClasses>
+      PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
+      UefiDriverEntryPoint|MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf
+      UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
+
+      BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
+      BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
+      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+      MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
+      PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
+      PeiServicesLib|MdePkg/Library/PeiServicesLib/PeiServicesLib.inf
+      PerformanceLib|MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf
+      PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
+      UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
+
+      UnitTestLib|UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.inf
+      UnitTestPersistenceLib|UnitTestFrameworkPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
+      UnitTestResultReportLib|UnitTestFrameworkPkg/Library/UnitTestResultReportLib/UnitTestResultReportLibDebugLib.inf
+  }
   CryptoPkg/Library/HmacSha1Lib/HmacSha1Lib.inf
   CryptoPkg/Library/HmacSha1Lib/HmacSha1LibNull.inf
 
@@ -199,20 +219,15 @@
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/DxeCryptLib.inf
   # MU_CHANGE START The prebuilt versions of CryptoDriver
   !include CryptoPkg/Driver/Bin/CryptoPkg.ci.inc.dsc
-  # MU_CHANGE END
+
+  CryptoPkg/Test/UnitTest/Library/BaseCryptLib/TestBaseCryptLibShell.inf   ## Add unit-test application for the crypto tests.
+  ## MU_CHANGE [END]
 
 # MU_CHANGE START
 [Components.X64, Components.IA32]
   CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf
   CryptoPkg/Library/BaseCryptLibOnProtocolPpi/SmmCryptLib.inf
 # MU_CHANGE END
-
-[Components.X64, Components.IA32]
-  ## MU_CHANGE [BEGIN] Added unit-test application for the VerifyEKUsInPkcs7Signature() function.
-  # Currently this unit test doesn't work for AARCH64
-  CryptoPkg/UnitTests/VerifyPkcs7EkuUnitTestApp/VerifyPkcs7EkuUnitTestApp.inf
-  ## MU_CHANGE [END]
-
 !endif
 
 [Components.IA32, Components.X64] # MU_CHANGE remove ARM and AARCH64
