@@ -44,7 +44,9 @@ Bug Fixes-dev
 2008_RefBoot Changes
 --------------------
 
-- None
+- FmpDxe instances must now carry implementations of FmpDependencyLib -- and, by extension, all
+  sub-dependencies. If your FmpDxe does not use the dependencies architecture, please use
+  FmpDevicePkg/Library/FmpDependencyLib/FmpDependencyLib.inf and the NULL implementations.
 
 2008_CIBuild Changes
 --------------------
