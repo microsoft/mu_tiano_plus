@@ -3,7 +3,9 @@
   image stored in a firmware device with platform and firmware device specific
   information provided through PCDs and libraries.
 
-  Copyright (c) 2016, Microsoft Corporation. All rights reserved.<BR>
+// MU_CHANGE Starts
+  Copyright (c) Microsoft Corporation.<BR>
+// MU_CHANGE Ends
   Copyright (c) 2018 - 2019, Intel Corporation. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -36,6 +38,10 @@
 #include <Protocol/VariableLock.h>
 #include <Guid/SystemResourceTable.h>
 #include <Guid/EventGroup.h>
+// MU_CHANGE Starts
+#include <LastAttemptStatus.h>
+#include <FmpLastAttemptStatus.h>
+// MU_CHANGE Ends
 
 #define VERSION_STRING_NOT_SUPPORTED  L"VERSION STRING NOT SUPPORTED"
 #define VERSION_STRING_NOT_AVAILABLE  L"VERSION STRING NOT AVAILABLE"
