@@ -8,15 +8,18 @@
 
 ## About
 
-This repo contains Project Mu common code that should only take Basecore as a dependency and be applicable to almost any FW project. The modules in this repo were taken with minimal modification from TianoCore. For full documentation, please see the Project Mu [Docs site](https://microsoft.github.io/mu/).
+This repo contains Project Mu common code that should only take Basecore as a dependency and be applicable to almost
+any FW project. The modules in this repo were taken with minimal modification from TianoCore. For full documentation,
+please see the Project Mu [Docs site](https://microsoft.github.io/mu/).
 
 ## More Info
 
-Please see the Project Mu docs (https://github.com/Microsoft/mu) for more information.  
+Please see the Project Mu docs <https://github.com/Microsoft/mu> for more information.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Issues
 
@@ -35,7 +38,7 @@ For information about building just this repo locally, see [pytool instructions]
 
 ## Copyright & License
 
-Copyright (C) Microsoft Corporation  
+Copyright (C) Microsoft Corporation
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
 ### Upstream License (TianoCore)

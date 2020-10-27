@@ -1,0 +1,12 @@
+# Ignore build directory
+/Build/
+
+# Ignore external dependencies
+*_extdep/
+
+# Ignore cloned dependencies
+/MU_BASECORE
+/Silicon
+
+#Ignore submodules
+/CryptoPkg/Library/OpensslLib/openssl
