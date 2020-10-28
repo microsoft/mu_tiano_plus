@@ -1067,12 +1067,21 @@ CheckTheImageInternal (
   }
   RawSize = ImageSize - AllHeaderSize;
 
+  // MU_CHANGE Starts
+  //
+  // FmpDeviceCheckImage () will no longer have a LastAttemptStatus parameter in future
+  // edk2 releases. FmpDeviceLib libraries should implement FmpDeviceCheckImageWithStatus ()
+  // in the future.
+  //
+  // This call is temporarily left in for backward compatibility.
+  //
+  // MU_CHANGE Ends
 
   //
   // FmpDeviceLib CheckImage function to do any specific checks
   //
 // MU_CHANGE Starts
-  Status = FmpDeviceCheckImageWithStatus ((((UINT8 *)Image) + AllHeaderSize), RawSize, ImageUpdatable, LastAttemptStatus);
+  Status = FmpDeviceCheckImage ((((UINT8 *)Image) + AllHeaderSize), RawSize, ImageUpdatable, LastAttemptStatus);
 // MU_CHANGE Ends
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): CheckTheImage() - FmpDeviceLib CheckImage failed. Status = %r\n", mImageIdName, Status));
@@ -1445,7 +1454,17 @@ SetTheImage (
   //
   //Copy the requested image to the firmware using the FmpDeviceLib
   //
-  Status = FmpDeviceSetImageWithStatus (
+
+  // MU_CHANGE Starts
+  //
+  // FmpDeviceSetImage () will no longer have a LastAttemptStatus parameter in future
+  // edk2 releases. FmpDeviceLib libraries should implement FmpDeviceSetImageWithStatus ()
+  // in the future.
+  //
+  // This call is temporarily left in for backward compatibility.
+  //
+  // MU_CHANGE Ends
+  Status = FmpDeviceSetImage (
              (((UINT8 *)Image) + AllHeaderSize),
              ImageSize - AllHeaderSize,
              VendorCode,
