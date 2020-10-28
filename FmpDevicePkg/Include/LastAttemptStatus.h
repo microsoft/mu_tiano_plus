@@ -80,6 +80,25 @@
 ///
 #define LAST_ATTEMPT_STATUS_DEVICE_LIBRARY_MAX_ERROR_CODE_VALUE             0x1FFF
 
+///
+/// IMPORTANT!
+///
+/// The following macros are temporarily defined for backward
+/// compatibility. All code should move to use the new define
+/// macros LAST_ATTEMPT_STATUS_DEVICE_LIBRARY_MIN_ERROR_CODE_VALUE
+/// and LAST_ATTEMPT_STATUS_DEVICE_LIBRARY_MAX_ERROR_CODE_VALUE.
+///
+
+///
+/// The minimum value allowed for FMP device library errors.
+///
+#define LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MIN_ERROR_CODE    LAST_ATTEMPT_STATUS_DEVICE_LIBRARY_MIN_ERROR_CODE_VALUE
+
+///
+/// The maximum value allowed for FMP device library errors.
+///
+#define LAST_ATTEMPT_STATUS_LIBRARY_ERROR_MAX_ERROR_CODE    LAST_ATTEMPT_STATUS_DEVICE_LIBRARY_MAX_ERROR_CODE_VALUE
+
 #endif
 
 // MU_CHANGE Ends
