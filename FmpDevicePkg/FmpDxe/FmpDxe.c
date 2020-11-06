@@ -1230,6 +1230,7 @@ SetTheImage (
   UINT32                            DependenciesSize;
 
   Status             = EFI_SUCCESS;
+  Private            = NULL;  // MU_CHANGE
   Updateable         = 0;
   BooleanValue       = FALSE;
   FmpHeaderSize      = 0;
