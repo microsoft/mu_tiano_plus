@@ -23,6 +23,43 @@ This section briefly describes the package modules and libraries.
    Produces an instance of the Firmware Management Protocol (`EFI_FIRMWARE_MANAGEMENT_PROTOCOL`) that is used
    to support updates to a firmware image stored on a firmware device
 
+### Libraries
+
+1. **CapsuleUpdatePolicyLib**
+   * **Purpose:** \
+   Provides platform policy services used during a capsule update.
+
+    1. **CapsuleUpdatePolicyLibNull** [readme](../Library/CapsuleUpdatePolicyLibNull/ReadMe.md)
+    2. **CapsuleUpdatePolicyLibOnProtocol** [readme](../Library/CapsuleUpdatePolicyLibOnProtocol/ReadMe.md)
+2. **FmpDependencyCheckLib**
+   * **Purpose:** \
+   Provides services to check that capsule dependencies are met during firmware update.
+
+    1. **FmpDependencyCheckLib** [readme](../Library/FmpDependencyCheckLib/ReadMe.md)
+    2. **FmpDependencyCheckLibNull** [readme](../Library/FmpDependencyCheckLibNull/ReadMe.md)
+3. **FmpDependencyDeviceLib**
+   * **Purpose:** \
+   Provides firmware device specific services to support saving dependency expressions to a firmware device and
+   getting dependency expressions from a firmware device.
+
+    1. **FmpDependencyDeviceLibNull** [readme](../Library/FmpDependencyDeviceLibNull/ReadMe.md)
+4. **FmpDependencyLib**
+   * **Purpose:** \
+   Provides functions used to manage dependencies between firmware components during the update of device firmware
+   images.
+
+    1. **FmpDependencyLib** [readme](../Library/FmpDependencyLib/ReadMe.md)
+5. **FmpDeviceLib**
+   * **Purpose:** \
+   Provides firmware device specific services to support firmware updates on a given device.
+
+    1. **FmpDeviceLibNull** [readme](../Library/FmpDeviceLibNull/ReadMe.md)
+6. **FmpPayloadHeaderLib**
+   * **Purpose:** \
+   Provides services to retrieve values from a capsule FMP Payload Header.
+
+    1. **FmpPayloadHeaderLibV1** [readme](../Library/FmpPayloadHeaderLibV1/ReadMe.md)
+
 ## Further Reading
 
 Several documents describe important elements involved in understanding `FmpDevicePkg`. Consult the following
