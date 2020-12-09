@@ -17,4 +17,3 @@ implementation is also available in this package, see `FmpDependencyCheckLib`.
 
 Copyright (c) Microsoft Corporation.
 SPDX-License-Identifier: BSD-2-Clause-Patent
-
