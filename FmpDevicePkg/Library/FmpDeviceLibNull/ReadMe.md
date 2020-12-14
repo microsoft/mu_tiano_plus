@@ -64,5 +64,5 @@ comment that precedes each function in the library header file.
 
 ## Copyright
 
-Copyright (c) Microsoft Corporation.
+Copyright (c) Microsoft Corporation.  
 SPDX-License-Identifier: BSD-2-Clause-Patent

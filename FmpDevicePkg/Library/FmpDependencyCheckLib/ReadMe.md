@@ -11,5 +11,5 @@ This library provides services to check that capsule dependencies are met during
 
 ## Copyright
 
-Copyright (c) Microsoft Corporation.
+Copyright (c) Microsoft Corporation.  
 SPDX-License-Identifier: BSD-2-Clause-Patent
