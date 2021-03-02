@@ -68,7 +68,7 @@ First the easy way:
 
     [FV.FVDXE]
       ...
-      !include CryptoPkg/Driver/Bin/CryptoDriver.BOOTBLOCK.inc.fdf
+      !include CryptoPkg/Driver/Bin/CryptoDriver.DXE.inc.fdf
     ```
 
 ### Recommendations
