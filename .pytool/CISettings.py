@@ -190,12 +190,12 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
             {
                 "Path": "Silicon/Arm/MU_TIANO",
                 "Url": "https://github.com/Microsoft/mu_silicon_arm_tiano.git",
-                "Branch": "release/202008"
+                "Branch": "release/202102"
             },
             {
                 "Path": "MU_BASECORE",
                 "Url": "https://github.com/Microsoft/mu_basecore.git",
-                "Branch": "release/202008"
+                "Branch": "release/202102"
             }
         ]
         # MU_CHANGE END

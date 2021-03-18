@@ -11,19 +11,19 @@ Ubuntu_GCC5_                  |UbuntuCiBuild|   |UbuntuCiTest|  |UbuntuCiCoverag
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
-Branch Status - release/202008
+Branch Status - release/202102
 ==============================
 
 :Status:
   In Development
 
 :Entered Development:
-  2020/10/05
+  2021/03/15
 
 :Anticipated Stabilization:
-  November 2020
+  May 2021
 
-Branch Changes - release/202008
+Branch Changes - release/202102
 ===============================
 
 Breaking Changes-dev
@@ -41,30 +41,22 @@ Bug Fixes-dev
 
 - None
 
-2008_RefBoot Changes
+2102_RefBoot Changes
 --------------------
 
-- FmpDxe instances must now carry implementations of FmpDependencyLib -- and, by extension, all
-  sub-dependencies. If your FmpDxe does not use the dependencies architecture, please use
-  FmpDevicePkg/Library/FmpDependencyLib/FmpDependencyLib.inf and the NULL implementations.
+- Incomplete
 
-2008_CIBuild Changes
+2102_CIBuild Changes
 --------------------
-- None
+- Incomplete
 
-2008_Rebase Changes
+2102_Rebase Changes
 -------------------
 
-Starting commit:    2c65c0214d
-Destination commit: 06dc822d04 (tag: edk2-stable202008)
+| Starting commit: 70918b522e139d25d8442a89aa8639d6ef586114
+| Destination Commit from upstream edk2: edd46cd407ea4a0adaa8d6ca86f550c2a4d5c507 (tag: NONE - commit post 202102 tag)
 
-- FmpDevicePkg\FmpDxe\FmpDxe.c: Took null check addition from edk2 around line 1340
-- CryptoPkg\Library\Include\openssl\opensslconf.h: edk2 delete # define OPENSSL_NO_AFALGENG
-- Double check many openssl changes in CryptoPkg\Library\OpensslLib\OpensslLib.inf
-- Double check many openssl changes in CryptoPkg\Library\OpensslLib\OpensslLibCrypto.inf
-- Lots of diffs in CryptoPkg/Driver/Crypto.c and CryptoPkg/Library/BaseCryptLibOnProtocolPpi/CryptLib.c. Mostly took mu changes.
-- FmpDependencyLib.h/.c and FmpDependencyCheckLib.c had lastattemptstatus additions from mu
-- In FmpDevicePkg/FmpDxe/FmpDxe.c Looks like edk2 added a null check based on coreuefi filed bug, but theirs asserts while ours does not. Took our version
+- FmpDeviceSetImage no longer has LastAttemptedStatus- you must use FmpDeviceSetImageWithStatus
 
 Code of Conduct
 ===============
@@ -148,12 +140,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 .. CoreCI
 
-.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=55&&branchName=release%2F202008
-.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20VS2019?branchName=release%2F202008
+.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=55&&branchName=release%2F202102
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20VS2019?branchName=release%2F202102
 .. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/55.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
-.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=56&branchName=release%2F202008
-.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20Ubuntu%20GCC5?branchName=release%2F202008
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=56&branchName=release%2F202102
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20Ubuntu%20GCC5?branchName=release%2F202102
 .. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/56.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
