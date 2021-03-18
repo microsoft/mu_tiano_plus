@@ -62,7 +62,7 @@
   RngLib|MdePkg/Library/BaseRngLibNull/BaseRngLibNull.inf
 
 [LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
-  RngLib|SecurityPkg/RandomNumberGenerator/RngDxeLib/RngDxeLib.inf
+  RngLib|MdePkg/Library/DxeRngLib/DxeRngLib.inf
 
 !if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019 ##MSCHANGE
 [LibraryClasses.IA32]
