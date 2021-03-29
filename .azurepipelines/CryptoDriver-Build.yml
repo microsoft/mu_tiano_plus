@@ -6,17 +6,43 @@
 # Copyright (C) Microsoft Corporation
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
-name: SharedCrypto_Binary_$(Rev:r)
+
+trigger: none
+pr: none
+
+parameters:
+- name: publish_nuget
+  displayName: Publish as a Nuget Package
+  type: boolean
+  default: false
+- name: version_patch
+  displayName: Patch Version (0-65535)
+  type: number
+  default: 0
 
 variables:
-  build_archs: 'IA32,X64,AARCH64'
-  build_targets: 'DEBUG,RELEASE'
-  tool_chain_tag: 'VS2019'
-  pkg_count: 1
-  temp_publication_directory: 'PackageStaging'
-  package_artifact_name: 'NugetReleasePackage'
+- name: build_archs
+  value: 'IA32,X64,AARCH64'
+- name: build_targets
+  value: 'DEBUG,RELEASE'
+- name: tool_chain_tag
+  value: 'VS2019'
+- name: python_version
+  value: '3.9.x'
+- template: ../Version.yml
+- name: version.release_flavor      # This is the semantic version modifier (e.g. X.Y.Z-dev, "-dev" is the flavor)
+  value: '-beta'
+- name: temp_publication_directory
+  value: 'PackageStaging'
+- name: package_artifact_name
+  value: 'NugetReleasePackage'
 
-jobs:
+name: v$(version.major).$(version.minor).${{ parameters.version_patch }}$(version.release_flavor) Build_$(Date:yyyyMMdd)$(Rev:.r)
+
+stages:
+- stage: build
+  displayName: Build
+  jobs:
   - job: crypto_build
     # Use Matrix to build multiple versions
     strategy:
@@ -56,25 +82,25 @@ jobs:
       displayName: Setup
       inputs:
         filename: stuart_ci_setup
-        arguments: -c .pytool/CISettings.py -p CryptoPkg --force-git -t ${{ variables.build_targets}} -a ${{variables.build_archs}} TOOL_CHAIN_TAG=${{ variables.tool_chain_tag}}
+        arguments: -c .pytool/CISettings.py -p CryptoPkg --force-git -t ${{ variables.build_targets }} -a ${{variables.build_archs }} TOOL_CHAIN_TAG=${{ variables.tool_chain_tag }}
 
     - task: CmdLine@1
-      displayName: Setup CryptoPkg ${{ variables.build_archs}}
+      displayName: Setup CryptoPkg ${{ variables.build_archs }}
       inputs:
         filename: stuart_setup
-        arguments: -c .pytool/CISettings.py -p CryptoPkg -t ${{ variables.build_targets}} -a ${{ variables.build_archs}} TOOL_CHAIN_TAG=${{ variables.tool_chain_tag}}
+        arguments: -c .pytool/CISettings.py -p CryptoPkg -t ${{ variables.build_targets }} -a ${{ variables.build_archs }} TOOL_CHAIN_TAG=${{ variables.tool_chain_tag }}
 
     - task: CmdLine@1
-      displayName: Update CryptoPkg ${{ variables.build_archs}}
+      displayName: Update CryptoPkg ${{ variables.build_archs }}
       inputs:
         filename: stuart_update
-        arguments: -c .pytool/CISettings.py -p CryptoPkg -t ${{ variables.build_targets}} -a ${{ variables.build_archs}} TOOL_CHAIN_TAG=${{ variables.tool_chain_tag}}
+        arguments: -c .pytool/CISettings.py -p CryptoPkg -t ${{ variables.build_targets }} -a ${{ variables.build_archs }} TOOL_CHAIN_TAG=${{ variables.tool_chain_tag }}
 
     - task: CmdLine@1
-      displayName: Build and Test CryptoPkg ${{ variables.build_archs}}
+      displayName: Build and Test CryptoPkg ${{ variables.build_archs }}
       inputs:
         filename: stuart_ci_build
-        arguments: -c .pytool/CISettings.py -p CryptoPkg -t ${{ variables.build_targets}} -a ${{ variables.build_archs}} TOOL_CHAIN_TAG=${{ variables.tool_chain_tag}} BLD_*_CRYPTO_SERVICES=$(Build.Flavor) BUILDREPORTING=TRUE BUILDREPORT_TYPES="LIBRARY DEPEX PCD BUILD_FLAGS"
+        arguments: -c .pytool/CISettings.py -p CryptoPkg -t ${{ variables.build_targets }} -a ${{ variables.build_archs }} TOOL_CHAIN_TAG=${{ variables.tool_chain_tag }} BLD_*_CRYPTO_SERVICES=$(Build.Flavor) BUILDREPORTING=TRUE BUILDREPORT_TYPES="LIBRARY DEPEX PCD BUILD_FLAGS"
 
     - task: CopyFiles@2
       displayName: "Copy build artifacts and logs"
@@ -232,6 +258,71 @@ jobs:
             };
       displayName: Stage Package Files
 
-    - publish: $(Build.StagingDirectory)/$(temp_publication_directory)
-      displayName: Save the Release Package for Publishing
-      artifact: $(package_artifact_name)
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Binaries
+      inputs:
+        pathtoPublish: '$(Build.StagingDirectory)/$(temp_publication_directory)'
+        artifactName: '$(package_artifact_name)'
+
+
+- ${{ if eq(parameters.publish_nuget, true) }}:
+  - stage: publish
+    displayName: Publish
+    dependsOn: build
+
+    variables:
+    - name: nuget_staging_directory
+      value: $(Build.StagingDirectory)/NugetPackage
+    - name: nuget_output_log
+      value: $(Build.StagingDirectory)/NugetLog.txt
+
+    pool:
+      vmImage: windows-latest
+
+    jobs:
+    - job: DownloadAndPublish
+      displayName: Download and Publish
+
+      steps:
+      - checkout: self
+        clean: true
+
+      - task: UsePythonVersion@0
+        displayName: Use Python $(python_version)
+        inputs:
+          versionSpec: $(python_version)
+          architecture: 'x64'
+
+      - script: pip install -r pip-requirements.txt --upgrade
+        displayName: Install/Upgrade Pip Modules
+
+      - task: NuGetAuthenticate@0
+        displayName: Authenticate Local Feed
+
+      - task: DownloadBuildArtifacts@0
+        name: DownloadBuildArtifacts
+        displayName: Download Build Artifacts
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: $(package_artifact_name)
+          downloadPath: '$(nuget_staging_directory)'
+
+      - task: PowerShell@2
+        name: PackNugetPackage
+        displayName: Pack and Push Nuget Package
+        inputs:
+          targetType: 'inline'
+          script: |
+            $configFilePath = "CryptoPkg/Driver/Packaging/edk2-BaseCryptoDriver.config.json";
+            $publishVersion = "$(version.major).$(version.minor).${{ parameters.version_patch }}$(version.release_flavor)";
+
+            Write-Host nuget-publish --Operation PackAndPush --OutputLog "$(nuget_output_log)" --ConfigFilePath "$configFilePath" --InputFolderPath "$(nuget_staging_directory)" --Version "$publishVersion";
+            nuget-publish --Operation PackAndPush --OutputLog "$(nuget_output_log)" --ConfigFilePath "$configFilePath" --InputFolderPath "$(nuget_staging_directory)" --Version "$publishVersion";
+
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Nuget Log
+        inputs:
+          pathtoPublish: '$(nuget_output_log)'
+          artifactName: 'Nuget Log'
+        condition: SucceededOrFailed()
