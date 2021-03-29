@@ -1,0 +1,14 @@
+# Release Version Info
+# Semantic versioning looks like: xx.yy.zz where:
+# - xx = major (8-bits)
+# - yy = minor (8-bits)
+# - zz = patch (16-bits)
+#
+# File content and layout is such that the YAML can be parsed by build-time tools
+# as well as the CI/build pipeline YAML files. The root 'variables' element is there
+# for DevOps.
+#
+
+variables:
+  version.major: 2021
+  version.minor: 02
