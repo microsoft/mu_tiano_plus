@@ -179,6 +179,10 @@
 ###################################################################################################
 [Components]
   CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf # MU_CHANGE add this to pass CI
+  CryptoPkg/Library/HmacSha1Lib/HmacSha1Lib.inf
+  CryptoPkg/Library/HmacSha1Lib/HmacSha1LibNull.inf
+
+[Components.X64, Components.IA32] # MU_CHANGE set this to X64/IA32 only
   CryptoPkg/Test/UnitTest/Library/BaseCryptLib/TestBaseCryptLibShell.inf {
     <LibraryClasses>
       PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
@@ -199,8 +203,6 @@
       UnitTestPersistenceLib|UnitTestFrameworkPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
       UnitTestResultReportLib|UnitTestFrameworkPkg/Library/UnitTestResultReportLib/UnitTestResultReportLibDebugLib.inf
   }
-  CryptoPkg/Library/HmacSha1Lib/HmacSha1Lib.inf
-  CryptoPkg/Library/HmacSha1Lib/HmacSha1LibNull.inf
 
 !if $(CRYPTO_SERVICES) == PACKAGE
 [Components]
