@@ -306,7 +306,7 @@ stages:
           buildType: 'current'
           downloadType: 'single'
           artifactName: $(package_artifact_name)
-          downloadPath: '$(nuget_staging_directory)'
+          downloadPath: '$(Build.StagingDirectory)'
 
       - task: PowerShell@2
         name: PackNugetPackage
@@ -316,9 +316,10 @@ stages:
           script: |
             $configFilePath = "CryptoPkg/Driver/Packaging/edk2-BaseCryptoDriver.config.json";
             $publishVersion = "$(version.major).$(version.minor).${{ parameters.version_patch }}$(version.release_flavor)";
+            $packageDirectory = "$(Build.StagingDirectory)/$(package_artifact_name)"
 
-            Write-Host nuget-publish --Operation PackAndPush --OutputLog "$(nuget_output_log)" --ConfigFilePath "$configFilePath" --InputFolderPath "$(nuget_staging_directory)" --Version "$publishVersion";
-            nuget-publish --Operation PackAndPush --OutputLog "$(nuget_output_log)" --ConfigFilePath "$configFilePath" --InputFolderPath "$(nuget_staging_directory)" --Version "$publishVersion";
+            Write-Host nuget-publish --Operation PackAndPush --OutputLog "$(nuget_output_log)" --ConfigFilePath "$configFilePath" --InputFolderPath "$packageDirectory" --Version "$publishVersion";
+            nuget-publish --Operation PackAndPush --OutputLog "$(nuget_output_log)" --ConfigFilePath "$configFilePath" --InputFolderPath "$packageDirectory" --Version "$publishVersion";
 
       - task: PublishBuildArtifacts@1
         displayName: Publish Nuget Log
