@@ -4,6 +4,6 @@
     "type": "nuget",
     "name": "edk2-basecrypto-driver-bin",
     "source": "https://pkgs.dev.azure.com/projectmu/mu/_packaging/Mu-Public/nuget/v3/index.json",
-    "version": "2021.02.2-beta",
+    "version": "2021.02.3",
     "flags": []
   }
