@@ -44,7 +44,7 @@ Bug Fixes-dev
 2102_RefBoot Changes
 --------------------
 
-- Incomplete
+- None
 
 2102_CIBuild Changes
 --------------------
@@ -56,7 +56,8 @@ Bug Fixes-dev
 | Starting commit: 70918b522e139d25d8442a89aa8639d6ef586114
 | Destination Commit from upstream edk2: edd46cd407ea4a0adaa8d6ca86f550c2a4d5c507 (tag: NONE - commit post 202102 tag)
 
-- FmpDeviceSetImage no longer has LastAttemptedStatus- you must use FmpDeviceSetImageWithStatus
+- FmpDeviceSetImage and FmpDeviceCheckImage no longer have LastAttemptedStatus. Must use FmpDeviceSetImageWithStatus or
+  FmpDeviceCheckImageWithStatus
 
 Code of Conduct
 ===============
