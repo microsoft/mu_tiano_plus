@@ -80,9 +80,14 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #define FAT_FATCACHE_PAGE_MAX_ALIGNMENT   15
 #define FAT_DATACACHE_PAGE_MIN_ALIGNMENT  13
 #define FAT_DATACACHE_PAGE_MAX_ALIGNMENT  16
-#define FAT_DATACACHE_GROUP_COUNT         64
-#define FAT_FATCACHE_GROUP_MIN_COUNT      1
-#define FAT_FATCACHE_GROUP_MAX_COUNT      16
+
+//
+// TODO: After evaluating this fix, code appropriate changes and remove these fixed alignments
+//       and count values.
+//
+#define FAT_DATACACHE_GROUP_COUNT         (64 * 128)
+#define FAT_FATCACHE_GROUP_MIN_COUNT      (1  * 128)
+#define FAT_FATCACHE_GROUP_MAX_COUNT      (16 * 128)
 
 //
 // Used in 8.3 generation algorithm
