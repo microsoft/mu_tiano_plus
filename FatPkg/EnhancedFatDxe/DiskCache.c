@@ -8,6 +8,215 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #include "Fat.h"
 
+//
+// MU_CHANGE begin
+//
+// Keep track of Lba blocks within a cache line.  Allow reads from the disk to read the
+// full cache line, and all writes to the cache line will update which Lba is dirty in DIRTY_BITS
+//
+// At flush time, when the cache line is written out, only write the blocks that are dirty, coalescing
+// adjacent writes to a single FatDiskIo write.
+//
+
+/**
+  IsCacheTagDirty    - Checks if any LBA is dirty in this cache line
+
+  @param[in]    CacheTag   - CacheTag to check
+
+  @retval       TRUE       - Cache is Dirty
+                FALSE      - Cache is not Dirty
+
+**/
+STATIC
+BOOLEAN
+IsCacheTagDirty (
+  IN CACHE_TAG  *CacheTag
+  )
+{
+  UINTN  i;
+
+  for (i = 0; i < DIRTY_BLOCKS_SIZE; i++) {
+    if (CacheTag->DirtyBlocks[i]) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+  SetBitInDirtyBlock
+
+  @param[in]    BitNumber      - Which bit to set in DirtyBlocks
+  @param[in]    DirtyBlocks    - Array of bits
+
+**/
+STATIC
+VOID
+SetBitInDirtyBlock (
+  IN UINTN         BitNumber,
+  IN DIRTY_BLOCKS  *DirtyBlocks
+  )
+{
+  UINTN  BlockIndex;
+  UINTN  BitIndex;
+
+  //
+  // ASSERTs checking BitNumber are DEBUG build only to verify the assumptions in the
+  // fat.h defines (See fat.h lines to describe DIRTY_BITS)
+  //
+  ASSERT (BitNumber < DIRTY_BITS);
+
+  BlockIndex               = BitNumber / DIRTY_BITS_PER_BLOCK;
+  BitIndex                 = BitNumber % DIRTY_BITS_PER_BLOCK;
+  DirtyBlocks[BlockIndex] |= (DIRTY_BLOCKS)((UINTN)1ull << BitIndex);
+}
+
+/**
+  CheckBitInDirtyBlock
+
+  @param[in]    BitNumber      - Which bit to check in DirtyBlocks
+  @param[in]    DirtyBlocks    - Array of bits
+
+**/
+STATIC
+BOOLEAN
+CheckBitInDirtyBlock (
+  IN UINTN         BitNumber,
+  IN DIRTY_BLOCKS  *DirtyBlocks
+  )
+{
+  UINTN  BlockIndex;
+  UINTN  BitIndex;
+
+  ASSERT (BitNumber < DIRTY_BITS);
+
+  BlockIndex = BitNumber / DIRTY_BITS_PER_BLOCK;
+  BitIndex   = BitNumber % DIRTY_BITS_PER_BLOCK;
+  return (DirtyBlocks[BlockIndex] & (DIRTY_BLOCKS)((UINTN)1ull << BitIndex)) != 0;
+}
+
+/**
+  SetCacheTagDirty   - Sets dirty block bits
+
+  @param[in]    DiskCache  - DiskCache
+  @param[in]    CacheTag   - CacheTag to update
+  @param[in]    Offset     - Offset in the cache line to be marked modified
+  @param[in]    Length     - Length of the data to be marked modified
+
+**/
+STATIC
+VOID
+SetCacheTagDirty (
+  IN DISK_CACHE  *DiskCache,
+  IN CACHE_TAG   *CacheTag,
+  IN UINTN       Offset,
+  IN UINTN       Length
+  )
+{
+  UINTN  Bit;
+  UINTN  LastBit;
+
+  Bit     = Offset / DiskCache->BlockSize;
+  LastBit = (Offset + Length - 1) / DiskCache->BlockSize;
+
+  ASSERT (Bit <= LastBit);
+  ASSERT (LastBit <= DIRTY_BITS);
+
+  do {
+    SetBitInDirtyBlock (Bit, CacheTag->DirtyBlocks);
+  } while (++Bit <= LastBit);
+}
+
+/**
+
+  Cache version of FatDiskIo for writing only those LBA's with dirty data.
+
+  @param  DiskCache             - FAT file system VolumeDiskCachevolume.
+  @param  Volume                - FAT file system volume.
+  @param  Volume                - FAT file system volume.
+  @param  IoMode                - The access mode (disk read/write or cache access).
+  @param  Offset                - The starting byte offset to read from.
+  @param  BufferSize            - Size of Buffer.
+  @param  Buffer                - Buffer containing read data.
+  @param  Task                    point to task instance.
+
+  @retval EFI_SUCCESS           - The operation is performed successfully.
+  @retval EFI_VOLUME_CORRUPTED  - The access is
+  @return Others                - The status of read/write the disk
+
+**/
+STATIC
+EFI_STATUS
+CacheFatDiskIo (
+  IN     CACHE_TAG        *CacheTag,
+  IN     CACHE_DATA_TYPE  DataType,
+  IN     FAT_VOLUME       *Volume,
+  IN     IO_MODE          IoMode,
+  IN     UINT64           Offset,
+  IN     UINTN            BufferSize,
+  IN OUT VOID             *Buffer,
+  IN     FAT_TASK         *Task
+  )
+{
+  DISK_CACHE  *DiskCache;
+  UINTN       Bit;
+  VOID        *WriteBuffer;
+  UINTN       LastBit;
+  UINT64      StartPos;
+  EFI_STATUS  Status;
+  UINTN       WriteSize;
+
+  Status = EFI_SUCCESS;
+  if ((IoMode == WriteDisk) && (CacheTag->RealSize != 0)) {
+    DiskCache   = &Volume->DiskCache[DataType];
+    WriteBuffer = Buffer;
+    LastBit     = (CacheTag->RealSize - 1) / DiskCache->BlockSize;
+    StartPos    = Offset;
+    Bit         = 0;
+    WriteSize   = 0;
+
+    do {
+      if (CheckBitInDirtyBlock (Bit, CacheTag->DirtyBlocks)) {
+        do {
+          WriteSize += DiskCache->BlockSize;
+          Bit++;
+          if (Bit > LastBit) {
+            break;
+          }
+        } while (CheckBitInDirtyBlock (Bit, CacheTag->DirtyBlocks));
+
+        Status = FatDiskIo (Volume, IoMode, StartPos, WriteSize, WriteBuffer, Task);
+        if (EFI_ERROR (Status)) {
+          return Status;
+        }
+
+        StartPos   += WriteSize + DiskCache->BlockSize;
+        WriteBuffer = (VOID *)((UINTN)WriteBuffer + WriteSize + DiskCache->BlockSize);
+        WriteSize   = 0;
+        Bit++;
+      } else {
+        StartPos   += DiskCache->BlockSize;
+        WriteBuffer = (VOID *)((UINTN)WriteBuffer + DiskCache->BlockSize);
+        Bit++;
+      }
+    } while (Bit <= LastBit);
+
+    ASSERT (WriteSize == 0);
+  } else {
+    Status = FatDiskIo (Volume, IoMode, Offset, BufferSize, Buffer, Task);
+    if (EFI_ERROR (Status)) {
+      return Status;
+    }
+  }
+
+  return Status;
+}
+
+//
+// MU_CHANGE end
+//
+
 /**
 
   This function is used by the Data Cache.
@@ -57,12 +266,13 @@ FatFlushDataCacheRange (
     CacheTag = &DiskCache->CacheTag[GroupNo];
     if ((CacheTag->RealSize > 0) && (CacheTag->PageNo == PageNo)) {
       //
-      // When reading data form disk directly, if some dirty data
-      // in cache is in this rang, this data in the Buffer need to
+      // When reading data from disk directly, if some dirty data
+      // in cache is in this range, this data in the Buffer needs to
       // be updated with the cache's dirty data.
       //
       if (IoMode == ReadDisk) {
-        if (CacheTag->Dirty) {
+        if (IsCacheTagDirty (CacheTag)) {
+          // MU_CHANGE
           CopyMem (
             Buffer + ((PageNo - StartPageNo) << PageAlignment),
             BaseAddress + (GroupNo << PageAlignment),
@@ -139,7 +349,7 @@ FatExchangeCachePage (
     //
     // Only fat table writing will execute more than once
     //
-    Status = FatDiskIo (Volume, IoMode, EntryPos, RealSize, PageAddress, Task);
+    Status = CacheFatDiskIo (CacheTag, DataType, Volume, IoMode, EntryPos, RealSize, PageAddress, Task);  // MU_CHANGE
     if (EFI_ERROR (Status)) {
       return Status;
     }
@@ -147,7 +357,7 @@ FatExchangeCachePage (
     EntryPos += Volume->FatSize;
   } while (--WriteCount > 0);
 
-  CacheTag->Dirty    = FALSE;
+  SetMem (CacheTag->DirtyBlocks, sizeof (CacheTag->DirtyBlocks), 0);  // MU_CHANGE Set all cache blocks as not dirty
   CacheTag->RealSize = RealSize;
   return EFI_SUCCESS;
 }
@@ -188,7 +398,8 @@ FatGetCachePage (
   //
   // Write dirty cache page back to disk
   //
-  if ((CacheTag->RealSize > 0) && CacheTag->Dirty) {
+  if ((CacheTag->RealSize > 0) && IsCacheTagDirty (CacheTag)) {
+    // MU_CHANGE
     Status = FatExchangeCachePage (Volume, CacheDataType, WriteDisk, CacheTag, NULL);
     if (EFI_ERROR (Status)) {
       return Status;
@@ -248,7 +459,7 @@ FatAccessUnalignedCachePage (
     Source      = DiskCache->CacheBase + (GroupNo << DiskCache->PageAlignment) + Offset;
     Destination = Buffer;
     if (IoMode != ReadDisk) {
-      CacheTag->Dirty  = TRUE;
+      SetCacheTagDirty (DiskCache, CacheTag, Offset, Length);    // MU_CHANGE
       DiskCache->Dirty = TRUE;
       Destination      = Source;
       Source           = Buffer;
@@ -413,7 +624,8 @@ FatVolumeFlushCache (
       GroupMask = DiskCache->GroupMask;
       for (GroupIndex = 0; GroupIndex <= GroupMask; GroupIndex++) {
         CacheTag = &DiskCache->CacheTag[GroupIndex];
-        if ((CacheTag->RealSize > 0) && CacheTag->Dirty) {
+        if ((CacheTag->RealSize > 0) && IsCacheTagDirty (CacheTag)) {
+          // MU_CHANGE
           //
           // Write back all Dirty Data Cache Page to disk
           //
@@ -489,5 +701,9 @@ FatInitializeDiskCache (
   Volume->CacheBuffer            = CacheBuffer;
   DiskCache[CacheFat].CacheBase  = CacheBuffer;
   DiskCache[CacheData].CacheBase = CacheBuffer + FatCacheSize;
+
+  DiskCache[CacheFat].BlockSize  = Volume->BlockIo->Media->BlockSize;     // MU_CHANGE
+  DiskCache[CacheData].BlockSize = Volume->BlockIo->Media->BlockSize;     // MU_CHANGE
+
   return EFI_SUCCESS;
 }
