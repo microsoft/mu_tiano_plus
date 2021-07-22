@@ -451,19 +451,32 @@ FatInitializeDiskCache (
   UINTN       DataCacheSize;
   UINTN       FatCacheSize;
   UINT8       *CacheBuffer;
+  UINT8       PageAlignment;         // MU_CHANGE
 
   DiskCache = Volume->DiskCache;
   //
   // Configure the parameters of disk cache
   //
+
+  // MU_CHANGE begin
+  PageAlignment = (UINT8) HighBitSet32 (Volume->BlockIo->Media->BlockSize);
+
+  DEBUG ((EFI_D_INFO,
+          "%a: PageAlignment=%d for BlockSize=%d\n",
+          __FUNCTION__,
+          PageAlignment,
+          Volume->BlockIo->Media->BlockSize
+          ));
+  // MU_CHANGE end
+
   if (Volume->FatType == Fat12) {
-    FatCacheGroupCount                  = FAT_FATCACHE_GROUP_MIN_COUNT;
-    DiskCache[CacheFat].PageAlignment  = FAT_FATCACHE_PAGE_MIN_ALIGNMENT;
-    DiskCache[CacheData].PageAlignment = FAT_DATACACHE_PAGE_MIN_ALIGNMENT;
+    FatCacheGroupCount                 = FAT_FATCACHE_GROUP_MIN_COUNT;
+    DiskCache[CacheFat].PageAlignment  = PageAlignment;                   // MU_CHANGE
+    DiskCache[CacheData].PageAlignment = PageAlignment;                   // MU_CHANGE
   } else {
-    FatCacheGroupCount                  = FAT_FATCACHE_GROUP_MAX_COUNT;
-    DiskCache[CacheFat].PageAlignment  = FAT_FATCACHE_PAGE_MAX_ALIGNMENT;
-    DiskCache[CacheData].PageAlignment = FAT_DATACACHE_PAGE_MAX_ALIGNMENT;
+    FatCacheGroupCount                 = FAT_FATCACHE_GROUP_MAX_COUNT;
+    DiskCache[CacheFat].PageAlignment  = PageAlignment;                   // MU_CHANGE
+    DiskCache[CacheData].PageAlignment = PageAlignment;                   // MU_CHANGE
   }
 
   DiskCache[CacheData].GroupMask     = FAT_DATACACHE_GROUP_COUNT - 1;
@@ -477,6 +490,7 @@ FatInitializeDiskCache (
   //
   // Allocate the Fat Cache buffer
   //
+  DEBUG((DEBUG_INFO, "FAT Cache memory is Fat=%d, Data=%d\n", FatCacheSize, DataCacheSize));
   CacheBuffer = AllocateZeroPool (FatCacheSize + DataCacheSize);
   if (CacheBuffer == NULL) {
     return EFI_OUT_OF_RESOURCES;
