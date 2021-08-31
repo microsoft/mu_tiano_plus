@@ -51,8 +51,6 @@ steps:
 # Set default
 - bash: echo "##vso[task.setvariable variable=pkg_count]${{ 1 }}"
 
-# Use altername cmocka repo
-- bash: git config --global url.https://github.com/neverware-mirrors/cmocka.git.insteadOf https://git.cryptomilk.org/projects/cmocka.git
 
 # trim the package list if this is a PR
 - task: CmdLine@1
