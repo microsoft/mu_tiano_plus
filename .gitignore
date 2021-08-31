@@ -12,7 +12,15 @@ BuildConfig.conf
 /MU_BASECORE
 /Silicon/Arm/MU_TIANO
 
-# Ignore unused UDK PKGs.
+# Packages not ignored:
+# CryptoPkg
+# EmbeddedPkg
+# FatPkg
+# FmpDevicePkg
+# ShellPkg
+# SourceLevelDebugPkg
+
+# Ignore unused EDK2 packages.
 /ArmPkg/
 /ArmPlatformPkg/
 /ArmVirtPkg/
@@ -53,3 +61,8 @@ BuildConfig.conf
 /UnixPkg/
 /Vlv2DeviceRefCodePkg/
 /Vlv2TbltDevicePkg/
+
+# Ignore dropped EDK2 files.
+/.pytool/Readme.md
+/Maintainers.txt
+/edksetup.bat
