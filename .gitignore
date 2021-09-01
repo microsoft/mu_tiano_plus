@@ -66,3 +66,5 @@ BuildConfig.conf
 /.pytool/Readme.md
 /Maintainers.txt
 /edksetup.bat
+/.pytool/Plugin/EccCheck/EccCheck.py
+/.pytool/Plugin/SpellCheck/SpellCheck.py
