@@ -1,7 +1,71 @@
-Build/
+/Build/
 .DS_Store
 *_extdep/
 *.pyc
 __pycache__/
 tags/
 .vscode/
+*.bak
+BuildConfig.conf
+
+# Ignore cloned dependencies
+/MU_BASECORE
+
+# Packages not ignored:
+# EmbeddedPkg
+# FatPkg
+# FmpDevicePkg
+# SecurityPkg
+# SourceLevelDebugPkg
+
+# Ignore unused EDK2 packages.
+/ArmPkg/
+/ArmPlatformPkg/
+/ArmVirtPkg/
+/BaseTools/
+/BeagleBoardPkg/
+/Conf/
+/CorebootModulePkg/
+/CorebootPayloadPkg/
+/CryptoPkg/
+/DuetPkg/
+/DynamicTablesPkg/
+/EdkCompatibilityPkg/
+/EmulatorPkg/
+/IntelFrameworkModulePkg/
+/IntelFrameworkPkg/
+/IntelFsp2Pkg/
+/IntelFsp2WrapperPkg/
+/IntelFspPkg/
+/IntelFspWrapperPkg/
+/IntelSiliconPkg/
+/MdeModulePkg/
+/MdePkg/
+/NetworkPkg/
+/Nt32Pkg/
+/Omap35xxPkg/
+/OvmfPkg/
+/RedfishPkg/
+/PcAtChipsetPkg/
+/QuarkPlatformPkg/
+/QuarkSocPkg/
+/ShellPkg/
+/SignedCapsulePkg/
+/StandaloneMmPkg/
+/StdLib/
+/StdLibPrivateInternalFiles/
+/UefiCpuPkg/
+/UefiPayloadPkg/
+/UnitTestFrameworkPkg/
+/UnixPkg/
+/Vlv2DeviceRefCodePkg/
+/Vlv2TbltDevicePkg/
+
+# Ignore dropped EDK2 files.
+/.mergify
+/.pytool/Plugin
+/.pytool/Readme.md
+/.mailmap
+/edksetup.bat
+/edksetup.sh
+/Maintainers.txt
