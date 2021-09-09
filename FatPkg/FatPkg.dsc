@@ -72,7 +72,8 @@
   MemoryAllocationLib|MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
-  NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
+  # NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf         # MU_CHANGE
+  NULL|MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf        # MU_CHANGE
   NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
 
 ###################################################################################################
