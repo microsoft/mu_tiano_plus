@@ -1,26 +1,21 @@
 ## @file
-# Azure Pipeline build file for a build using Ubuntu and GCC
+# Azure Pipeline build file for a build using Ubuntu and GCC.
+#
+# IMPORTANT: This file requires the local repo to contain a .azurepipelines/Matrix-Build-Job.yml file that
+#            performs the actual build steps for the configurations and packages supported by the repo.
+#
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
 #
 # Copyright (c) Microsoft Corporation.
-# Copyright (c) 2020, Hewlett Packard Enterprise Development LP. All rights reserved.<BR>
-# Copyright (c) 2022, Loongson Technology Corporation Limited. All rights reserved.<BR>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
-trigger:
-- master
-- stable/*
-pr:
-- master
-- stable/*
 
 variables:
-  - template: templates/defaults.yml
+- group: architectures-arm64-x86-64
+- group: tool-chain-ubuntu-gcc
+- group: coverage
 
-jobs:
-- template: templates/pr-gate-build-job.yml
-  parameters:
-    tool_chain_tag: 'GCC5'
-    vm_image: 'ubuntu-24.04'
-    container: ${{ variables.default_linux_image }}
-    arch_list: "IA32,X64,AARCH64,RISCV64,LOONGARCH64"
-    usePythonVersion: ''  # use Python from the container image

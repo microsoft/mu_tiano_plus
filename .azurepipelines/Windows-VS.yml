@@ -1,29 +1,20 @@
 ## @file
-# Azure Pipeline build file for a build using Windows and Visual Studio
+# Azure Pipeline build file for a build using Windows and the latest Visual Studio toolchain supported.
+#
+# IMPORTANT: This file requires the local repo to contain a .azurepipelines/Matrix-Build-Job.yml file that
+#            performs the actual build steps for the configurations and packages supported by the repo.
+#
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
 #
 # Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
-trigger:
-- master
-- stable/*
-
-pr:
-- master
-- stable/*
 
 variables:
-  - template: templates/defaults.yml
-
-jobs:
-- template: templates/pr-gate-build-job.yml
-  parameters:
-    tool_chain_tag: 'VS2022'
-    vm_image: 'windows-2022'
-    arch_list: "IA32,X64"
-    usePythonVersion: ${{ variables.default_python_version }}
-    extra_install_step:
-    - powershell: choco install opencppcoverage; Write-Host "##vso[task.prependpath]C:\Program Files\OpenCppCoverage"
-      displayName: Install Code Coverage Tool
-      condition: and(gt(variables.pkg_count, 0), succeeded())
-
+- group: architectures-x86-64
+- group: tool-chain-windows-visual-studio-latest
+- group: coverage
