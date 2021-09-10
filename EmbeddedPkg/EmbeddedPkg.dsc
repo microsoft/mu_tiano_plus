@@ -125,16 +125,16 @@
   ExtractGuidedSectionLib|EmbeddedPkg/Library/PrePiExtractGuidedSectionLib/PrePiExtractGuidedSectionLib.inf
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
-  ArmGicLib|ArmPkg/Drivers/ArmGic/ArmGicLib.inf
-  ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
-  SemihostLib|ArmPkg/Library/SemihostLib/SemihostLib.inf
+  # ArmGicLib|ArmPkg/Drivers/ArmGic/ArmGicLib.inf                               # MU_CHANGE
+  # ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf                            # MU_CHANGE
+  # SemihostLib|ArmPkg/Library/SemihostLib/SemihostLib.inf                      # MU_CHANGE
   # NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf         # MU_CHANGE
   NULL|MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf        # MU_CHANGE
 
   # Add support for GCC stack protector
   NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
 
-  ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
+  # ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf                                 # MU_CHANGE
 
 ################################################################################
 #
