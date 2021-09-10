@@ -16,7 +16,6 @@ BuildConfig.conf
 # FatPkg
 # FmpDevicePkg
 # SecurityPkg
-# SourceLevelDebugPkg
 
 # Ignore unused EDK2 packages.
 /ArmPkg/
