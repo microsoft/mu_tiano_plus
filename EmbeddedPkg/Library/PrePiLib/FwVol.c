@@ -291,7 +291,8 @@ FfsProcessSection (
   UINT16                    SectionAttribute;
   UINT32                    AuthenticationStatus;
   CHAR8                     *CompressedData;
-  UINTN                     CompressedDataLength;
+  // UINTN                                   CompressedDataLength;  // MU_CHANGE TCBZ3616
+  UINT32  CompressedDataLength;                                     // MU_CHANGE TCBZ3616
 
   *OutputBuffer     = NULL;
   ParsedLength      = 0;

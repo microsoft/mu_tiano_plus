@@ -17,7 +17,8 @@
 #include <Protocol/DebugPort.h>
 
 EFI_DEBUGPORT_PROTOCOL  *gDebugPort = NULL;
-UINTN                   gTimeOut    = 0;
+// UINTN                   gTimeOut = 0;  // MU_CHANGE TCBZ3616
+UINT32  gTimeOut = 0;                     // MU_CHANGE TCBZ3616
 
 /**
   The constructor function initializes the UART.
