@@ -217,7 +217,9 @@
   EmbeddedPkg/Library/CoherentDmaLib/CoherentDmaLib.inf
   EmbeddedPkg/Library/NonCoherentDmaLib/NonCoherentDmaLib.inf
   EmbeddedPkg/Library/DxeDtPlatformDtbLoaderLibDefault/DxeDtPlatformDtbLoaderLibDefault.inf
+!if $(TOOL_CHAIN_TAG) == GCC5     # MU_CHANGE - Makes assumptions about GCC artifacts.
   EmbeddedPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.inf
+!endif                            # MU_CHANGE
 
   EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
@@ -228,17 +230,23 @@
       TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
   }
 
-  EmbeddedPkg/Universal/MmcDxe/MmcDxe.inf
+  # EmbeddedPkg/Universal/MmcDxe/MmcDxe.inf     # MU_CHANGE - Too many conversion errors to trust.
 
   EmbeddedPkg/Library/AcpiLib/AcpiLib.inf
   EmbeddedPkg/Library/DebugAgentTimerLibNull/DebugAgentTimerLibNull.inf
+!if $(TOOL_CHAIN_TAG) == GCC5     # MU_CHANGE - Too many external errors to deal with.
   EmbeddedPkg/Library/FdtLib/FdtLib.inf
+!endif                            # MU_CHANGE
   EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
   EmbeddedPkg/Library/PrePiMemoryAllocationLib/PrePiMemoryAllocationLib.inf
 
+!if $(TOOL_CHAIN_TAG) == GCC5     # MU_CHANGE - Requires FdtLib, which is also broken.
   EmbeddedPkg/Drivers/ConsolePrefDxe/ConsolePrefDxe.inf
+!endif                            # MU_CHANGE
   EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf
+!if $(TOOL_CHAIN_TAG) == GCC5     # MU_CHANGE - Requires FdtLib, which is also broken.
   EmbeddedPkg/Drivers/FdtClientDxe/FdtClientDxe.inf
+!endif                            # MU_CHANGE
 
   EmbeddedPkg/Drivers/NonCoherentIoMmuDxe/NonCoherentIoMmuDxe.inf {
     <LibraryClasses>
