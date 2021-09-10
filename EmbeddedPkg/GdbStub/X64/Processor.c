@@ -598,6 +598,16 @@ EnableDebugRegister (
   // Read DR7 so appropriate Gn, RWn and LENn bits can be modified.
   Dr7.UintN = SystemContext.SystemContextIa32->Dr7;
 
+  // MU_CHANGE TCBZ3616 [BEGIN] - Can't go from UINTN(64) to UINT32.
+  if ((Address > MAX_UINT32) ||
+      (Type > MAX_UINT32) ||
+      (Length > MAX_UINT32))
+  {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  // MU_CHANGE TCBZ3616 [END]
+
   if (Register == 0) {
     SystemContext.SystemContextIa32->Dr0 = Address;
     Dr7.Bits.G0                          = 1;
@@ -623,7 +633,13 @@ EnableDebugRegister (
   }
 
   // Update Dr7 with appropriate Gn, RWn and LENn bits
-  SystemContext.SystemContextIa32->Dr7 = Dr7.UintN;
+  // MU_CHANGE TCBZ3616 [BEGIN] - Can't go from UINTN(64) to UINT32.
+  if (Dr7.UintN > MAX_UINT32) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  SystemContext.SystemContextIa32->Dr7 = (UINT32)Dr7.UintN;
+  // MU_CHANGE TCBZ3616 [END]
 
   return EFI_SUCCESS;
 }
@@ -716,7 +732,8 @@ DisableDebugRegister (
   )
 {
   IA32_DR7  Dr7;
-  UINTN     Address = 0;
+  // UINTN Address = 0;   // MU_CHANGE TCBZ3616 - Can't go from UINTN(64) to UINT32.
+  UINT32  Address = 0;    // MU_CHANGE TCBZ3616
 
   // Read DR7 register so appropriate Gn, RWn and LENn bits can be turned off.
   Dr7.UintN = SystemContext.SystemContextIa32->Dr7;
@@ -746,7 +763,13 @@ DisableDebugRegister (
   }
 
   // Update DR7 register so appropriate Gn, RWn and LENn bits can be turned off.
-  SystemContext.SystemContextIa32->Dr7 = Dr7.UintN;
+  // MU_CHANGE TCBZ3616 [BEGIN] - Can't go from UINTN(64) to UINT32.
+  if (Dr7.UintN > MAX_UINT32) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  SystemContext.SystemContextIa32->Dr7 = (UINT32)Dr7.UintN;
+  // MU_CHANGE TCBZ3616 [END]
 
   return EFI_SUCCESS;
 }
