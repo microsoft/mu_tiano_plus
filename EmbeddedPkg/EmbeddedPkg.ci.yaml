@@ -10,7 +10,7 @@
     },
     ## options defined ci/Plugin/CompilerPlugin
     "CompilerPlugin": {
-        "skip": True,       # MU_CHANGE
+        "skip": False,
         "DscPath": "EmbeddedPkg.dsc"
     },
 
@@ -25,8 +25,8 @@
             "MdePkg/MdePkg.dec",
             "MdeModulePkg/MdeModulePkg.dec",
             "EmbeddedPkg/EmbeddedPkg.dec",
-            "ArmPkg/ArmPkg.dec",
-            "ArmPlatformPkg/ArmPlatformPkg.dec",
+            # "ArmPkg/ArmPkg.dec",                          # MU_CHANGE
+            # "ArmPlatformPkg/ArmPlatformPkg.dec",          # MU_CHANGE
             "NetworkPkg/NetworkPkg.dec"
         ],
         # For host based unit tests
