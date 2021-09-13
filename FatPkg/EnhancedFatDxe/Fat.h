@@ -80,14 +80,26 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #define FAT_FATCACHE_PAGE_MAX_ALIGNMENT   15
 #define FAT_DATACACHE_PAGE_MIN_ALIGNMENT  13
 #define FAT_DATACACHE_PAGE_MAX_ALIGNMENT  16
+#define FAT_DATACACHE_GROUP_COUNT         64
+#define FAT_FATCACHE_GROUP_MIN_COUNT      1
+#define FAT_FATCACHE_GROUP_MAX_COUNT      16
 
-//
-// TODO: After evaluating this fix, code appropriate changes and remove these fixed alignments
-//       and count values.
-//
-#define FAT_DATACACHE_GROUP_COUNT         (64 * 128)
-#define FAT_FATCACHE_GROUP_MIN_COUNT      (1  * 128)
-#define FAT_FATCACHE_GROUP_MAX_COUNT      (16 * 128)
+// MU_CHANGE begin
+
+// For cache block bits, use CPU native size
+#define DIRTY_BLOCKS         UINTN
+#define BITS_PER_BYTE        8
+#define DIRTY_BITS_PER_BLOCK (sizeof(DIRTY_BLOCKS) * BITS_PER_BYTE)
+
+// largest cache line (64KB) / MinLbaSize (512) = 128 bits
+#define DIRTY_BITS ((1 << FAT_DATACACHE_PAGE_MAX_ALIGNMENT) / (1 << MIN_BLOCK_ALIGNMENT))
+
+// Number of DIRTY_BLOCKS to hold DIRTY_BITS bits.
+#define DIRTY_BLOCKS_SIZE  (DIRTY_BITS / sizeof (DIRTY_BLOCKS))
+
+STATIC_ASSERT ((((1 << FAT_DATACACHE_PAGE_MAX_ALIGNMENT) / (1 << MIN_BLOCK_ALIGNMENT)) % sizeof (DIRTY_BLOCKS) ) == 0 , "DIRTY_BLOCKS not a proper size");
+
+// MU_CHANGE end
 
 //
 // Used in 8.3 generation algorithm
@@ -149,15 +161,16 @@ typedef enum {
 // Disk cache tag
 //
 typedef struct {
-  UINTN   PageNo;
-  UINTN   RealSize;
-  BOOLEAN Dirty;
+  UINTN        PageNo;                           // MU_CHANGE
+  UINTN        RealSize;                         // MU_CHANGE
+  DIRTY_BLOCKS DirtyBlocks[DIRTY_BLOCKS_SIZE];   // MU_CHANGE
 } CACHE_TAG;
 
 typedef struct {
   UINT64    BaseAddress;
   UINT64    LimitAddress;
   UINT8     *CacheBase;
+  UINT32    BlockSize;                           // MU_CHANGE
   BOOLEAN   Dirty;
   UINT8     PageAlignment;
   UINTN     GroupMask;
