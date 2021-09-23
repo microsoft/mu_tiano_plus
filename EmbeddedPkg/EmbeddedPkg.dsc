@@ -129,7 +129,7 @@
   # ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf                            # MU_CHANGE
   # SemihostLib|ArmPkg/Library/SemihostLib/SemihostLib.inf                      # MU_CHANGE
   # NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf         # MU_CHANGE
-  NULL|UefiCpuPkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf    # MU_CHANGE
+  NULL|MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf        # MU_CHANGE
 
   # Add support for GCC stack protector
   NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
