@@ -101,7 +101,7 @@
   # And NULL mean link this library into all ARM images.
   #
   # NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf                # MU_CHANGE
-  NULL|UefiCpuPkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf    # MU_CHANGE
+  NULL|MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf               # MU_CHANGE
 
   # Add support for GCC stack protector
   NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
