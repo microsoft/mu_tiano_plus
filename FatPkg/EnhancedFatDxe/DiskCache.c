@@ -169,7 +169,7 @@ CacheFatDiskIo (
   if (IoMode == WriteDisk && CacheTag->RealSize != 0) {
     DiskCache     = &Volume->DiskCache[DataType];
     WriteBuffer = Buffer;
-    LastBit = CacheTag->RealSize / DiskCache->BlockSize;
+    LastBit = (CacheTag->RealSize - 1) / DiskCache->BlockSize;
     StartPos = Offset;
     Bit = 0;
     WriteSize = 0;
@@ -179,7 +179,7 @@ CacheFatDiskIo (
         do {
           WriteSize += DiskCache->BlockSize;
           Bit++;
-          if (Bit >= LastBit) {
+          if (Bit > LastBit) {
             break;
           }
         } while (CheckBitInDirtyBlock (Bit, CacheTag->DirtyBlocks));
@@ -198,7 +198,7 @@ CacheFatDiskIo (
         WriteBuffer = (VOID *) ((UINTN) WriteBuffer + DiskCache->BlockSize);
         Bit++;
       }
-    } while (Bit < LastBit);
+    } while (Bit <= LastBit);
 
     ASSERT (WriteSize == 0);
 
@@ -514,13 +514,11 @@ FatAccessCache (
   UINTN       AlignedSize;
   UINTN       Length;
   UINTN       PageNo;
-  UINTN       GroupNo;                            // MU_CHANGE
   UINTN       AlignedPageCount;
   UINTN       OverRunPageNo;
   DISK_CACHE  *DiskCache;
   UINT64      EntryPos;
   UINT8       PageAlignment;
-  CACHE_TAG   *CacheTag;                          // MU_CHANGE
 
   ASSERT (Volume->CacheBuffer != NULL);
 
@@ -553,8 +551,6 @@ FatAccessCache (
   //
   // The access of the Aligned data
   //
-  GroupNo       = PageNo & DiskCache->GroupMask;  // MU_CHANGE
-  CacheTag      = &DiskCache->CacheTag[GroupNo];  // MU_CHANGE
   if (AlignedPageCount > 0) {
     //
     // Accessing fat table cannot have alignment data
@@ -563,7 +559,7 @@ FatAccessCache (
 
     EntryPos    = Volume->RootPos + LShiftU64 (PageNo, PageAlignment);
     AlignedSize = AlignedPageCount << PageAlignment;
-    Status      = CacheFatDiskIo (CacheTag, CacheDataType, Volume, IoMode, EntryPos, AlignedSize, Buffer, Task);  // MU_CHANGE
+    Status      = FatDiskIo (Volume, IoMode, EntryPos, AlignedSize, Buffer, Task);
     if (EFI_ERROR (Status)) {
       return Status;
     }
