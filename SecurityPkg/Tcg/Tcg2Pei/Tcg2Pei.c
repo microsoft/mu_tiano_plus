@@ -1325,6 +1325,13 @@ PeimEntryMA (
     Tpm2PcrReadForActiveBank (00, NULL);
     DEBUG_CODE_END ();
 
+    DEBUG_CODE_BEGIN ();
+    //
+    // Peek into TPM PCR 00 before any BIOS measurement.
+    //
+    Tpm2PcrReadForActiveBank (00, NULL);
+    DEBUG_CODE_END ();
+
     //
     // Only install TpmInitializedPpi on success
     //
