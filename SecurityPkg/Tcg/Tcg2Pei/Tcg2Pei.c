@@ -348,7 +348,7 @@ EndofPeiSignalNotifyCallBack (
 
 /**
   Make sure that the current PCR allocations, the TPM supported PCRs,
-  and the PcdTpm2HashMask are all in agreement.
+  PcdTcg2HashAlgorithmBitmap and the PcdTpm2HashMask are all in agreement.
 **/
 VOID
 SyncPcrAllocationsAndPcrMask (
@@ -357,10 +357,11 @@ SyncPcrAllocationsAndPcrMask (
 {
   EFI_STATUS                       Status;
   EFI_TCG2_EVENT_ALGORITHM_BITMAP  TpmHashAlgorithmBitmap;
+  EFI_TCG2_EVENT_ALGORITHM_BITMAP  BiosHashAlgorithmBitmap;
   UINT32                           TpmActivePcrBanks;
-  // UINT32                            NewTpmActivePcrBanks;   // MS_CHANGE_? - Update PCR order, add PCD, enable deallocate *and* allocate.
-  UINT32  Tpm2PcrMask;
-  UINT32  NewTpm2PcrMask;
+  UINT32                           NewTpmActivePcrBanks;
+  UINT32                           Tpm2PcrMask;
+  UINT32                           NewTpm2PcrMask;
 
   DEBUG ((DEBUG_ERROR, "SyncPcrAllocationsAndPcrMask!\n"));
 
@@ -377,51 +378,65 @@ SyncPcrAllocationsAndPcrMask (
 
   // END
 
+  DEBUG ((DEBUG_INFO, "Tpm2GetCapabilitySupportedAndActivePcrs - TpmHashAlgorithmBitmap: 0x%08x\n", TpmHashAlgorithmBitmap));
+  DEBUG ((DEBUG_INFO, "Tpm2GetCapabilitySupportedAndActivePcrs - TpmActivePcrBanks 0x%08x\n", TpmActivePcrBanks));
+
   Tpm2PcrMask = PcdGet32 (PcdTpm2HashMask);
   if (Tpm2PcrMask == 0) {
     //
-    // if PcdTPm2HashMask is zero, use ActivePcr setting
+    // If PcdTpm2HashMask is zero, use ActivePcr setting.
+    // Only when PcdTpm2HashMask is initialized to 0, will it be updated to current Active Pcrs.
     //
     PcdSet32S (PcdTpm2HashMask, TpmActivePcrBanks);
     Tpm2PcrMask = TpmActivePcrBanks;
   }
 
-  //
-  // Find the intersection of Pcd support and TPM support.
-  // If banks are missing from the TPM support that are in the PCD, update the PCD.
-  // If banks are missing from the PCD that are active in the TPM, reallocate the banks and reboot.
-  //
+  DEBUG ((DEBUG_INFO, "Tpm2PcrMask 0x%08x\n", Tpm2PcrMask));
 
   //
-  // If there are active PCR banks that are not supported by the Platform mask,
-  // update the TPM allocations and reboot the machine.
+  // The Active PCRs in the TPM need to be a strict subset of the hashing algorithms supported by BIOS.
   //
+  // * Find the intersection of Pcd support and TPM active PCRs. If banks are missing from the TPM support
+  // that are in the PCD, update the PCD.
+  // * Find intersection of TPM Active PCRs and BIOS supported algorithms. If there are active PCR banks
+  // that are not supported by the platform, update the TPM allocations and reboot.
+  // Note: When the HashLibBaseCryptoRouter solution is used, the hash algorithm support from BIOS is reported
+  //       by Tcg2HashAlgorithmBitmap, which is populated by HashLib instances at runtime.
+  BiosHashAlgorithmBitmap = PcdGet32 (PcdTcg2HashAlgorithmBitmap);
+  DEBUG ((DEBUG_INFO, "Tcg2HashAlgorithmBitmap: 0x%08x\n", BiosHashAlgorithmBitmap));
 
-  /*
-  // MS_CHANGE_? - Update PCR order, add PCD, enable deallocate *and* allocate.
-  if ((TpmActivePcrBanks & Tpm2PcrMask) != TpmActivePcrBanks) {
-    NewTpmActivePcrBanks = TpmActivePcrBanks & Tpm2PcrMask;
+  if (((TpmActivePcrBanks & Tpm2PcrMask) != TpmActivePcrBanks) ||
+      ((TpmActivePcrBanks & BiosHashAlgorithmBitmap) != TpmActivePcrBanks))
+  {
+    DEBUG ((DEBUG_INFO, "TpmActivePcrBanks & Tpm2PcrMask = 0x%08x\n", (TpmActivePcrBanks & Tpm2PcrMask)));
+    DEBUG ((DEBUG_INFO, "TpmActivePcrBanks & BiosHashAlgorithmBitmap = 0x%08x\n", (TpmActivePcrBanks & BiosHashAlgorithmBitmap)));
+    NewTpmActivePcrBanks  = TpmActivePcrBanks;
+    NewTpmActivePcrBanks &= Tpm2PcrMask;
+    NewTpmActivePcrBanks &= BiosHashAlgorithmBitmap;
+    DEBUG ((DEBUG_INFO, "NewTpmActivePcrBanks 0x%08x\n", NewTpmActivePcrBanks));
 
-    DEBUG ((EFI_D_INFO, "%a - Reallocating PCR banks from 0x%X to 0x%X.\n", __FUNCTION__, TpmActivePcrBanks, NewTpmActivePcrBanks));
+    DEBUG ((DEBUG_INFO, "%a - Reallocating PCR banks from 0x%X to 0x%X.\n", __FUNCTION__, TpmActivePcrBanks, NewTpmActivePcrBanks));
+
     if (NewTpmActivePcrBanks == 0) {
-      DEBUG ((EFI_D_ERROR, "%a - No viable PCRs active! Please set a less restrictive value for PcdTpm2HashMask!\n", __FUNCTION__));
+      DEBUG ((DEBUG_ERROR, "%a - No viable PCRs active! Please set a less restrictive value for PcdTpm2HashMask!\n", __FUNCTION__));
       ASSERT (FALSE);
     } else {
+      DEBUG ((DEBUG_ERROR, "Tpm2PcrAllocateBanks (TpmHashAlgorithmBitmap: 0x%08x, NewTpmActivePcrBanks: 0x%08x)\n", TpmHashAlgorithmBitmap, NewTpmActivePcrBanks));
       Status = Tpm2PcrAllocateBanks (NULL, (UINT32)TpmHashAlgorithmBitmap, NewTpmActivePcrBanks);
       if (EFI_ERROR (Status)) {
         //
         // We can't do much here, but we hope that this doesn't happen.
         //
-        DEBUG ((EFI_D_ERROR, "%a - Failed to reallocate PCRs!\n", __FUNCTION__));
+        DEBUG ((DEBUG_ERROR, "%a - Failed to reallocate PCRs!\n", __FUNCTION__));
         ASSERT_EFI_ERROR (Status);
       }
+
       //
       // Need reset system, since we just called Tpm2PcrAllocateBanks().
       //
-      ResetCold();
+      ResetCold ();
     }
   }
-  */
 
   //
   // If there are any PCRs that claim support in the Platform mask that are
@@ -437,13 +452,13 @@ SyncPcrAllocationsAndPcrMask (
     }
 
     Status = PcdSet32S (PcdTpm2HashMask, NewTpm2PcrMask);
+    DEBUG ((DEBUG_ERROR, "Set PcdTpm2Hash Mask to 0x%08x\n", NewTpm2PcrMask));
     ASSERT_EFI_ERROR (Status);
     Tpm2PcrMask = NewTpm2PcrMask;
   }
 
   //
-  // If there are active PCR banks that are not supported by the Platform mask,
-  // update the TPM allocations and reboot the machine.
+  // If the active PCR banks do not match the Platform PCR mask, update the TPM allocations and reboot the machine.
   // MS_CHANGE_? - Update PCR order, add PCD, enable deallocate *and* allocate.
   //
   if ((Tpm2PcrMask != TpmActivePcrBanks) && FixedPcdGetBool (PcdForceReallocatePcrBanks)) {
@@ -1318,6 +1333,13 @@ PeimEntryMA (
     }
 
     // MSChange [END]
+    DEBUG_CODE_BEGIN ();
+    //
+    // Peek into TPM PCR 00 before any BIOS measurement.
+    //
+    Tpm2PcrReadForActiveBank (00, NULL);
+    DEBUG_CODE_END ();
+
     DEBUG_CODE_BEGIN ();
     //
     // Peek into TPM PCR 00 before any BIOS measurement.

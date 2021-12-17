@@ -1219,6 +1219,7 @@ Tpm2PcrReadForActiveBank (
   IN      TPMI_DH_PCR  PcrHandle,
   OUT     TPML_DIGEST  *HashList
   );
+
 /**
   MSCHANGE
   Check if all hash algorithms supported in HashAlgorithmMask are
