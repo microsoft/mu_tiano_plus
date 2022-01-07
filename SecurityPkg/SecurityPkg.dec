@@ -113,6 +113,10 @@
   #
   PlatformPKProtectionLib|Include/Library/PlatformPKProtectionLib.h
   ## MU_CHANGE BEGIN
+  ##  @libraryclass  This library provides an implementation of the UEFI
+  #   Hash 2 Service Binding protocol and Hash 2 protocol.
+  #
+  Hash2CryptoLib|Include/Library/Hash2CryptoLib.h
   ##  @libraryclass  This library can be used to publish TPM EventLog entries
   ##  for measurements that may have been made prior to driver initialization
   #
@@ -179,6 +183,7 @@
   ## HOB GUID used to pass all PEI measured FV info to DXE Driver.
   #  Include/Guid/MeasuredFvHob.h
   gMeasuredFvHobGuid                 = { 0xb2360b42, 0x7173, 0x420a, { 0x86, 0x96, 0x46, 0xca, 0x6b, 0xab, 0x10, 0x60 }}
+
   ## HOB GUID used to pass all Excluded FVs to Dxe Driver. MS_CHANGE
   #  Include/Guid/ExcludedFvHob.h
   gExcludedFvHobGuid                 = { 0xdd55d497, 0x5ed5, 0x403c, { 0x92, 0xb5, 0x70, 0x3a, 0x72, 0x59, 0xae, 0x2a }}
@@ -399,8 +404,9 @@
   #   TRUE  - A random password will be used
   #   FALSE - The hierarchy will be disabled
   gEfiSecurityPkgTokenSpaceGuid.PcdRandomizePlatformHierarchy|TRUE|BOOLEAN|0x00010024
+
   ## MS_CHANGE - Support mode where Ready To Boot Strings/Events are not measured into
-  ## PCR 4.  
+  ## PCR 4.
   # TRUE - The Platform will measure
   # FALSE -The Platform will not measure those events
   gEfiSecurityPkgTokenSpaceGuid.TcgMeasureBootStringsInPcr4|TRUE|BOOLEAN|0x0000000B

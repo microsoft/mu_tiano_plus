@@ -79,6 +79,7 @@
   TdxLib|MdePkg/Library/TdxLib/TdxLib.inf
   OemTpm2InitLib|SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf               ## MS_CHANGE_?
   SourceDebugEnabledLib|SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf ## MS_CHANGE_?
+  Hash2CryptoLib|SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf   ## MU_CHANGE
 
 
 
@@ -305,6 +306,8 @@
   SecurityPkg/Library/TcgEventLogRecordLib/TcgEventLogRecordLib.inf
 
 ## MSCHANGE BEGIN
+  SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf
+  SecurityPkg/Library/DxeHash2CryptoLib/DxeHash2CryptoLib.inf
   SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf
   SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLibVendorNull.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibSimple.inf
