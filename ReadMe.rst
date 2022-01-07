@@ -26,6 +26,10 @@ Branch Status - release/202108
 Branch Changes - release/202108
 ===============================
 
+Updated on 1/7/2022 to sync with additional changes from release/202102 @ commit 46bfc9cff4a6960a2d021de92d875ed67915e081
+The mentioned commit is not in this repository due to moving packages but history is in sync up to above mentioned commit.
+
+
 Breaking Changes-dev
 --------------------
 
