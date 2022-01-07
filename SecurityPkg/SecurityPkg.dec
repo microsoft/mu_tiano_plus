@@ -107,6 +107,11 @@
   SecureBootVariableProvisionLib|Include/Library/SecureBootVariableProvisionLib.h
 
 ## MU_CHANGE BEGIN
+  ##  @libraryclass  This library provides an implementation of the UEFI
+  #   Hash 2 Service Binding protocol and Hash 2 protocol.
+  #
+  Hash2CryptoLib|Include/Library/Hash2CryptoLib.h
+
   ##  @libraryclass  This library can be used to publish TPM EventLog entries
   ##  for measurements that may have been made prior to driver initialization
   #
@@ -239,7 +244,7 @@
 
   ## GUID used to specify section with default dbt content
   gDefaultdbtFileGuid                = { 0x36c513ee, 0xa338, 0x4976, { 0xa0, 0xfb, 0x6d, 0xdb, 0xa3, 0xda, 0xfe, 0x87 } }
-  
+
 [Protocols]
   ## MU_CHANGE - START - Add a new protocol to support Log-only events.
   # Include/Protocol/MuTcg2Protocol.h
@@ -387,7 +392,7 @@
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmPhysicalPresence|TRUE|BOOLEAN|0x00010001
 
   ## MS_CHANGE - Support mode where Ready To Boot Strings/Events are not measured into
-  ## PCR 4.  
+  ## PCR 4.
   # TRUE - The Platform will measure
   # FALSE -The Platform will not measure those events
   gEfiSecurityPkgTokenSpaceGuid.TcgMeasureBootStringsInPcr4|TRUE|BOOLEAN|0x0000000B
