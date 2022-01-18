@@ -56,7 +56,8 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                 "ShellPkg",
                 "FatPkg",
                 "SourceLevelDebugPkg",
-                "EmbeddedPkg"
+                "EmbeddedPkg",
+                "PrmPkg"
                 )
 
     def GetArchitecturesSupported(self):
