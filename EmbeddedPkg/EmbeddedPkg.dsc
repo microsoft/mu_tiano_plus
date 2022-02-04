@@ -245,7 +245,9 @@
   EmbeddedPkg/Drivers/ConsolePrefDxe/ConsolePrefDxe.inf
 !endif                            # MU_CHANGE
   EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf
+!if $(TOOL_CHAIN_TAG) == GCC5     # MU_CHANGE - Requires FdtLib, which is also broken.
   EmbeddedPkg/Drivers/FdtClientDxe/FdtClientDxe.inf
+!endif                            # MU_CHANGE
 
   EmbeddedPkg/Drivers/NonCoherentIoMmuDxe/NonCoherentIoMmuDxe.inf {
     <LibraryClasses>
