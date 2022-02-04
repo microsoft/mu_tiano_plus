@@ -609,25 +609,25 @@ EnableDebugRegister (
   // MU_CHANGE TCBZ3616 [END]
 
   if (Register == 0) {
-    SystemContext.SystemContextIa32->Dr0 = Address;
+    SystemContext.SystemContextIa32->Dr0 = (UINT32)Address;   // MU_CHANGE TCBZ3616
     Dr7.Bits.G0                          = 1;
-    Dr7.Bits.RW0                         = Type;
-    Dr7.Bits.LEN0                        = Length;
+    Dr7.Bits.RW0                         = (UINT32)Type;      // MU_CHANGE TCBZ3616
+    Dr7.Bits.LEN0                        = (UINT32)Length;    // MU_CHANGE TCBZ3616
   } else if (Register == 1) {
-    SystemContext.SystemContextIa32->Dr1 = Address;
+    SystemContext.SystemContextIa32->Dr1 = (UINT32)Address;   // MU_CHANGE TCBZ3616
     Dr7.Bits.G1                          = 1;
-    Dr7.Bits.RW1                         = Type;
-    Dr7.Bits.LEN1                        = Length;
+    Dr7.Bits.RW1                         = (UINT32)Type;      // MU_CHANGE TCBZ3616
+    Dr7.Bits.LEN1                        = (UINT32)Length;    // MU_CHANGE TCBZ3616
   } else if (Register == 2) {
-    SystemContext.SystemContextIa32->Dr2 = Address;
+    SystemContext.SystemContextIa32->Dr2 = (UINT32)Address;   // MU_CHANGE TCBZ3616
     Dr7.Bits.G2                          = 1;
-    Dr7.Bits.RW2                         = Type;
-    Dr7.Bits.LEN2                        = Length;
+    Dr7.Bits.RW2                         = (UINT32)Type;      // MU_CHANGE TCBZ3616
+    Dr7.Bits.LEN2                        = (UINT32)Length;    // MU_CHANGE TCBZ3616
   } else if (Register == 3) {
-    SystemContext.SystemContextIa32->Dr3 = Address;
+    SystemContext.SystemContextIa32->Dr3 = (UINT32)Address;   // MU_CHANGE TCBZ3616
     Dr7.Bits.G3                          = 1;
-    Dr7.Bits.RW3                         = Type;
-    Dr7.Bits.LEN3                        = Length;
+    Dr7.Bits.RW3                         = (UINT32)Type;      // MU_CHANGE TCBZ3616
+    Dr7.Bits.LEN3                        = (UINT32)Length;    // MU_CHANGE TCBZ3616
   } else {
     return EFI_INVALID_PARAMETER;
   }
