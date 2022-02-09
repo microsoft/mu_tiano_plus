@@ -39,10 +39,11 @@ jobs:
     vmImage: ${{ parameters.vm_image }}
 
   steps:
-  - ${{ parameters.extra_steps }}   # MU_CHANGE
-  - template: pr-gate-steps.yml
+  - ${{ parameters.extra_steps }}                                   # MU_CHANGE
+  - template: .azurepipelines/templates/pr-gate-steps.yml@basecore  # MU_CHANGE
     parameters:
       tool_chain_tag: ${{ parameters.tool_chain_tag }}
       build_pkgs: $(Build.Pkgs)
       build_targets: $(Build.Targets)
       build_archs: ${{ parameters.arch_list }}
+      has_ci_dependencies: true                                     # MU_CHANGE

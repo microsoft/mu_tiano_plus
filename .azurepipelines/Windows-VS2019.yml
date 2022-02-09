@@ -21,6 +21,14 @@ schedules:
 pr:
 - dev/*
 - release/*
+
+resources:
+  repositories:
+  - repository: basecore
+    type: github
+    name: Microsoft/mu_basecore
+    ref: refs/heads/release/202111
+    endpoint: Microsoft
 # MU_CHANGE [END]
 
 jobs:
