@@ -28,7 +28,7 @@ resources:
   - repository: basecore
     type: github
     name: Microsoft/mu_basecore
-    ref: refs/heads/release/202111
+    ref: refs/heads/release/202208
     endpoint: Microsoft
 # MU_CHANGE [END]
 
