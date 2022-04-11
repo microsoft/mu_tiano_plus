@@ -111,6 +111,10 @@
   SecureBootVariableProvisionLib|Include/Library/SecureBootVariableProvisionLib.h
 
 ## MU_CHANGE BEGIN
+  ## @libraryclass  Provides interface to disable PK variable protection prior to PK enrollment.
+  #
+  PlatformPKProtectionLib|Include/Library/PlatformPKProtectionLib.h
+
   ##  @libraryclass  This library provides an implementation of the UEFI
   #   Hash 2 Service Binding protocol and Hash 2 protocol.
   #
