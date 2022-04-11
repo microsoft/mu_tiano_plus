@@ -30,7 +30,7 @@ DisablePKProtection (
   VOID
   )
 {
-  EFI_STATUS                      Status;
+  EFI_STATUS                      Status = EFI_SUCCESS;
   EDKII_VARIABLE_POLICY_PROTOCOL  *VariablePolicy;
 
   DEBUG ((DEBUG_INFO, "%a() Entry...\n", __FUNCTION__));
