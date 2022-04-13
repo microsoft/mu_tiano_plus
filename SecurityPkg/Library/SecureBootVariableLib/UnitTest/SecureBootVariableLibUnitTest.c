@@ -172,7 +172,7 @@ MockGetVariable (
 ///
 /// Mock version of the UEFI Runtime Services Table
 ///
-EFI_RUNTIME_SERVICES  gMockRuntime = {
+EFI_RUNTIME_SERVICES  MockRuntime = {
   {
     EFI_RUNTIME_SERVICES_SIGNATURE,     // Signature
     EFI_RUNTIME_SERVICES_REVISION,      // Revision
