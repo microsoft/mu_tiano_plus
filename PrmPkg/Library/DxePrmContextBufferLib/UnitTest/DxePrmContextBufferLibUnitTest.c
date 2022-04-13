@@ -237,17 +237,23 @@ NullPointerArgumentsShouldFailGracefully (
   PRM_MODULE_CONTEXT_BUFFERS  *ModuleContextBuffersPtr;
 
   UT_ASSERT_EQUAL (FindContextBufferInModuleBuffers (NULL, NULL, NULL), EFI_INVALID_PARAMETER);
-  UT_ASSERT_EQUAL (FindContextBufferInModuleBuffers (NULL, &ModuleContextBuffers, &ContextBufferPtr), EFI_INVALID_PARAMETER);
-  UT_ASSERT_EQUAL (FindContextBufferInModuleBuffers (&Guid, NULL, &ContextBufferPtr), EFI_INVALID_PARAMETER);
+  // MU_CHANGE - BEGIN: GCC unit test fix
+  UT_ASSERT_EQUAL (FindContextBufferInModuleBuffers (NULL, &ModuleContextBuffers, (CONST PRM_CONTEXT_BUFFER **)&ContextBufferPtr), EFI_INVALID_PARAMETER);
+  UT_ASSERT_EQUAL (FindContextBufferInModuleBuffers (&Guid, NULL, (CONST PRM_CONTEXT_BUFFER **)&ContextBufferPtr), EFI_INVALID_PARAMETER);
+  // MU_CHANGE - END: GCC unit test fix
   UT_ASSERT_EQUAL (FindContextBufferInModuleBuffers (&Guid, &ModuleContextBuffers, NULL), EFI_INVALID_PARAMETER);
 
   UT_ASSERT_EQUAL (GetModuleContextBuffers (ByModuleGuid, NULL, NULL), EFI_INVALID_PARAMETER);
-  UT_ASSERT_EQUAL (GetModuleContextBuffers (ByModuleGuid, NULL, &ModuleContextBuffersPtr), EFI_INVALID_PARAMETER);
+  // MU_CHANGE - BEGIN: GCC unit test fix
+  UT_ASSERT_EQUAL (GetModuleContextBuffers (ByModuleGuid, NULL, (CONST PRM_MODULE_CONTEXT_BUFFERS **)&ModuleContextBuffersPtr), EFI_INVALID_PARAMETER);
+  // MU_CHANGE - END: GCC unit test fix
   UT_ASSERT_EQUAL (GetModuleContextBuffers (ByModuleGuid, &Guid, NULL), EFI_INVALID_PARAMETER);
 
   UT_ASSERT_EQUAL (GetContextBuffer (NULL, NULL, NULL), EFI_INVALID_PARAMETER);
-  UT_ASSERT_EQUAL (GetContextBuffer (NULL, &ModuleContextBuffers, &ContextBufferPtr), EFI_INVALID_PARAMETER);
-  UT_ASSERT_EQUAL (GetContextBuffer (&Guid, NULL, &ContextBufferPtr), EFI_NOT_FOUND);
+  // MU_CHANGE - BEGIN: GCC unit test fix
+  UT_ASSERT_EQUAL (GetContextBuffer (NULL, &ModuleContextBuffers, (CONST PRM_CONTEXT_BUFFER **)&ContextBufferPtr), EFI_INVALID_PARAMETER);
+  UT_ASSERT_EQUAL (GetContextBuffer (&Guid, NULL, (CONST PRM_CONTEXT_BUFFER **)&ContextBufferPtr), EFI_NOT_FOUND);
+  // MU_CHANGE - END: GCC unit test fix
   UT_ASSERT_EQUAL (GetContextBuffer (&Guid, &ModuleContextBuffers, NULL), EFI_INVALID_PARAMETER);
 
   return UNIT_TEST_PASSED;
@@ -322,7 +328,7 @@ InitializeFunctionalCorrectness (
 
 **/
 STATIC
-UNIT_TEST_STATUS
+VOID  // MU_CHANGE - GCC unit test fix
 EFIAPI
 DeInitializeFunctionalCorrectness (
   IN  UNIT_TEST_CONTEXT  Context
@@ -332,7 +338,6 @@ DeInitializeFunctionalCorrectness (
   PRM_CONFIG_PROTOCOL               *PrmConfigProtocol;
   PRM_CONTEXT_BUFFERS_TEST_CONTEXT  *TestContext;
 
-  UT_ASSERT_NOT_NULL (Context);
   TestContext = (PRM_CONTEXT_BUFFERS_TEST_CONTEXT *)Context;
 
   Status = gBS->HandleProtocol (
@@ -340,7 +345,6 @@ DeInitializeFunctionalCorrectness (
                   &gPrmConfigProtocolGuid,
                   (VOID **)&PrmConfigProtocol
                   );
-  UT_ASSERT_NOT_EFI_ERROR (Status);
 
   if (!EFI_ERROR (Status)) {
     Status =  gBS->UninstallProtocolInterface (
@@ -348,13 +352,10 @@ DeInitializeFunctionalCorrectness (
                      &gPrmConfigProtocolGuid,
                      PrmConfigProtocol
                      );
-    UT_ASSERT_NOT_EFI_ERROR (Status);
     if (!EFI_ERROR (Status)) {
       FreePool (PrmConfigProtocol);
     }
   }
-
-  return UNIT_TEST_PASSED;
 }
 
 /**
@@ -382,7 +383,9 @@ VerifyGetModuleContextBuffers (
   ContextBuffers = NULL;
   TestContext    = (PRM_CONTEXT_BUFFERS_TEST_CONTEXT *)Context;
 
-  Status = GetModuleContextBuffers (TestContext->GuidSearchType, TestContext->Guid, &ContextBuffers);
+  // MU_CHANGE - BEGIN: GCC unit test fix
+  Status = GetModuleContextBuffers (TestContext->GuidSearchType, TestContext->Guid, (CONST PRM_MODULE_CONTEXT_BUFFERS **)&ContextBuffers);
+  // MU_CHANGE - END: GCC unit test fix
   UT_ASSERT_STATUS_EQUAL (Status, TestContext->ExpectedStatus);
 
   if (!EFI_ERROR (TestContext->ExpectedStatus)) {
@@ -419,14 +422,14 @@ VerifyFindContextBufferInModuleBuffers (
 {
   EFI_STATUS                       Status;
   PRM_CONTEXT_BUFFER               *FoundContextBuffer;
-  PRM_MODULE_CONTEXT_BUFFERS       *ContextBuffers;
   PRM_CONTEXT_BUFFER_TEST_CONTEXT  *TestContext;
 
-  ContextBuffers     = NULL;
   FoundContextBuffer = NULL;
   TestContext        = (PRM_CONTEXT_BUFFER_TEST_CONTEXT *)Context;
 
-  Status = FindContextBufferInModuleBuffers (TestContext->HandlerGuid, TestContext->ContextBuffers, &FoundContextBuffer);
+  // MU_CHANGE - BEGIN: GCC unit test fix
+  Status = FindContextBufferInModuleBuffers (TestContext->HandlerGuid, TestContext->ContextBuffers, (CONST PRM_CONTEXT_BUFFER **)&FoundContextBuffer);
+  // MU_CHANGE - END: GCC unit test fix
   UT_ASSERT_STATUS_EQUAL (Status, TestContext->ExpectedStatus);
 
   if (!EFI_ERROR (TestContext->ExpectedStatus)) {
@@ -465,14 +468,14 @@ VerifyGetContextBuffer (
 {
   EFI_STATUS                       Status;
   PRM_CONTEXT_BUFFER               *FoundContextBuffer;
-  PRM_MODULE_CONTEXT_BUFFERS       *ContextBuffers;
   PRM_CONTEXT_BUFFER_TEST_CONTEXT  *TestContext;
 
-  ContextBuffers     = NULL;
   FoundContextBuffer = NULL;
   TestContext        = (PRM_CONTEXT_BUFFER_TEST_CONTEXT *)Context;
 
-  Status = GetContextBuffer (TestContext->HandlerGuid, TestContext->ContextBuffers, &FoundContextBuffer);
+  // MU_CHANGE - BEGIN: GCC unit test fix
+  Status = GetContextBuffer (TestContext->HandlerGuid, TestContext->ContextBuffers, (CONST PRM_CONTEXT_BUFFER **)&FoundContextBuffer);
+  // MU_CHANGE - END: GCC unit test fix
   UT_ASSERT_STATUS_EQUAL (Status, TestContext->ExpectedStatus);
 
   if (!EFI_ERROR (TestContext->ExpectedStatus)) {
