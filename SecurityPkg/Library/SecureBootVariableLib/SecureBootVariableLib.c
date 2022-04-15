@@ -39,13 +39,14 @@ EFI_TIME  mMaxTimestamp = {
 };
 
 //
-// This epoch time is the date that is used when creating SecureBoot default variables.
+// MS Default Time-Based Payload Creation Date
+// This is the date that is used when creating SecureBoot default variables.
 // NOTE: This is a placeholder date that doesn't correspond to anything else.
 //
 EFI_TIME  mDefaultPayloadTimestamp = {
-  1970, // Year (1970)
-  1,    // Month (Jan)
-  1,    // Day (1)
+  15,   // Year (2015)
+  8,    // Month (Aug)
+  28,   // Day (28)
   0,    // Hour
   0,    // Minute
   0,    // Second
@@ -697,7 +698,7 @@ EnrollFromInput (
   IN VOID      *Data
   )
 {
-  VOID        *Payload;
+  VOID        *Payload = NULL;
   UINTN       PayloadSize;
   EFI_STATUS  Status;
 
