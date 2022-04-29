@@ -24,7 +24,7 @@ jobs:
     matrix:
       TARGET_OTHER:
         Build.Pkgs: 'EmbeddedPkg,PrmPkg,SourceLevelDebugPkg'
-        Build.Targets: 'DEBUG,RELEASE,NO-TARGET'
+        Build.Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
       TARGET_FMP_FAT:
         Build.Pkgs: 'FmpDevicePkg,FatPkg'
         Build.Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
