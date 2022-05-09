@@ -39,6 +39,7 @@
   DebugLib
   MemoryAllocationLib
   PlatformPKProtectionLib
+  UefiLib
   UefiRuntimeServicesTableLib
 
 [Guids]
