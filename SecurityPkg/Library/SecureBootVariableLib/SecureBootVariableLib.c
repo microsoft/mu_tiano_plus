@@ -698,7 +698,7 @@ EnrollFromInput (
   IN VOID      *Data
   )
 {
-  VOID        *Payload;
+  VOID        *Payload = NULL;
   UINTN       PayloadSize;
   EFI_STATUS  Status;
 
