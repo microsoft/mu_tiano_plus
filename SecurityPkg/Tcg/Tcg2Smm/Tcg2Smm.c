@@ -73,7 +73,7 @@ TpmNvsCommunciate (
     return EFI_ACCESS_DENIED;
   }
 
-  if (!IsBufferOutsideMmValid ((UINTN)CommBuffer, TempCommBufferSize)) {
+  if (!IsCommBufferValid ((UINTN)CommBuffer, TempCommBufferSize)) {
     DEBUG ((DEBUG_ERROR, "[%a] - MM Communication buffer in invalid location!\n", __FUNCTION__));
     return EFI_ACCESS_DENIED;
   }
