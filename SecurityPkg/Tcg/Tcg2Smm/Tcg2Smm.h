@@ -70,6 +70,22 @@ IsBufferOutsideMmValid (
   );
 
 /**
+  This function is wrapper function to validate the communicate buffer.
+
+  @param Buffer  The buffer start address to be checked.
+  @param Length  The buffer length to be checked.
+
+  @retval TRUE  This buffer is valid per processor architecture and not overlap with SMRAM.
+  @retval FALSE This buffer is not valid per processor architecture or overlap with SMRAM.
+**/
+BOOLEAN
+EFIAPI
+IsCommBufferValid (
+  IN EFI_PHYSICAL_ADDRESS  Buffer,
+  IN UINT64                Length
+  );
+
+/**
   The driver's common initialization routine.
 
   It install callbacks for TPM physical presence and MemoryClear, and locate
