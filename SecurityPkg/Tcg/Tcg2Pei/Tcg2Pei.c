@@ -21,7 +21,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #include <Guid/TcgEventHob.h>
 #include <Guid/MeasuredFvHob.h>
-#include <Guid/ExcludedFvHob.h> // Mschange
+#include <Guid/ExcludedFvHob.h> // MsChange
 #include <Guid/TpmInstance.h>
 #include <Guid/MigratedFvInfo.h>
 
@@ -272,7 +272,7 @@ EndofPeiSignalNotifyCallBack (
   }
 
   // MS_CHANGE - START
-  // Create a guid hob to save all excluded FVs for DXE - mschange start
+  // Create a guid hob to save all excluded FVs for DXE - MsChange start
   //
 
   //
@@ -338,7 +338,7 @@ EndofPeiSignalNotifyCallBack (
         sizeof (EXCLUDED_HOB_DATA) + (sizeof (EFI_PEI_FIRMWARE_VOLUME_INFO_MEASUREMENT_EXCLUDED_FV) * Count)
         ));
     }
-  }  // Done with Excluded Fv Hob - mschange end
+  }  // Done with Excluded Fv Hob - MsChange end
 
   // MS_CHANGE - END
   PERF_CALLBACK_END (&gEfiEndOfPeiSignalPpiGuid);

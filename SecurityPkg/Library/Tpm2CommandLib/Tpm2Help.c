@@ -247,7 +247,7 @@ IsHashAlgSupportedInHashAlgorithmMask (
 }
 
 /**
-  MSCHANGE
+  MS_CHANGE
   Check if DigestList has an entry for HashAlg.
 
   @param DigestList         Digest list.
@@ -276,7 +276,7 @@ CheckDigestListForHashAlg (
 }
 
 /**
-  MSCHANGE
+  MS_CHANGE
   Check if all hash algorithms supported in HashAlgorithmMask are
   present in the DigestList.
 
@@ -380,7 +380,7 @@ CopyDigestListToBuffer (
   @param[in,out] DigestList         TPML_DIGEST_VALUES.
 
   @return EFI_STATUS
-  @retval EFI_SUCCESS               Buffer was succesfully copied to Digest List.
+  @retval EFI_SUCCESS               Buffer was successfully copied to Digest List.
   @retval EFI_BAD_BUFFER_SIZE       Bad buffer size passed to function.
   @retval EFI_INVALID_PARAMETER     Invalid parameter passed to function: NULL pointer or
                                     BufferSize bigger than TPML_DIGEST_VALUES

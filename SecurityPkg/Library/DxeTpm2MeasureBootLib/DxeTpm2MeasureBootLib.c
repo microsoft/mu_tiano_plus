@@ -31,8 +31,8 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Protocol/FirmwareVolumeBlock.h>
 
 #include <Guid/MeasuredFvHob.h>
-#include <Ppi/FirmwareVolumeInfoMeasurementExcluded.h> // mschange for excludedFvHob support
-#include <Guid/ExcludedFvHob.h>                        // Mschange
+#include <Ppi/FirmwareVolumeInfoMeasurementExcluded.h> // MsChange for excludedFvHob support
+#include <Guid/ExcludedFvHob.h>                        // MsChange
 
 #include <Library/BaseLib.h>
 #include <Library/DebugLib.h>
@@ -63,7 +63,7 @@ UINTN    mTcg2ImageSize;
 //
 EFI_HANDLE         mTcg2CacheMeasuredHandle = NULL;
 MEASURED_HOB_DATA  *mTcg2MeasuredHobData    = NULL;
-EXCLUDED_HOB_DATA  *mExcludedFvHobData      = NULL;                  // mschange
+EXCLUDED_HOB_DATA  *mExcludedFvHobData      = NULL;                  // MsChange
 
 /**
   Reads contents of a PE/COFF image in memory buffer.
@@ -518,7 +518,7 @@ Finish:
 
   @param  MeasureBootProtocols  Pointer to the located measure boot protocol instances.
 
-  @retval EFI_SUCCESS           Sucessfully locate the measure boot protocol instances (at least one instance).
+  @retval EFI_SUCCESS           Successfully locate the measure boot protocol instances (at least one instance).
   @retval EFI_UNSUPPORTED       Measure boot is not supported.
 **/
 EFI_STATUS
@@ -784,7 +784,7 @@ DxeTpm2MeasureBootHandler (
         }
       }
 
-      // was not found in measured list.  Now check exclude list -- mschange
+      // was not found in measured list.  Now check exclude list -- MsChange
       if ((ApplicationRequired == FALSE) && (mExcludedFvHobData != NULL)) {
         for (Index = 0; Index < mExcludedFvHobData->Num; Index++) {
           if (mExcludedFvHobData->ExcludedFvs[Index].FvBase == FvAddress) {
@@ -796,7 +796,7 @@ DxeTpm2MeasureBootHandler (
             break;
           }
         }
-      }  // -- mschange end
+      }  // -- MsChange end
     }
   }
 
@@ -913,7 +913,7 @@ DxeTpm2MeasureBootLibConstructor (
     mTcg2MeasuredHobData = GET_GUID_HOB_DATA (GuidHob);
   }
 
-  // mschange - Get excluded fv list if present
+  // MsChange - Get excluded fv list if present
   GuidHob = GetFirstGuidHob (&gExcludedFvHobGuid);
 
   if (GuidHob != NULL) {
