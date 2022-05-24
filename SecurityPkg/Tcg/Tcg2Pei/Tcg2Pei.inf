@@ -65,7 +65,7 @@
   Tcg2PreUefiEventLogLib
 ## MSChange [END]
 ## MS_CHANGE [BEGIN] - Add the SourceDebugEnabledLib
-  SourceDebugEnabledLib  # MSCHANGE - runtime check if source debug is enabled
+  SourceDebugEnabledLib  # MS_CHANGE - runtime check if source debug is enabled
 ## MS_CHANGE [END]
 
 [Guids]

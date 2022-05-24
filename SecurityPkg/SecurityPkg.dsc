@@ -296,7 +296,7 @@
   SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
   SecurityPkg/Library/TcgEventLogRecordLib/TcgEventLogRecordLib.inf
 
-## MSCHANGE BEGIN
+## MS_CHANGE BEGIN
   SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf
   SecurityPkg/Library/DxeHash2CryptoLib/DxeHash2CryptoLib.inf
   SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf
@@ -310,7 +310,7 @@
   SecurityPkg/Library/TempPreUefiEventLogLib/TempPreUefiEventLogLib.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
   SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
-## MSCHANGE END
+## MS_CHANGE END
 
 [Components.IA32, Components.X64, Components.ARM, Components.AARCH64]
   SecurityPkg/Library/AuthVariableLib/AuthVariableLib.inf

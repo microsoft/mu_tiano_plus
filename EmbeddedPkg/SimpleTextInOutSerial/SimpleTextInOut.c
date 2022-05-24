@@ -554,7 +554,7 @@ OutputString (
             Mode->CursorRow++;
           }
 
-          // CHAR_CARIAGE_RETURN
+          // CHAR_CARRIAGE_RETURN
           Mode->CursorColumn = 0;
         } else {
           Mode->CursorColumn++;

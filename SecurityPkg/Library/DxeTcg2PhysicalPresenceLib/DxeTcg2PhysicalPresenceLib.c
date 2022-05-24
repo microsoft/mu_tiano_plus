@@ -955,7 +955,7 @@ Tcg2PhysicalPresenceLibProcessRequest (
   EFI_STATUS                  Status;
   UINTN                       DataSize;
   EFI_TCG2_PHYSICAL_PRESENCE  TcgPpData;
-  // EDKII_VARIABLE_LOCK_PROTOCOL      *VariableLockProtocol;  // MSCHANGE
+  // EDKII_VARIABLE_LOCK_PROTOCOL      *VariableLockProtocol;  // MS_CHANGE
   EFI_TCG2_PHYSICAL_PRESENCE_FLAGS  PpiFlags;
 
   // MS_CHANGE_212735
