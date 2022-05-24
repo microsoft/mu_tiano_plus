@@ -103,7 +103,34 @@
             "tpmcommlib",
             "tpmnvvaluelength",
             "wrlocked",
-            "xored"
+            "xored",
+            "certsn",
+            "certdb",
+            "certdbv",
+            "unownered",
+            "defaultdb",
+            "defaultdbx",
+            "smuid",
+            "researvedf", # Typo that cannot be easily fixed
+            "researved",
+            "revertsp",
+            "rdlocked",
+            "ssclite",
+            "mechanish",
+            "rquuse",
+            "rsassa",
+            "ecdaa",
+            "cphash",
+            "nuvia",
+            "certn",
+            "rsapss",
+            "rsaes",
+            "communciate", #typo that cannot be easily fixed
+            "rngdxe",
+            "opalite"
+
+
+ 
         ],
         "IgnoreStandardPaths": [],   # Standard Plugin defined paths that should be ignore
         "AdditionalIncludePaths": [] # Additional paths to spell check (wildcards supported)
