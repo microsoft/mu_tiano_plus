@@ -735,7 +735,7 @@ fdt_get_property_w (
  * to within the device blob itself, not a copy of the value).  If
  * lenp is non-NULL, the length of the property value is also
  * returned, in the integer pointed to by lenp.  If namep is non-NULL,
- * the property's namne will also be returned in the char * pointed to
+ * the property's name will also be returned in the char * pointed to
  * by namep (this will be a pointer to within the device tree's string
  * block, not a new copy of the name).
  *
@@ -2246,7 +2246,7 @@ fdt_add_subnode_namelen (
  * change the offsets of some existing nodes.
 
  * returns:
- *      structure block offset of the created nodeequested subnode (>=0), on
+ *      structure block offset of the created noderequested subnode (>=0), on
  *              success
  *      -FDT_ERR_NOTFOUND, if the requested subnode does not exist
  *      -FDT_ERR_BADOFFSET, if parentoffset did not point to an FDT_BEGIN_NODE
@@ -2311,7 +2311,7 @@ fdt_del_node (
  * returns:
  *      0, on success
  *      -FDT_ERR_NOSPACE, there's not enough space in the base device tree
- *      -FDT_ERR_NOTFOUND, the overlay points to some inexistant nodes or
+ *      -FDT_ERR_NOTFOUND, the overlay points to some non existant nodes or
  *              properties in the base DT
  *      -FDT_ERR_BADPHANDLE,
  *      -FDT_ERR_BADOVERLAY,

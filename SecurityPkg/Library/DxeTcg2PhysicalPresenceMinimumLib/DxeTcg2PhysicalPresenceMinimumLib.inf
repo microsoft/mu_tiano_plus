@@ -9,10 +9,8 @@
 #
 ##
 
-#Override : 00000001 | SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf | 6205753f2abf9126f2711c5f154f9f99 | 2021-01-09T19-05-15
-# This is not a true override, but as this is derived from the full-featured lib, we want to track if any bugs are fixed there to ensure they are fixed here
-# A minimized version of the TCG2 Physical Presence Library that implements only the features that are required by the TCG PPI 1.3 spec,
-# optional features are removed, the only supported function is to Clear the TPM, and is always approved with no UX
+#Override : 00000002 | SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf | 6205753f2abf9126f2711c5f154f9f99 | 2024-07-24T18-06-30 | 69ff4b6fc889c8e66101cad3dcf8be3d516e038d
+# This is not a true override, but spell changes to ensure mu_tiano_plus passes CI is required and changes the hash.
 
 [Defines]
   INF_VERSION                    = 0x00010005
