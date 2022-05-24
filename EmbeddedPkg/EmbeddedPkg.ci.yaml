@@ -58,7 +58,62 @@
     "SpellCheck": {
         "AuditOnly": True,
         "IgnoreFiles": [],           # use gitignore syntax to ignore errors in matching files
-        "ExtendWords": [],           # words to extend to the dictionary for this package
+        "ExtendWords": [
+            "ebadbufsize",
+            "qXfer",
+            "Packetq", #cspell is confused from PacketqXfer
+            "rwatch",
+            "awatch",
+            "e_lfanew",
+            "ralloc",
+            "Intialize", # Is misspelled in a library function 
+            "libfdt",
+            "ncells",
+            "badncells",
+            "phandle",
+            "phandles",
+            "badphandle",
+            "nnode",
+            "namep",
+            "pdepth",
+            "atdepth",
+            "fdtstart",
+            "fdtend",
+            "txrdy",
+            "atmel",
+            "gigadevice",
+            "stmicro",
+            "jedec",
+            "hisilicon",
+            "vtutf",
+            "ioblocks",
+            "blkio",
+            "ismultiblock",
+            "readbllen",
+            "writebllen",
+            "powerup",
+            "emmcbackward",
+            "emmchs",
+            "udriver",
+            "eunknown",
+            "strsz",
+            "ffset",
+            "mpidr",
+            "abootimg", #android boot image
+            "Maxium", # Typo in a library header function
+            "Lenght", # Typo in a library header function
+            "eoi'ed",
+            "isreadonly",
+            "stdby",
+            "tcase",
+            "mgmnt",
+            "bkops",
+            "ddisable",
+            "Lauterbach",
+            "taggs"
+
+
+        ],           # words to extend to the dictionary for this package
         "IgnoreStandardPaths": [],   # Standard Plugin defined paths that should be ignore
         "AdditionalIncludePaths": [] # Additional paths to spell check (wildcards supported)
     }

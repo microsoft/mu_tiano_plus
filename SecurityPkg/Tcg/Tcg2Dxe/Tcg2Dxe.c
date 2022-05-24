@@ -2519,7 +2519,7 @@ OnReadyToBoot (
     }
 
     if (PcdGetBool (TcgMeasureBootStringsInPcr4)) {
-      // mschange for some platform uefi compat
+      // MsChange for some platform uefi compat
       //
       // 1. This is the first boot attempt.
       //
@@ -2558,7 +2558,7 @@ OnReadyToBoot (
     //
   } else {
     if (PcdGetBool (TcgMeasureBootStringsInPcr4)) {
-      // mschange for hyperv uefi compat
+      // MsChange for hyperv uefi compat
       //
       // 6. Not first attempt, meaning a return from last attempt
       //
