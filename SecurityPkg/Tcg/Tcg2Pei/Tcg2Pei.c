@@ -458,8 +458,7 @@ SyncPcrAllocationsAndPcrMask (
   }
 
   //
-  // If there are active PCR banks that are not supported by the Platform mask,
-  // update the TPM allocations and reboot the machine.
+  // If the active PCR banks do not match the Platform PCR mask, update the TPM allocations and reboot the machine.
   // MS_CHANGE_? - Update PCR order, add PCD, enable deallocate *and* allocate.
   //
   if ((Tpm2PcrMask != TpmActivePcrBanks) && FixedPcdGetBool (PcdForceReallocatePcrBanks)) {
