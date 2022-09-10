@@ -181,7 +181,7 @@ EXIT:
   // Reset variable to no action on error
   //
   if (ReturnCode != TCG_PP_SUBMIT_REQUEST_TO_PREOS_SUCCESS) {
-    DEBUG ((DEBUG_ERROR, "[TPM2] Submit PP Request failure! Reset variable to no action\n", Status));
+    DEBUG ((DEBUG_ERROR, "[TPM2] Submit PP Request failure! Reset variable to no action. Status = %r\n", Status));
     DataSize = sizeof (EFI_TCG2_PHYSICAL_PRESENCE);
     ZeroMem (&PpData, DataSize);
     Status = mTcg2PpSmmVariable->SmmSetVariable (
