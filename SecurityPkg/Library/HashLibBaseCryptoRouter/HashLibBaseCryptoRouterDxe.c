@@ -79,6 +79,11 @@ HashStart (
 
   for (Index = 0; Index < mHashInterfaceCount; Index++) {
     HashMask = Tpm2GetHashMaskFromAlgo (&mHashInterface[Index].HashGuid);
+    if (HashCtx == NULL) {
+      // If we fail to get the hash mask we don't have resources.
+      return EFI_OUT_OF_RESOURCES;
+    }
+
     if ((HashMask & PcdGet32 (PcdTpm2HashMask)) != 0) {
       mHashInterface[Index].HashInit (&HashCtx[Index]);
     }
@@ -210,8 +215,16 @@ HashAndExtend (
 
   CheckSupportedHashMaskMismatch ();
 
-  HashStart (&HashHandle);
-  HashUpdate (HashHandle, DataToHash, DataToHashLen);
+  Status = HashStart (&HashHandle);
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
+  Status = HashUpdate (HashHandle, DataToHash, DataToHashLen);
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
   Status = HashCompleteAndExtend (HashHandle, PcrIndex, NULL, 0, DigestList);
 
   return Status;
