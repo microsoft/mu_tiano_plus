@@ -537,8 +537,7 @@ Tpm2GetCapabilitySupportedAndActivePcrs (
   //
   // Get supported PCR
   //
-  Status = Tpm2GetCapabilityPcrs (&Pcrs);
-  DEBUG ((DEBUG_INFO, "Supported PCRs - Count = %08x\n", Pcrs.count));
+  Status             = Tpm2GetCapabilityPcrs (&Pcrs);
   ActivePcrBankCount = 0;
   //
   // If error, assume that we have at least SHA-1 (and return the error.)
@@ -556,6 +555,9 @@ Tpm2GetCapabilitySupportedAndActivePcrs (
   else {
     *TpmHashAlgorithmBitmap = 0;
     *ActivePcrBanks         = 0;
+
+    DEBUG ((DEBUG_INFO, "Supported PCRs - Count = %08x\n", Pcrs.count));
+
     for (Index = 0; Index < Pcrs.count; Index++) {
       switch (Pcrs.pcrSelections[Index].hash) {
         case TPM_ALG_SHA1:
