@@ -2029,6 +2029,7 @@ Failed:
   // executable information table in either case.
   //
   NameStr = ConvertDevicePathToText (File, FALSE, TRUE);
+  // AddImageExeInfo accepts NameStr as an optional parameter
   AddImageExeInfo (Action, NameStr, File, SignatureList, SignatureListSize);
   if (NameStr != NULL) {
     DEBUG ((DEBUG_INFO, "The image doesn't pass verification: %s\n", NameStr));
