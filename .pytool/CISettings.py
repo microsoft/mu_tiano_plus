@@ -209,4 +209,20 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
 
     def FilterPackagesToTest(self, changedFilesList: list, potentialPackagesList: list) -> list:
         ''' Filter potential packages to test based on changed files. '''
-        return []
+        build_these_packages = []
+        possible_packages = potentialPackagesList.copy()
+
+        for f in changedFilesList:
+            # split each part of path for comparison later
+            nodes = f.split("/")
+
+            # python file change in .pytool folder causes building all
+            if f.endswith(".py") and ".pytool" in nodes:
+                build_these_packages = possible_packages
+                break
+
+            if "pip-requirements.txt" in nodes:
+                build_these_packages = possible_packages
+                break
+
+        return build_these_packages
