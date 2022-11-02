@@ -38,6 +38,17 @@
   UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
   UefiRuntimeServicesTableLib|MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf
 
+## MU_CHANGE START
+BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
+[LibraryClasses.X64]
+!if $(TOOL_CHAIN_TAG) == VS2019 or $(TOOL_CHAIN_TAG) == VS2022
+  # Provide StackCookie support lib so that we can link to /GS exports for VS builds
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+  BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
+!endif
+## MU_CHANGE END
+
 [LibraryClasses.IA32, LibraryClasses.X64]
   MtrrLib|UefiCpuPkg/Library/MtrrLib/MtrrLib.inf
 
