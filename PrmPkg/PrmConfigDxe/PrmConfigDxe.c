@@ -155,7 +155,11 @@ SetRuntimeMemoryRangeAttributes (
     Status = gDS->SetMemorySpaceAttributes (
                     RuntimeMmioRanges->Range[Index].PhysicalBaseAddress,
                     (UINT64)RuntimeMmioRanges->Range[Index].Length,
-                    Descriptor.Attributes | EFI_MEMORY_RUNTIME
+                    // MU_CHANGE START: The memory space descriptor access attributes are not accurate. Don't pass
+                    //                  in access attributes so SetMemorySpaceAttributes() doesn't update them.
+                    // Descriptor.Attributes | EFI_MEMORY_RUNTIME
+                    EFI_MEMORY_RUNTIME
+                    // MU_CHANGE END
                     );
     ASSERT_EFI_ERROR (Status);
     if (EFI_ERROR (Status)) {
