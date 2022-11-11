@@ -93,13 +93,13 @@ SecureBootFetchData (
           FreePool (EfiSig);
         }
 
-        Auth2 = (EFI_VARIABLE_AUTHENTICATION_2 *) Buffer;
+        Auth2 = (EFI_VARIABLE_AUTHENTICATION_2 *)Buffer;
         if ((Auth2->AuthInfo.Hdr.wCertificateType == WIN_CERT_TYPE_EFI_GUID) && (CompareGuid (&gEfiCertPkcs7Guid, &Auth2->AuthInfo.CertType))) {
           SigData     = Auth2->AuthInfo.CertData;
           SigDataSize = Auth2->AuthInfo.Hdr.dwLength - (UINT32)(OFFSET_OF (WIN_CERTIFICATE_UEFI_GUID, CertData));
           PayloadPtr  = SigData + SigDataSize;
-          PayloadSize = Size - OFFSET_OF_AUTHINFO2_CERT_DATA - (UINTN) SigDataSize;
-          *SigListOut = (EFI_SIGNATURE_LIST *) AllocateZeroPool (PayloadSize);
+          PayloadSize = Size - OFFSET_OF_AUTHINFO2_CERT_DATA - (UINTN)SigDataSize;
+          *SigListOut = (EFI_SIGNATURE_LIST *)AllocateZeroPool (PayloadSize);
           CopyMem (*SigListOut, PayloadPtr, PayloadSize);
           *SigListsSize = PayloadSize;
           FreePool (Buffer);
