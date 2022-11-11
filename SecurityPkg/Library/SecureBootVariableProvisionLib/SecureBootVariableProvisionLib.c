@@ -24,6 +24,8 @@
 #include <Library/SecureBootVariableProvisionLib.h>
 #include <Library/DxeServicesLib.h>
 
+#define OFFSET_OF_AUTHINFO2_CERT_DATA  ((OFFSET_OF (EFI_VARIABLE_AUTHENTICATION_2, AuthInfo)) + (OFFSET_OF (WIN_CERTIFICATE_UEFI_GUID, CertData)))
+
 /**
   Create a EFI Signature List with data fetched from section specified as a argument.
   Found keys are verified using RsaGetPublicKeyFromX509().
@@ -46,15 +48,20 @@ SecureBootFetchData (
   OUT EFI_SIGNATURE_LIST  **SigListOut
   )
 {
-  EFI_SIGNATURE_LIST            *EfiSig;
-  EFI_STATUS                    Status;
-  VOID                          *Buffer;
-  VOID                          *RsaPubKey;
-  UINTN                         Size;
-  UINTN                         KeyIndex;
-  UINTN                         Index;
-  SECURE_BOOT_CERTIFICATE_INFO  *CertInfo;
-  SECURE_BOOT_CERTIFICATE_INFO  *NewCertInfo;
+  EFI_SIGNATURE_LIST             *EfiSig;
+  EFI_STATUS                     Status;
+  VOID                           *Buffer;
+  VOID                           *RsaPubKey;
+  UINTN                          Size;
+  UINTN                          KeyIndex;
+  UINTN                          Index;
+  SECURE_BOOT_CERTIFICATE_INFO   *CertInfo;
+  SECURE_BOOT_CERTIFICATE_INFO   *NewCertInfo;
+  EFI_VARIABLE_AUTHENTICATION_2  *Auth2;
+  UINT8                          *SigData;
+  UINT32                         SigDataSize;
+  UINT8                          *PayloadPtr;
+  UINTN                          PayloadSize;
 
   KeyIndex      = 0;
   EfiSig        = NULL;
@@ -84,6 +91,19 @@ SecureBootFetchData (
         DEBUG ((DEBUG_ERROR, "%a: Invalid key format: %d\n", __FUNCTION__, KeyIndex));
         if (EfiSig != NULL) {
           FreePool (EfiSig);
+        }
+
+        Auth2 = (EFI_VARIABLE_AUTHENTICATION_2 *) Buffer;
+        if ((Auth2->AuthInfo.Hdr.wCertificateType == WIN_CERT_TYPE_EFI_GUID) && (CompareGuid (&gEfiCertPkcs7Guid, &Auth2->AuthInfo.CertType))) {
+          SigData     = Auth2->AuthInfo.CertData;
+          SigDataSize = Auth2->AuthInfo.Hdr.dwLength - (UINT32)(OFFSET_OF (WIN_CERTIFICATE_UEFI_GUID, CertData));
+          PayloadPtr  = SigData + SigDataSize;
+          PayloadSize = Size - OFFSET_OF_AUTHINFO2_CERT_DATA - (UINTN) SigDataSize;
+          *SigListOut = (EFI_SIGNATURE_LIST *) AllocateZeroPool (PayloadSize);
+          CopyMem (*SigListOut, PayloadPtr, PayloadSize);
+          *SigListsSize = PayloadSize;
+          FreePool (Buffer);
+          return EFI_SUCCESS;
         }
 
         FreePool (Buffer);
