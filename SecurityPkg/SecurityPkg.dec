@@ -637,7 +637,7 @@
   gEfiSecurityPkgTokenSpaceGuid.PcdTpm2AcpiTableLasa|0|UINT64|0x00010023
 
 
-# MU_CHANGE START TCBZ2506
+# MU_CHANGE START
 [PcdsFeatureFlag]
   # TCBZ2506
   ## Indicates if the platform will enforce PK's to be self signed when setting the PK with none currently set
