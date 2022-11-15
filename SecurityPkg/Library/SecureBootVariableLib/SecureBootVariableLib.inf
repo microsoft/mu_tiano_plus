@@ -71,3 +71,7 @@
 
   gEfiCertX509Guid               ## CONSUMES
   gEfiCertPkcs7Guid              ## CONSUMES
+
+# MU_CHANGE: Remove the indicator of custom secure boot mode variable
+[FeaturePcd]
+  gEfiSecurityPkgTokenSpaceGuid.PcdSupportCustomSecureBootModeVariable
