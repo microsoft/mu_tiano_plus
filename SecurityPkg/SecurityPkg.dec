@@ -647,8 +647,8 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdEnforceSelfsignedPk|FALSE|BOOLEAN|0x00010024
 
   ## Indicates if the platform will set the custom secure boot mode variable during deletion of PK
-  #   TRUE  - Will set a UEFI variable with EFI_CUSTOM_MODE_NAME as name and CUSTOM_SECURE_BOOT_MODE as value
-  #           during PK deletion operation
+  #   TRUE  - Will set a NV|BS UEFI variable with EFI_CUSTOM_MODE_NAME as name, gEfiCustomModeEnableGuid
+  #           as namespace, CUSTOM_SECURE_BOOT_MODE as value during PK deletion operation.
   #   FALSE - The aforementioned variable will not be set during PK deletion.
   # @Prompt Support setting custom secure boot mode varible during PK deletion.
   gEfiSecurityPkgTokenSpaceGuid.PcdSupportCustomSecureBootModeVariable|FALSE|BOOLEAN|0x00010025
