@@ -12,7 +12,6 @@ BuildConfig.conf
 /MU_BASECORE
 
 # Packages not ignored:
-# EmbeddedPkg
 # FatPkg
 # FmpDevicePkg
 # SecurityPkg
@@ -31,6 +30,7 @@ BuildConfig.conf
 /DuetPkg/
 /DynamicTablesPkg/
 /EdkCompatibilityPkg/
+/EmbeddedPkg/
 /EmulatorPkg/
 /IntelFrameworkModulePkg/
 /IntelFrameworkPkg/

@@ -55,7 +55,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                 "FmpDevicePkg",
                 "FatPkg",
                 "SourceLevelDebugPkg",
-                "EmbeddedPkg",
                 "PrmPkg"
                 )
 
