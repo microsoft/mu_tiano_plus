@@ -1,51 +1,35 @@
 ## @file
-# Azure Pipeline build file for a build using Windows and the Visual Studio compiler
+# Azure Pipeline build file for a build using Windows and the latest Visual Studio toolchain supported.
+#
+# IMPORTANT: This file requires the local repo to contain a .azurepipelines/Matrix-Build-Job.yml file that
+#            performs the actual build steps for the configurations and packages supported by the repo.
+#
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
 #
 # Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
-# MU_CHANGE [BEGIN]
-trigger:
-- dev/*
-- release/202208
-- release/202202
-
-schedules:
-- cron: "0 8 * * 0,3"   # Sun/Wed at 1AM Pacific
-  displayName: Sun/Wed Build
-  branches:
-    include:
-    - dev/*
-    - release/202208
-    - release/202202
-  always: true          # Always build, even if no changes
-
-pr:
-- dev/*
-- release/202208
-- release/202202
 
 resources:
   repositories:
-  - repository: basecore
-    type: github
-    name: Microsoft/mu_basecore
-    ref: refs/heads/release/202208
-    endpoint: Microsoft
-# MU_CHANGE [END]
+    - repository: mu_devops
+      type: github
+      endpoint: microsoft
+      name: microsoft/mu_devops
+      ref: refs/tags/v2.5.1
 
 variables:
-  - template: templates/defaults.yml
+- group: architectures-x86-64
+- group: tool-chain-windows-visual-studio-latest
 
 jobs:
-- template: templates/pr-gate-build-job.yml
+- template: Matrix-Build-Job.yml
   parameters:
-    tool_chain_tag: 'VS2022'
-    vm_image: 'windows-2022'
-    arch_list: "IA32,X64"
-    usePythonVersion: ${{ variables.default_python_version }}
-    extra_install_step:
-    - powershell: choco install opencppcoverage; Write-Host "##vso[task.prependpath]C:\Program Files\OpenCppCoverage"
-      displayName: Install Code Coverage Tool
-      condition: and(gt(variables.pkg_count, 0), succeeded())
-
+    arch_list: $(arch_list)
+    extra_build_args: CODE_COVERAGE=TRUE
+    tool_chain_tag: $(tool_chain_tag)
+    vm_image: $(vm_image)
