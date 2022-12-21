@@ -714,7 +714,10 @@ DxeTpm2MeasureBootHandler (
             }
           }
 
-          FreePool (OrigDevicePathNode);
+          if (OrigDevicePathNode != NULL) {
+            FreePool (OrigDevicePathNode);
+          }
+
           OrigDevicePathNode = DuplicateDevicePath (File);
           if (OrigDevicePathNode == NULL) {
             ASSERT (OrigDevicePathNode != NULL);
