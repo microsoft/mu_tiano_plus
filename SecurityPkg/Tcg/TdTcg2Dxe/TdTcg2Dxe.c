@@ -1873,8 +1873,12 @@ ReadAndMeasureBootVariable (
   OUT     VOID      **VarData
   )
 {
+  //
+  // Boot variables are measured into (PCR[5]) RTMR[1],
+  // details in section 8.1 of TDVF design guide.
+  //
   return ReadAndMeasureVariable (
-           MapPcrToMrIndex (1),
+           MapPcrToMrIndex (5),
            EV_EFI_VARIABLE_BOOT,
            VarName,
            VendorGuid,
