@@ -23,18 +23,18 @@ Branch Status - release/202208
 :Anticipated Stabilization:
   Nov 2022
 
-Branch Changes - release/202202
+Branch Changes - release/202208
 ===============================
 
 Breaking Changes-dev
 --------------------
 
-- None
+- Removed RVCT support.
 
 Main Changes-dev
 ----------------
 
-- None
+- Added AARCH64 support for PrmPkg.
 
 Bug Fixes-dev
 -------------
@@ -44,12 +44,13 @@ Bug Fixes-dev
 2208_RefBoot Changes
 --------------------
 
-- Incomplete
+- None
 
 2208_CIBuild Changes
 --------------------
 
-- None
+- Updated PrmPkg to reference the ArmCompilerIntrinsicLib that we moved to MU_BASECORE.
+- Fixed some markdown lint problems associated with the changes pulled from edk2.
 
 2208_Rebase Changes
 -------------------
