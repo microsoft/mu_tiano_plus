@@ -578,13 +578,12 @@ DeletePlatformKey (
 {
   EFI_STATUS  Status;
 
-  // MU_CHANGE: Remove the indicator of custom secure boot mode variable
-  if (FeaturePcdGet (PcdSupportCustomSecureBootModeVariable)) {
-    Status = SetSecureBootMode (CUSTOM_SECURE_BOOT_MODE);
-    if (EFI_ERROR (Status)) {
-      return Status;
-    }
-  }
+  // MU_CHANGE Starts: Remove the indicator of custom secure boot mode variable
+  // Status = SetSecureBootMode (CUSTOM_SECURE_BOOT_MODE);
+  // if (EFI_ERROR (Status)) {
+  //   return Status;
+  // }
+  // MU_CHANGE Ends
 
   Status = DeleteVariable (
              EFI_PLATFORM_KEY_NAME,
