@@ -22,10 +22,8 @@ try:
     # Temporarily needed until edk2 can update to the latest edk2-pytools
     # that has the CodeQL helpers.
     #
-    # May not be present until submodules are populated.
     #
     root = Path(__file__).parent.parent.resolve()
-    sys.path.append(str(root/'BaseTools'/'Plugin'/'CodeQL'/'integration'))
     import stuart_codeql as codeql_helpers
 except ImportError:
     pass
@@ -182,8 +180,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                     scopes += ("gcc_arm_linux",)
                 if "RISCV64" in self.ActualArchitectures:
                     scopes += ("gcc_riscv64_unknown",)
-					
-			try:
                 scopes += codeql_helpers.get_scopes(self.codeql)
 
                 if self.codeql:
@@ -193,7 +189,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                         "Set in CISettings.py")
             except NameError:
                 pass
-				
             self.ActualScopes = scopes
         return self.ActualScopes
 
