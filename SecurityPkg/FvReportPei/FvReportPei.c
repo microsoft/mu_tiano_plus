@@ -71,7 +71,13 @@ InstallPreHashFvPpi (
             + HashSize;
 
   PreHashedFvPpi = AllocatePool (PpiSize);
-  ASSERT (PreHashedFvPpi != NULL);
+  // MU_CHANGE [START] - CodeQL change
+  if (PreHashedFvPpi == NULL) {
+    ASSERT (PreHashedFvPpi != NULL);
+    return;
+  }
+
+  // MU_CHANGE [END] - CodeQL change
 
   PreHashedFvPpi->FvBase   = (UINT32)(UINTN)FvBuffer;
   PreHashedFvPpi->FvLength = (UINT32)FvLength;
@@ -83,7 +89,14 @@ InstallPreHashFvPpi (
   CopyMem (HASH_VALUE_PTR (HashInfo), HashValue, HashSize);
 
   FvInfoPpiDescriptor = AllocatePool (sizeof (EFI_PEI_PPI_DESCRIPTOR));
-  ASSERT (FvInfoPpiDescriptor != NULL);
+  // MU_CHANGE [START] - CodeQL change
+  if (FvInfoPpiDescriptor == NULL) {
+    ASSERT (FvInfoPpiDescriptor != NULL);
+    FreePool (PreHashedFvPpi);
+    return;
+  }
+
+  // MU_CHANGE [END] - CodeQL change
 
   FvInfoPpiDescriptor->Guid  = &gEdkiiPeiFirmwareVolumeInfoPrehashedFvPpiGuid;
   FvInfoPpiDescriptor->Flags = EFI_PEI_PPI_DESCRIPTOR_PPI | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST;
@@ -191,7 +204,14 @@ VerifyHashedFv (
     // Copy FV to permanent memory to avoid potential TOC/TOU.
     //
     FvBuffer = AllocatePages (EFI_SIZE_TO_PAGES ((UINTN)FvInfo[FvIndex].Length));
-    ASSERT (FvBuffer != NULL);
+    // MU_CHANGE [START] - CodeQL change
+    if (FvBuffer == NULL) {
+      ASSERT (FvBuffer != NULL);
+      Status = EFI_OUT_OF_RESOURCES;
+      goto Done;
+    }
+
+    // MU_CHANGE [END] - CodeQL change
     CopyMem (FvBuffer, (CONST VOID *)(UINTN)FvInfo[FvIndex].Base, (UINTN)FvInfo[FvIndex].Length);
 
     if (!AlgInfo->HashAll (FvBuffer, (UINTN)FvInfo[FvIndex].Length, FvHashValue)) {
@@ -352,12 +372,17 @@ CheckStoredHashFv (
                       );
   if (!EFI_ERROR (Status) && (StoredHashFvPpi != NULL) && (StoredHashFvPpi->FvNumber > 0)) {
     HashInfo = GetHashInfo (StoredHashFvPpi, BootMode);
-    Status   = VerifyHashedFv (
+    // MU_CHANGE [START] - CodeQL change
+    if (HashInfo != NULL) {
+      Status = VerifyHashedFv (
                  HashInfo,
                  StoredHashFvPpi->FvInfo,
                  StoredHashFvPpi->FvNumber,
                  BootMode
                  );
+    }
+
+    // MU_CHANGE [END] - CodeQL change
     if (!EFI_ERROR (Status)) {
       DEBUG ((DEBUG_INFO, "OBB verification passed (%r)\r\n", Status));
 

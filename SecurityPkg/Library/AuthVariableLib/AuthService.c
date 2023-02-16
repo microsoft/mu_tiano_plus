@@ -411,7 +411,10 @@ CheckSignatureListFormat (
   VOID                *RsaContext;
   EFI_SIGNATURE_DATA  *CertData;
   UINTN               CertLen;
+  // MU_CHANGE [START] - CodeQL change
+  UINTN  SigListSize;
 
+  // MU_CHANGE [END] - CodeQL change
   if (DataSize == 0) {
     return EFI_SUCCESS;
   }
@@ -439,7 +442,14 @@ CheckSignatureListFormat (
   // Walk through the input signature list and check the data format.
   // If any signature is incorrectly formed, the whole check will fail.
   //
-  while ((SigDataSize > 0) && (SigDataSize >= SigList->SignatureListSize)) {
+  // MU_CHANGE [START] - CodeQL change
+  while (SigDataSize > 0) {
+    SigListSize = (UINTN)SigList->SignatureListSize;
+    if (SigDataSize < SigListSize) {
+      break;
+    }
+
+    // MU_CHANGE [END] - CodeQL change
     for (Index = 0; Index < (sizeof (mSupportSigItem) / sizeof (EFI_SIGNATURE_ITEM)); Index++ ) {
       if (CompareGuid (&SigList->SignatureType, &mSupportSigItem[Index].SigType)) {
         //
@@ -996,7 +1006,9 @@ FilterSignatureList (
   Tail = TempData;
 
   NewCertList = (EFI_SIGNATURE_LIST *)NewData;
-  while ((*NewDataSize > 0) && (*NewDataSize >= NewCertList->SignatureListSize)) {
+  // MU_CHANGE [START] - CodeQL change
+  while ((*NewDataSize > 0) && (*NewDataSize >= (UINTN)NewCertList->SignatureListSize)) {
+    // MU_CHANGE [END] - CodeQL change
     NewCert      = (EFI_SIGNATURE_DATA *)((UINT8 *)NewCertList + sizeof (EFI_SIGNATURE_LIST) + NewCertList->SignatureHeaderSize);
     NewCertCount = (NewCertList->SignatureListSize - sizeof (EFI_SIGNATURE_LIST) - NewCertList->SignatureHeaderSize) / NewCertList->SignatureSize;
 
@@ -1006,7 +1018,9 @@ FilterSignatureList (
 
       Size     = DataSize;
       CertList = (EFI_SIGNATURE_LIST *)Data;
-      while ((Size > 0) && (Size >= CertList->SignatureListSize)) {
+      // MU_CHANGE [START] - CodeQL change
+      while ((Size > 0) && (Size >= (UINTN)CertList->SignatureListSize)) {
+        // MU_CHANGE [END] - CodeQL change
         if (CompareGuid (&CertList->SignatureType, &NewCertList->SignatureType) &&
             (CertList->SignatureSize == NewCertList->SignatureSize))
         {

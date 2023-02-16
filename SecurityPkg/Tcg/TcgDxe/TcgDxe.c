@@ -286,7 +286,13 @@ TpmCommHashAll (
 
   CtxSize = Sha1GetContextSize ();
   Sha1Ctx = AllocatePool (CtxSize);
-  ASSERT (Sha1Ctx != NULL);
+  // MU_CHANGE [START] - CodeQL change
+  if (Sha1Ctx == NULL) {
+    ASSERT (Sha1Ctx != NULL);
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  // MU_CHANGE [END] - CodeQL change
 
   Sha1Init (Sha1Ctx);
   Sha1Update (Sha1Ctx, Data, DataLen);
