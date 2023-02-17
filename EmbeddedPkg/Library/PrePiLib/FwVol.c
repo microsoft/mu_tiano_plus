@@ -203,8 +203,9 @@ FindFileEx (
 
   FileOffset = (UINT32)((UINT8 *)FfsFileHeader - (UINT8 *)FwVolHeader);
   ASSERT (FileOffset <= 0xFFFFFFFF);
-
-  while (FileOffset < (FvLength - sizeof (EFI_FFS_FILE_HEADER))) {
+  // MU_CHANGE [START] - CodeQL change
+  while (FileOffset < (UINT32)(FvLength - sizeof (EFI_FFS_FILE_HEADER))) {
+    // MU_CHANGE [END] - CodeQL change
     //
     // Get FileState which is the highest bit of the State
     //
@@ -298,7 +299,7 @@ FfsProcessSection (
   Status            = EFI_NOT_FOUND;
   ScratchBufferSize = 0;    // MU_CHANGE
   DstBufferSize     = 0;    // MU_CHANGE
-  while (ParsedLength < SectionSize) {
+  while (ParsedLength < (UINT32)SectionSize) {
     if (IS_SECTION2 (Section)) {
       ASSERT (SECTION2_SIZE (Section) > 0x00FFFFFF);
     }
