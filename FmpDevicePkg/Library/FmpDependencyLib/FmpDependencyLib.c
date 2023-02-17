@@ -267,7 +267,7 @@ EvaluateDependency (
         CopyGuid (&ImageTypeId, (EFI_GUID *)(Iterator + 1));
         Iterator = Iterator + sizeof (EFI_GUID);
 
-        for (Index = 0; Index < FmpVersionsCount; Index++) {
+        for (Index = 0; Index < (UINT8)FmpVersionsCount; Index++) {
           if (CompareGuid (&FmpVersions[Index].ImageTypeId, &ImageTypeId)) {
             Status = Push (FmpVersions[Index].Version, VersionType);
             if (EFI_ERROR (Status)) {
