@@ -504,6 +504,12 @@ OutputString (
 
   Size         = StrLen (String) + 1;
   OutputString = AllocatePool (Size);
+  // MU_CHANGE [START] - CodeQL change
+  if (OutputString == NULL) {
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  // MU_CHANGE [END] - CodeQL change
 
   // If there is any non-ascii characters in String buffer then replace it with '?'
   // Eventually, UnicodeStrToAsciiStr API should be fixed.
