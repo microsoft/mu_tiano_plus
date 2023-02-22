@@ -505,6 +505,10 @@ BuildGuidDataHob (
 
   HobData = BuildGuidHob (Guid, DataLength);
 
+  if (HobData == NULL) {
+    return NULL;
+  }
+
   return CopyMem (HobData, Data, DataLength);
 }
 
@@ -714,6 +718,10 @@ BuildStackHob (
     );
 
   Hob = CreateHob (EFI_HOB_TYPE_MEMORY_ALLOCATION, sizeof (EFI_HOB_MEMORY_ALLOCATION_STACK));
+
+  if (Hob == NULL) {
+    return;
+  }
 
   CopyGuid (&(Hob->AllocDescriptor.Name), &gEfiHobMemoryAllocStackGuid);
   Hob->AllocDescriptor.MemoryBaseAddress = BaseAddress;

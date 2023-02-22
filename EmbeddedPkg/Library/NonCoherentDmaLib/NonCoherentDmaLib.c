@@ -626,7 +626,9 @@ DmaFreeBuffer (
     }
   }
 
+  // MU_CHANGE [START] - CodeQL change
   if (!Found || (Alloc == NULL)) {
+    // MU_CHANGE [END] - CodeQL change
     ASSERT (FALSE);
     return EFI_INVALID_PARAMETER;
   }

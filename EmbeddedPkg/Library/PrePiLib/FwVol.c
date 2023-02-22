@@ -280,9 +280,11 @@ FfsProcessSection (
   OUT VOID                      **OutputBuffer
   )
 {
-  EFI_STATUS                Status;
-  UINT32                    SectionLength;
-  UINT32                    ParsedLength;
+  EFI_STATUS  Status;
+  UINT32      SectionLength;
+  // MU_CHANGE [START] - CodeQL change
+  UINTN  ParsedLength;
+  // MU_CHANGE [END] - CodeQL change
   EFI_COMPRESSION_SECTION   *CompressionSection;
   EFI_COMPRESSION_SECTION2  *CompressionSection2;
   UINT32                    DstBufferSize;
@@ -299,7 +301,7 @@ FfsProcessSection (
   Status            = EFI_NOT_FOUND;
   ScratchBufferSize = 0;    // MU_CHANGE
   DstBufferSize     = 0;    // MU_CHANGE
-  while (ParsedLength < (UINT32)SectionSize) {
+  while (ParsedLength < SectionSize) {
     if (IS_SECTION2 (Section)) {
       ASSERT (SECTION2_SIZE (Section) > 0x00FFFFFF);
     }
