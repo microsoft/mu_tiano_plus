@@ -296,7 +296,13 @@ DebugAgentCallbackMemoryDiscoveredPpi (
   // Update Mailbox Location pointer in GUIDed HOB and IDT entry with new one
   //
   MailboxLocationInHob = GetMailboxLocationFromHob ();
-  ASSERT (MailboxLocationInHob != NULL);
+  // MU_CHANGE [START] - CodeQL change
+  if (MailboxLocationInHob == NULL) {
+    ASSERT (MailboxLocationInHob != NULL);
+    return EFI_NOT_FOUND;
+  }
+
+  // MU_CHANGE [END] - CodeQL change
   *MailboxLocationInHob = (UINT64)(UINTN)NewMailbox;
   SetLocationSavedMailboxPointerInIdtEntry (MailboxLocationInHob);
   //
