@@ -226,9 +226,11 @@ EvaluateDependency (
   OUT UINT32                        *LastAttemptStatus OPTIONAL
   )
 {
-  EFI_STATUS     Status;
-  UINT8          *Iterator;
-  UINT8          Index;
+  EFI_STATUS  Status;
+  UINT8       *Iterator;
+  // MU_CHANGE [START] - CodeQL change
+  UINTN  Index;
+  // MU_CHANGE [END] - CodeQL change
   DEPEX_ELEMENT  Element1;
   DEPEX_ELEMENT  Element2;
   GUID           ImageTypeId;
@@ -267,7 +269,7 @@ EvaluateDependency (
         CopyGuid (&ImageTypeId, (EFI_GUID *)(Iterator + 1));
         Iterator = Iterator + sizeof (EFI_GUID);
 
-        for (Index = 0; Index < (UINT8)FmpVersionsCount; Index++) {
+        for (Index = 0; Index < FmpVersionsCount; Index++) {
           if (CompareGuid (&FmpVersions[Index].ImageTypeId, &ImageTypeId)) {
             Status = Push (FmpVersions[Index].Version, VersionType);
             if (EFI_ERROR (Status)) {
