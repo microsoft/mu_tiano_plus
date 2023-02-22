@@ -203,8 +203,9 @@ FindFileEx (
 
   FileOffset = (UINT32)((UINT8 *)FfsFileHeader - (UINT8 *)FwVolHeader);
   ASSERT (FileOffset <= 0xFFFFFFFF);
-
-  while (FileOffset < (FvLength - sizeof (EFI_FFS_FILE_HEADER))) {
+  // MU_CHANGE [START] - CodeQL change
+  while (FileOffset < (UINT32)(FvLength - sizeof (EFI_FFS_FILE_HEADER))) {
+    // MU_CHANGE [END] - CodeQL change
     //
     // Get FileState which is the highest bit of the State
     //
@@ -281,9 +282,11 @@ FfsProcessSection (
   OUT VOID                      **OutputBuffer
   )
 {
-  EFI_STATUS                Status;
-  UINT32                    SectionLength;
-  UINT32                    ParsedLength;
+  EFI_STATUS  Status;
+  UINT32      SectionLength;
+  // MU_CHANGE [START] - CodeQL change
+  UINTN  ParsedLength;
+  // MU_CHANGE [END] - CodeQL change
   EFI_COMPRESSION_SECTION   *CompressionSection;
   EFI_COMPRESSION_SECTION2  *CompressionSection2;
   UINT32                    DstBufferSize;
@@ -295,7 +298,8 @@ FfsProcessSection (
   CHAR8                     *CompressedData;
   UINT32                    CompressedDataLength;
   BOOLEAN                   Found;
-  Found         = FALSE;
+
+  Found = FALSE;
 
   *OutputBuffer     = NULL;
   ParsedLength      = 0;

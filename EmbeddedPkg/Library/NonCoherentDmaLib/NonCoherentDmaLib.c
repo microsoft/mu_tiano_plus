@@ -607,7 +607,7 @@ DmaFreeBuffer (
   )
 {
   LIST_ENTRY           *Link;
-  UNCACHED_ALLOCATION  *Alloc;
+  UNCACHED_ALLOCATION  *Alloc = NULL; // MU_CHANGE - CodeQL change
   BOOLEAN              Found;
   EFI_STATUS           Status;
 
@@ -626,7 +626,9 @@ DmaFreeBuffer (
     }
   }
 
-  if (!Found) {
+  // MU_CHANGE [START] - CodeQL change
+  if (!Found || (Alloc == NULL)) {
+    // MU_CHANGE [END] - CodeQL change
     ASSERT (FALSE);
     return EFI_INVALID_PARAMETER;
   }
