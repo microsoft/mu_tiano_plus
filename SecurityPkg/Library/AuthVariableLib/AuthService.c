@@ -411,10 +411,7 @@ CheckSignatureListFormat (
   VOID                *RsaContext;
   EFI_SIGNATURE_DATA  *CertData;
   UINTN               CertLen;
-  // MU_CHANGE [START] - CodeQL change
-  UINTN  SigListSize;
 
-  // MU_CHANGE [END] - CodeQL change
   if (DataSize == 0) {
     return EFI_SUCCESS;
   }
