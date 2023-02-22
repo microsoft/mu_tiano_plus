@@ -380,6 +380,8 @@ CheckStoredHashFv (
                  StoredHashFvPpi->FvNumber,
                  BootMode
                  );
+    } else {
+      Status = EFI_NOT_FOUND;
     }
 
     // MU_CHANGE [END] - CodeQL change

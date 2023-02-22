@@ -443,12 +443,7 @@ CheckSignatureListFormat (
   // If any signature is incorrectly formed, the whole check will fail.
   //
   // MU_CHANGE [START] - CodeQL change
-  while (SigDataSize > 0) {
-    SigListSize = (UINTN)SigList->SignatureListSize;
-    if (SigDataSize < SigListSize) {
-      break;
-    }
-
+  while ((SigDataSize > 0) && (SigDataSize >= (UINTN)SigList->SignatureListSize)) {
     // MU_CHANGE [END] - CodeQL change
     for (Index = 0; Index < (sizeof (mSupportSigItem) / sizeof (EFI_SIGNATURE_ITEM)); Index++ ) {
       if (CompareGuid (&SigList->SignatureType, &mSupportSigItem[Index].SigType)) {
