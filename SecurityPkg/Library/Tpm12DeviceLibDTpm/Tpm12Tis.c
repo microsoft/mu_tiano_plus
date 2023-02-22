@@ -270,11 +270,13 @@ Tpm12TisTpmCommand (
 {
   EFI_STATUS  Status;
   UINT16      BurstCount;
-  UINT32      Index;
-  UINT32      TpmOutSize;
-  UINT16      Data16;
-  UINT32      Data32;
-  UINT16      RspTag;
+  // MU_CHANGE [START] - CodeQL change
+  UINTN  Index;
+  // MU_CHANGE [END] - CodeQL change
+  UINT32  TpmOutSize;
+  UINT16  Data16;
+  UINT32  Data32;
+  UINT16  RspTag;
 
   DEBUG_CODE_BEGIN ();
   UINTN  DebugSize;

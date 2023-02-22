@@ -714,7 +714,13 @@ DxeTpm2MeasureBootHandler (
             }
           }
 
-          FreePool (OrigDevicePathNode);
+          // MU_CHANGE [BEGIN] - CodeQL change
+          if (OrigDevicePathNode != NULL) {
+            FreePool (OrigDevicePathNode);
+          }
+
+          // MU_CHANGE [END] - CodeQL change
+
           OrigDevicePathNode = DuplicateDevicePath (File);
           if (OrigDevicePathNode == NULL) {
             ASSERT (OrigDevicePathNode != NULL);

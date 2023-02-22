@@ -83,6 +83,7 @@
   OemTpm2InitLib|SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf               ## MS_CHANGE_?
   SourceDebugEnabledLib|SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf ## MS_CHANGE_?
   Hash2CryptoLib|SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf   ## MU_CHANGE
+  SafeIntLib |MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf ## MU_CHANGE - CodeQL change
 
   ## MU_CHANGE TEMP
 [LibraryClasses.X64, LibraryClasses.IA32]
