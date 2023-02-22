@@ -504,11 +504,12 @@ BuildGuidDataHob (
   ASSERT (Data != NULL || DataLength == 0);
 
   HobData = BuildGuidHob (Guid, DataLength);
-
+  // MU_CHANGE [START] - CodeQL change
   if (HobData == NULL) {
     return NULL;
   }
 
+  // MU_CHANGE [END] - CodeQL change
   return CopyMem (HobData, Data, DataLength);
 }
 
@@ -718,11 +719,12 @@ BuildStackHob (
     );
 
   Hob = CreateHob (EFI_HOB_TYPE_MEMORY_ALLOCATION, sizeof (EFI_HOB_MEMORY_ALLOCATION_STACK));
-
+  // MU_CHANGE [START] - CodeQL change
   if (Hob == NULL) {
     return;
   }
 
+  // MU_CHANGE [END] - CodeQL change
   CopyGuid (&(Hob->AllocDescriptor.Name), &gEfiHobMemoryAllocStackGuid);
   Hob->AllocDescriptor.MemoryBaseAddress = BaseAddress;
   Hob->AllocDescriptor.MemoryLength      = Length;
