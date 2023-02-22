@@ -378,7 +378,13 @@ CreateEventRing (
   // Allocate Event Ring
   //
   Buf = AllocateAlignBuffer (sizeof (TRB_TEMPLATE) * EVENT_RING_TRB_NUMBER);
-  ASSERT (Buf != NULL);
+  // MU_CHANGE [START] - CodeQL change
+  if (Buf == NULL) {
+    ASSERT (Buf != NULL);
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  // MU_CHANGE [END] - CodeQL change
   ASSERT (((UINTN)Buf & 0x3F) == 0);
   ZeroMem (Buf, sizeof (TRB_TEMPLATE) * EVENT_RING_TRB_NUMBER);
 
@@ -471,7 +477,13 @@ CreateTransferRing (
   LINK_TRB  *EndTrb;
 
   Buf = AllocateAlignBuffer (sizeof (TRB_TEMPLATE) * TrbNum);
-  ASSERT (Buf != NULL);
+  // MU_CHANGE [START] - CodeQL change
+  if (Buf == NULL) {
+    ASSERT (Buf != NULL);
+    return;
+  }
+
+  // MU_CHANGE [END] - CodeQL change
   ASSERT (((UINTN)Buf & 0xF) == 0);
   ZeroMem (Buf, sizeof (TRB_TEMPLATE) * TrbNum);
 
@@ -524,7 +536,13 @@ CreateDebugCapabilityContext (
   // Allocate debug device context
   //
   Buf = AllocateAlignBuffer (sizeof (XHC_DC_CONTEXT));
-  ASSERT (Buf != NULL);
+  // MU_CHANGE [START] - CodeQL change
+  if (Buf == NULL) {
+    ASSERT (Buf != NULL);
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  // MU_CHANGE [END] - CodeQL change
   ASSERT (((UINTN)Buf & 0xF) == 0);
   ZeroMem (Buf, sizeof (XHC_DC_CONTEXT));
 
