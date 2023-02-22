@@ -74,7 +74,9 @@ PromptForUserConfirmation (
   IN  CHAR16  *PromptString
   )
 {
-  UINT16  Index;
+  // MU_CHANGE [START] - CodeQL change
+  UINTN  Index;
+  // MU_CHANGE [END] - CodeQL change
   CHAR16  DstStr[81];
 
   DstStr[80] = L'\0';

@@ -163,11 +163,16 @@ HashAndExtend (
   }
 
   ASSERT (TdIsEnabled ());
+  // MU_CHANGE [START] - CodeQL change
+  Status = HashStart (&HashHandle);
+  if (!EFI_ERROR (Status)) {
+    Status = HashUpdate (HashHandle, DataToHash, DataToHashLen);
+    if (!EFI_ERROR (Status)) {
+      Status = HashCompleteAndExtend (HashHandle, PcrIndex, NULL, 0, DigestList);
+    }
+  }
 
-  HashStart (&HashHandle);
-  HashUpdate (HashHandle, DataToHash, DataToHashLen);
-  Status = HashCompleteAndExtend (HashHandle, PcrIndex, NULL, 0, DigestList);
-
+  // MU_CHANGE [END] - CodeQL change
   return Status;
 }
 
