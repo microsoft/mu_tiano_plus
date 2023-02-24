@@ -5,6 +5,7 @@
 # Copyright (c) 2020 - 2021, ARM Limited. All rights reserved.<BR>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
+import glob
 import os
 import logging
 import sys
@@ -184,6 +185,14 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                     shell_environment.GetBuildVars().SetValue(
                         "STUART_CODEQL_AUDIT_ONLY",
                         "TRUE",
+                        "Set in CISettings.py")
+                    codeql_filter_files = [str(n) for n in glob.glob(
+                        os.path.join(self.GetWorkspaceRoot(),
+                            '**/CodeQlFilters.yml'),
+                        recursive=True)]
+                    shell_environment.GetBuildVars().SetValue(
+                        "STUART_CODEQL_FILTER_FILES",
+                        ','.join(codeql_filter_files),
                         "Set in CISettings.py")
             except NameError:
                 pass
