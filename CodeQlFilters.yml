@@ -9,5 +9,8 @@
 ##
 
 {
-  "Filters": []
+  "Filters": [
+    # The NULL value passed in this file is expected by the callee
+    "-SourceLevelDebugPkg/Library/DebugAgent/DxeDebugAgent/DxeDebugAgentLib.c:SM02311"
+  ]
 }
