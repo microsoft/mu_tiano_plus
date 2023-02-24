@@ -369,26 +369,39 @@ CreateEventRing (
   OUT EVENT_RING              *EventRing
   )
 {
-  VOID                        *Buf;
+  // MU_CHANGE [START] - CodeQL change
+  VOID  *EventRingBuf;
+  VOID  *EventRingSegTableBuf;
+  // MU_CHANGE [END] - CodeQL change
   EVENT_RING_SEG_TABLE_ENTRY  *ERSTBase;
 
   ASSERT (EventRing != NULL);
 
+  // MU_CHANGE [START] - CodeQL change
   //
   // Allocate Event Ring
   //
-  Buf = AllocateAlignBuffer (sizeof (TRB_TEMPLATE) * EVENT_RING_TRB_NUMBER);
-  // MU_CHANGE [START] - CodeQL change
-  if (Buf == NULL) {
-    ASSERT (Buf != NULL);
+  EventRingBuf = AllocateAlignBuffer (sizeof (TRB_TEMPLATE) * EVENT_RING_TRB_NUMBER);
+  if (EventRingBuf == NULL) {
+    ASSERT (EventRingBuf != NULL);
     return EFI_OUT_OF_RESOURCES;
   }
 
-  // MU_CHANGE [END] - CodeQL change
-  ASSERT (((UINTN)Buf & 0x3F) == 0);
-  ZeroMem (Buf, sizeof (TRB_TEMPLATE) * EVENT_RING_TRB_NUMBER);
+  //
+  // Allocate Event Ring Segment Table Entry 0 in Event Ring Segment Table
+  //
+  EventRingSegTableBuf = AllocateAlignBuffer (sizeof (EVENT_RING_SEG_TABLE_ENTRY) * ERST_NUMBER);
+  if (EventRingSegTableBuf == NULL) {
+    ASSERT (EventRingSegTableBuf != NULL);
+    FreePages (EventRingBuf, EFI_SIZE_TO_PAGES (sizeof (TRB_TEMPLATE) * EVENT_RING_TRB_NUMBER));
+    return EFI_OUT_OF_RESOURCES;
+  }
 
-  EventRing->EventRingSeg0    = (EFI_PHYSICAL_ADDRESS)(UINTN)Buf;
+  ASSERT (((UINTN)EventRingBuf & 0x3F) == 0);
+  ZeroMem (EventRingBuf, sizeof (TRB_TEMPLATE) * EVENT_RING_TRB_NUMBER);
+
+  EventRing->EventRingSeg0 = (EFI_PHYSICAL_ADDRESS)(UINTN)EventRingBuf;
+  // MU_CHANGE [END] - CodeQL change
   EventRing->TrbNumber        = EVENT_RING_TRB_NUMBER;
   EventRing->EventRingDequeue = (EFI_PHYSICAL_ADDRESS)(UINTN)EventRing->EventRingSeg0;
   EventRing->EventRingEnqueue = (EFI_PHYSICAL_ADDRESS)(UINTN)EventRing->EventRingSeg0;
@@ -399,15 +412,12 @@ CreateEventRing (
   //
   EventRing->EventRingCCS = 1;
 
-  //
-  // Allocate Event Ring Segment Table Entry 0 in Event Ring Segment Table
-  //
-  Buf = AllocateAlignBuffer (sizeof (EVENT_RING_SEG_TABLE_ENTRY) * ERST_NUMBER);
-  ASSERT (Buf != NULL);
-  ASSERT (((UINTN)Buf & 0x3F) == 0);
-  ZeroMem (Buf, sizeof (EVENT_RING_SEG_TABLE_ENTRY) * ERST_NUMBER);
+  // MU_CHANGE [START] - CodeQL change
+  ASSERT (((UINTN)EventRingSegTableBuf & 0x3F) == 0);
+  ZeroMem (EventRingSegTableBuf, sizeof (EVENT_RING_SEG_TABLE_ENTRY) * ERST_NUMBER);
 
-  ERSTBase            = (EVENT_RING_SEG_TABLE_ENTRY *)Buf;
+  ERSTBase = (EVENT_RING_SEG_TABLE_ENTRY *)EventRingSegTableBuf;
+  // MU_CHANGE [END] - CodeQL change
   EventRing->ERSTBase = (EFI_PHYSICAL_ADDRESS)(UINTN)ERSTBase;
 
   //
@@ -536,13 +546,22 @@ CreateDebugCapabilityContext (
   // Allocate debug device context
   //
   Buf = AllocateAlignBuffer (sizeof (XHC_DC_CONTEXT));
+
   // MU_CHANGE [START] - CodeQL change
   if (Buf == NULL) {
     ASSERT (Buf != NULL);
     return EFI_OUT_OF_RESOURCES;
   }
 
+  String0Desc = (UINT8 *)AllocateAlignBuffer (STRING0_DESC_LEN + MANU_DESC_LEN + PRODUCT_DESC_LEN + SERIAL_DESC_LEN);
+  if (String0Desc == NULL) {
+    ASSERT (String0Desc != NULL);
+    FreePages (Buf, EFI_SIZE_TO_PAGES (sizeof (XHC_DC_CONTEXT)));
+    return EFI_OUT_OF_RESOURCES;
+  }
+
   // MU_CHANGE [END] - CodeQL change
+
   ASSERT (((UINTN)Buf & 0xF) == 0);
   ZeroMem (Buf, sizeof (XHC_DC_CONTEXT));
 
@@ -576,8 +595,6 @@ CreateDebugCapabilityContext (
   //
   // Update string descriptor address
   //
-  String0Desc = (UINT8 *)AllocateAlignBuffer (STRING0_DESC_LEN + MANU_DESC_LEN + PRODUCT_DESC_LEN + SERIAL_DESC_LEN);
-  ASSERT (String0Desc != NULL);
   ZeroMem (String0Desc, STRING0_DESC_LEN + MANU_DESC_LEN + PRODUCT_DESC_LEN + SERIAL_DESC_LEN);
   CopyMem (String0Desc, mString0Desc, STRING0_DESC_LEN);
   DebugCapabilityContext->DbcInfoContext.String0DescAddress = (UINT64)(UINTN)String0Desc;
