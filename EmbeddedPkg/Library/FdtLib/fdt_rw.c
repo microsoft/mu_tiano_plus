@@ -124,9 +124,12 @@ _fdt_splice (
   char  *p   = splicepoint;
   char  *end = (char *)fdt + _fdt_data_size (fdt);
 
-  if (((p + oldlen) < p) || ((p + oldlen) > end)) {
+  // MU_CHANGE [BEGIN] - CodeQL change
+  if ((oldlen > (uintptr_t)(end - p)) || (end < p)) {
     return -FDT_ERR_BADOFFSET;
   }
+
+  // MU_CHANGE [END] - CodeQL change
 
   if ((p < (char *)fdt) || ((end - oldlen + newlen) < (char *)fdt)) {
     return -FDT_ERR_BADOFFSET;
