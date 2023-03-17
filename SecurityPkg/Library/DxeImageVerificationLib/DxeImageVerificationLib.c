@@ -2039,11 +2039,15 @@ Failed:
   // executable information table in either case.
   //
   NameStr = ConvertDevicePathToText (File, FALSE, TRUE);
-  AddImageExeInfo (Action, NameStr, File, SignatureList, SignatureListSize);
+
+  // MU_CHANGE [BEGIN] - CodeQL change
   if (NameStr != NULL) {
+    AddImageExeInfo (Action, NameStr, File, SignatureList, SignatureListSize);
     DEBUG ((DEBUG_INFO, "The image doesn't pass verification: %s\n", NameStr));
     FreePool (NameStr);
   }
+
+  // MU_CHANGE [END] - CodeQL change
 
   if (SignatureList != NULL) {
     FreePool (SignatureList);
