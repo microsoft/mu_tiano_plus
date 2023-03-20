@@ -9,8 +9,9 @@
 #
 ##
 
-#Override : 00000002 | SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf | 03382807a47736a9a698fda98cf2ba7c | 2022-05-24T09-00-00 |
+#Override : 00000002 | SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf | 4d56a6b72bd83e332f90122cb2491ce5 | 2023-03-20T22-15-41 |
 # This is not a true override, but spell changes to ensure mu_tiano_plus passes CI is required and changes the hash.
+
 
 [Defines]
   INF_VERSION                    = 0x00010005
