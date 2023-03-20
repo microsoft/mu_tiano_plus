@@ -298,7 +298,8 @@ FfsProcessSection (
   CHAR8                     *CompressedData;
   UINT32                    CompressedDataLength;
   BOOLEAN                   Found;
-  Found         = FALSE;
+
+  Found = FALSE;
 
   *OutputBuffer     = NULL;
   ParsedLength      = 0;
