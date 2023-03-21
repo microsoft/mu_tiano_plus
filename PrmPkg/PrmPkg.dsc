@@ -40,6 +40,7 @@
 
 ## MU_CHANGE START
 BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
+SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf # MU_CHANGE - CodeQL change
 [LibraryClasses.X64]
 !if $(TOOL_CHAIN_TAG) == VS2019 or $(TOOL_CHAIN_TAG) == VS2022
   # Provide StackCookie support lib so that we can link to /GS exports for VS builds
