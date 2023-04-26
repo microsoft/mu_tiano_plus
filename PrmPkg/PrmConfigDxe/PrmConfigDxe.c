@@ -157,6 +157,9 @@ SetRuntimeMemoryRangeAttributes (
                     (UINT64)RuntimeMmioRanges->Range[Index].Length,
                     // MU_CHANGE START: The memory space descriptor access attributes are not accurate. Don't pass
                     //                  in access attributes so SetMemorySpaceAttributes() doesn't update them.
+                    //                  EFI_MEMORY_RUNTIME is not a CPU arch attribute, so calling
+                    //                  SetMemorySpaceAttributes() with only it set will not clear existing page table
+                    //                  attributes for this region, such as EFI_MEMORY_XP
                     // Descriptor.Attributes | EFI_MEMORY_RUNTIME
                     EFI_MEMORY_RUNTIME
                     // MU_CHANGE END
