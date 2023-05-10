@@ -127,8 +127,9 @@
             "rsaes",
             "communciate", #typo that cannot be easily fixed
             "rngdxe",
-            "opalite"
-
+            "opalite",
+            "loongarch",
+            "loongson"
 
  
         ],

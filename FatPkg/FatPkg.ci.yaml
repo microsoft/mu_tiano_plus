@@ -59,7 +59,9 @@
             "Lfnbuffer",
             "FFFFFFFFL",
             "CDVOL",
-            "DMDEPKG"
+            "DMDEPKG",
+            "loongarch",
+            "loongson"
         ]
     }
 }
