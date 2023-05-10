@@ -206,16 +206,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         If no RequiredSubmodules return an empty iterable
         '''
         rs = []
-        rs.append(RequiredSubmodule(
-            "CryptoPkg/Library/OpensslLib/openssl", False))
-        rs.append(RequiredSubmodule(
-            "UnitTestFrameworkPkg/Library/SubhookLib/subhook", False))
-        rs.append(RequiredSubmodule(
-            "MdePkg/Library/BaseFdtLib/libfdt", False))
-        rs.append(RequiredSubmodule(
-            "MdePkg/Library/MipiSysTLib/mipisyst", False))
-        rs.append(RequiredSubmodule(
-            "CryptoPkg/Library/MbedTlsLib/mbedtls", False))
         return rs
 
     def GetName(self):
@@ -239,8 +229,8 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         return [
             {
                 "Path": "MU_BASECORE",
-                "Url": "https://github.com/Microsoft/mu_basecore.git",
-                "Branch": ""
+                "Url": "https://github.com/microsoft/mu_basecore.git",
+                "Branch": "release/202302"
             }
         ]
         # MU_CHANGE END
