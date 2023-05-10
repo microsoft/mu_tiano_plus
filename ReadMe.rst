@@ -34,12 +34,14 @@ Breaking Changes-dev
 Main Changes-dev
 ----------------
 
-- Incomplete
+- Updated Stack cookies for release builds
+- Integrated CodeQL checking and fixes
 
 Bug Fixes-dev
 -------------
 
-- Incomplete
+- We no longer set access attributes of RUntime MMIO ranges
+- Added SafeIntLib to PrmPkg and EmbeddedPkg for HiiLib
 
 2302_RefBoot Changes
 --------------------
@@ -49,7 +51,8 @@ Bug Fixes-dev
 2302_CIBuild Changes
 --------------------
 
-- Incomplete
+- Added additional spellcheck word ignores for several packages
+- Updated CISettings to reference release/202302 for mu_basecore
 
 2302_Rebase Changes
 -------------------
