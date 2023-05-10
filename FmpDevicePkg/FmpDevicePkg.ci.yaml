@@ -60,6 +60,8 @@
     "SpellCheck": {
         "ExtendWords": [
             "FMPSTATE",
+            "loongarch",
+            "loongson"
         ]
     },
     "Defines": {
