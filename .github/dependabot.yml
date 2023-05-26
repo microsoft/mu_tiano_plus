@@ -22,7 +22,9 @@
 # Please see the documentation for all dependabot configuration options:
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 ##
+
 version: 2
+
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -37,6 +39,7 @@ updates:
       prefix: "GitHub Action"
     labels:
       - "type:dependencies"
+      - "type:dependabot"
     rebase-strategy: "disabled"
 
   - package-ecosystem: "pip"
@@ -50,4 +53,5 @@ updates:
     labels:
       - "language:python"
       - "type:dependencies"
+      - "type:dependabot"
     rebase-strategy: "disabled"
