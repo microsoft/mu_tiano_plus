@@ -32,17 +32,14 @@ extends:
         Pkgs: 'EmbeddedPkg,PrmPkg,SourceLevelDebugPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
-        SelfHostAgent: false
       TARGET_FMP_FAT:
         Pkgs: 'FmpDevicePkg,FatPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
-        SelfHostAgent: false
       TARGET_SECURITY:
         Pkgs: 'SecurityPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
-        SelfHostAgent: false
       TARGET_OTHER_ARM:
         Pkgs: 'EmbeddedPkg,PrmPkg,SourceLevelDebugPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
