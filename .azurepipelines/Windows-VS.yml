@@ -14,22 +14,44 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
-resources:
-  repositories:
-    - repository: mu_devops
-      type: github
-      endpoint: microsoft
-      name: microsoft/mu_devops
-      ref: refs/tags/v3.0.0
-
 variables:
 - group: architectures-x86-64
 - group: tool-chain-windows-visual-studio-latest
 
-jobs:
-- template: Matrix-Build-Job.yml
+extends:
+  template: MuDevOpsWrapper.yml
   parameters:
-    arch_list: $(arch_list)
-    extra_build_args: CODE_COVERAGE=TRUE
-    tool_chain_tag: $(tool_chain_tag)
-    vm_image: $(vm_image)
+    do_ci_build: true
+    do_ci_setup: true
+    do_non_ci_build: false
+    do_non_ci_setup: true
+    do_pr_eval: true
+    os_type: Windows_NT
+    build_matrix:
+      TARGET_OTHER:
+        Pkgs: 'EmbeddedPkg,PrmPkg,SourceLevelDebugPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+      TARGET_FMP_FAT:
+        Pkgs: 'FmpDevicePkg,FatPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+      TARGET_SECURITY:
+        Pkgs: 'SecurityPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+      TARGET_OTHER_ARM:
+        Pkgs: 'EmbeddedPkg,PrmPkg,SourceLevelDebugPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+        SelfHostAgent: true
+      TARGET_FMP_FAT_ARM:
+        Pkgs: 'FmpDevicePkg,FatPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+        SelfHostAgent: true
+      TARGET_SECURITY_ARM:
+        Pkgs: 'SecurityPkg'
+        Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+        ArchList: $(arch_list)
+        SelfHostAgent: true
