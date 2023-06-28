@@ -5,6 +5,11 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 {
+    # MU_CHANGE begin
+    "PrEval": {
+        "DscPath": "PrmPkg.dsc",
+    },
+    # MU_CHANGE end
     ## options defined .pytool/Plugin/LicenseCheck
     "LicenseCheck": {
         "IgnoreFiles": []
