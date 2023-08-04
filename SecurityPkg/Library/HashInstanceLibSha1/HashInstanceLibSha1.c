@@ -61,6 +61,7 @@ Sha1HashInit (
     ASSERT (Sha1Ctx != NULL);
     return EFI_OUT_OF_RESOURCES;
   }
+
   // MU_CHANGE [END] - CodeQL change
 
   Sha1Init (Sha1Ctx);
