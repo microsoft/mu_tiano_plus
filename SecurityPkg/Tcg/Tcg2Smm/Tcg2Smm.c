@@ -88,7 +88,8 @@ TpmNvsCommunciate (
       DEBUG ((DEBUG_VERBOSE, "[%a] - Function requested: MM_EXCHANGE_NVS_INFO\n", __FUNCTION__));
       // MU_CHANGE TCBZ4378 [BEGIN] - Check for invalid NVS buffer location
       if (IsBufferOutsideMmValid (CommParams->TargetAddress, sizeof (TCG_NVS))) {
-        DEBUG ((DEBUG_ERROR, "[%a] - NVS buffer in invalid location!\n", __FUNCTION__));
+        DEBUG ((DEBUG_ERROR, "[%a] - NVS buffer in invalid location!\n", __func__));
+
         Status = EFI_ACCESS_DENIED;
         break;
       }
