@@ -93,6 +93,7 @@ TpmNvsCommunciate (
         Status = EFI_ACCESS_DENIED;
         break;
       }
+
       // MU_CHANGE TCBZ4378 [END]
       CommParams->RegisteredPpSwiValue = mPpSoftwareSmi;
       CommParams->RegisteredMcSwiValue = mMcSoftwareSmi;
