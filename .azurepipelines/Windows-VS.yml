@@ -25,6 +25,7 @@ resources:
 variables:
 - group: architectures-x86-64
 - group: tool-chain-windows-visual-studio-latest
+- group: coverage
 
 jobs:
 - template: Matrix-Build-Job.yml
