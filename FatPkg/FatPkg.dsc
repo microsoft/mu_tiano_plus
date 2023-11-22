@@ -50,18 +50,6 @@
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
   DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
 
-## MU_CHANGE Begin
-[LibraryClasses.common]
-  BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
-!if $(TOOL_CHAIN_TAG) == VS2019 or $(TOOL_CHAIN_TAG) == VS2022
-[LibraryClasses.X64]
-  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
-  # Provide StackCookie support lib so that we can link to /GS exports for VS builds
-  BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
-  NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
-!endif
-## MU_CHANGE End
-
 [LibraryClasses.common.PEIM]
   PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
   PeiServicesLib|MdePkg/Library/PeiServicesLib/PeiServicesLib.inf
