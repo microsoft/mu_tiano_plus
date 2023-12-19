@@ -34,7 +34,8 @@ Breaking Changes-dev
 Main Changes-dev
 ----------------
 
-- Incomplete
+- Added RSA4096 support in SecurityPkg
+- Simplified Rng algorithm selection for ARM
 
 Bug Fixes-dev
 -------------
