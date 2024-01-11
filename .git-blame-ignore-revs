@@ -1,0 +1,25 @@
+###################################################
+# Line Ending Only Changes                        #
+###################################################
+# Merged PR 6167: Updated file line endings to CRLF
+749591b633658c34b74bf485f63f95789c75395c
+# Convert line endings from LF to CRLF
+1c9774f16fbe898f26841711cf08fc4c941f1e82
+
+###################################################
+# Code Formatting (Uncrustify) Only Changes       #
+###################################################
+# [CHERRY-PICK] SecurityPkg: Apply uncrustify formatting to relevant files
+48e292c218697ad90dda70125229a3ba3cd7e5c4
+# SourceLevelDebugPkg: Apply uncrustify changes
+c1e126b1196de75e0a4cda21e4551ea9bb05e059
+# SecurityPkg: Apply uncrustify changes
+c411b485b63a671a1e276700cff025c73997233c
+# PrmPkg: Apply uncrustify changes
+a298a84478053872ed9da660a75f182ce81b8ddc
+# FmpDevicePkg: Apply uncrustify changes
+45ce0a67bb4ee80f27da93777c623f51f344f23b
+# FatPkg: Apply uncrustify changes
+bcdcc4160d7460c46c08c9395aae81be44ef23a9
+# EmbeddedPkg: Apply uncrustify changes
+e7108d0e9655b1795c94ac372b0449f28dd907df
