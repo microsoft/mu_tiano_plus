@@ -167,7 +167,16 @@
   MemoryAllocationLib|MdePkg/Library/SmmMemoryAllocationLib/SmmMemoryAllocationLib.inf
   ReportStatusCodeLib|MdeModulePkg/Library/SmmReportStatusCodeLib/SmmReportStatusCodeLib.inf
   SmmMemLib|MdePkg/Library/SmmMemLib/SmmMemLib.inf
+# MU_CHANGE [START] - Remove references to openssl crypto
+#!ifdef CONTINUOUS_INTEGRATION
+#  BaseCryptLib|CryptoPkg/Library/BaseCryptLibNull/BaseCryptLibNull.inf
+#!else
+#  IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
+#  OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLib.inf
+#  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+#!endif
   BaseCryptLib|CryptoPkg/Library/BaseCryptLibNull/BaseCryptLibNull.inf
+# MU_CHANGE [END]
   Tpm12DeviceLib|SecurityPkg/Library/Tpm12DeviceLibTcg/Tpm12DeviceLibTcg.inf
   Tpm2DeviceLib|SecurityPkg/Library/Tpm2DeviceLibTcg2/Tpm2DeviceLibTcg2.inf
   Tcg2PhysicalPresenceLib|SecurityPkg/Library/SmmTcg2PhysicalPresenceLib/SmmTcg2PhysicalPresenceLib.inf
