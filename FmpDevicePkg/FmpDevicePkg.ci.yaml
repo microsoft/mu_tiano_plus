@@ -68,8 +68,9 @@
             "loongarch",
             "loongson"
         ]
-    },
-    "Defines": {
-        "BLD_*_CONTINUOUS_INTEGRATION": "TRUE",
     }
+    # MU_CHANGE - Removed conditional logic around openssl crypto so this is no longer necessary
+    #"Defines": {
+    #    "BLD_*_CONTINUOUS_INTEGRATION": "TRUE",
+    #}
 }
