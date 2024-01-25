@@ -1,0 +1,32 @@
+## @file
+# Security Fixes for SecurityPkg
+#
+# Copyright (c) Microsoft Corporation
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+CVE_2022_36763:
+  commit_titles:
+    - "SECURITY PATCH TCBZ4117 - CVE 2022-36763 Fixes"
+  cve: CVE-2022-36763
+  date_reported: 2022-10-25 11:31 UTC
+  description: (CVE-2022-36763) - Heap Buffer Overflow in Tcg2MeasureGptTable()
+  note: This patch is related to and supersedes TCBZ2168
+  files_impacted:
+  - Library\DxeTpm2MeasureBootLib\DxeTpm2MeasureBootLib.c
+  - Library\DxeTpmMeasureBootLib\DxeTpmMeasureBootLib.c
+  links:
+  - https://bugzilla.tianocore.org/show_bug.cgi?id=4117
+  - https://bugzilla.tianocore.org/show_bug.cgi?id=2168
+  - https://bugzilla.tianocore.org/show_bug.cgi?id=1990
+CVE_2022_36764:
+  commit_titles:
+     - "SECURITY PATCH TCBZ4118 - CVE 2022-36764 Fixes"
+  cve: CVE-2022-36764
+  date_reported: 2022-10-25 12:23 UTC
+  description: Heap Buffer Overflow in Tcg2MeasurePeImage()
+  note:
+  files_impacted:
+  - Library\DxeTpm2MeasureBootLib\DxeTpm2MeasureBootLib.c
+  - Library\DxeTpmMeasureBootLib\DxeTpmMeasureBootLib.c
+  links:
+  - https://bugzilla.tianocore.org/show_bug.cgi?id=4118
