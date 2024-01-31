@@ -81,10 +81,9 @@
   SourceDebugEnabledLib|SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf ## MS_CHANGE_?
   Hash2CryptoLib|SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf   ## MU_CHANGE
   SafeIntLib |MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf ## MU_CHANGE - CodeQL change
-  Tcg2PreUefiEventLogLib|SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf  ## MU_CHANGE
-
-  ## MU_CHANGE TEMP
+  
 [LibraryClasses.X64, LibraryClasses.IA32]
+  Tcg2PreUefiEventLogLib|SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf  ## MU_CHANGE
   
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
