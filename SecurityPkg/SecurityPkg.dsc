@@ -92,6 +92,9 @@
   PlatformLibWrapper|SecurityPkg/DeviceSecurity/OsStub/PlatformLibWrapper/PlatformLibWrapper.inf
   MemLibWrapper|SecurityPkg/DeviceSecurity/OsStub/MemLibWrapper/MemLibWrapper.inf
 
+[LibraryClasses.X64, LibraryClasses.IA32]
+  Tcg2PreUefiEventLogLib|SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf  ## MU_CHANGE
+
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   ArmTrngLib|MdePkg/Library/BaseArmTrngLibNull/BaseArmTrngLibNull.inf
 
@@ -257,6 +260,8 @@
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibSimple.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibVerbose.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
+  SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
+  SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf
 # MU_CHANGE [END]
 
 [Components.IA32, Components.X64, Components.ARM, Components.AARCH64]
