@@ -81,12 +81,10 @@
   SourceDebugEnabledLib|SourceLevelDebugPkg/Library/SourceDebugEnabled/SourceDebugEnabledLib.inf ## MS_CHANGE_?
   Hash2CryptoLib|SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf   ## MU_CHANGE
   SafeIntLib |MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf ## MU_CHANGE - CodeQL change
-
-  ## MU_CHANGE TEMP
+  
 [LibraryClasses.X64, LibraryClasses.IA32]
-  ## NOTE: This is a temporary shim to resolve a build error while a more permanent solution is tested!
-  Tcg2PreUefiEventLogLib|SecurityPkg/Library/TempPreUefiEventLogLib/TempPreUefiEventLogLib.inf
-
+  Tcg2PreUefiEventLogLib|SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf  ## MU_CHANGE
+  
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
   # It is not possible to prevent the ARM compiler for generic intrinsic functions.
@@ -312,6 +310,7 @@
   SecurityPkg/Library/TempPreUefiEventLogLib/TempPreUefiEventLogLib.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
   SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
+  SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf
 ## MS_CHANGE END
 
 [Components.IA32, Components.X64, Components.ARM, Components.AARCH64]
