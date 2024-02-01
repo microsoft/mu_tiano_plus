@@ -1,5 +1,5 @@
 ## @file Tcg2PreUefiEventLogLibNull.inf
-# NULL Tcg2PreUefiEventLogLibNull library instance
+# Tcg2PreUefiEventLogLib Null library instance
 #
 ##
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -28,7 +28,3 @@
 
 [Packages]
   MdePkg/MdePkg.dec
-
-
-[LibraryClasses]
-  DebugLib
