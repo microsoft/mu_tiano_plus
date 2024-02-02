@@ -272,7 +272,6 @@
   SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
   SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
   SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
-  SecurityPkg/Library/TempPreUefiEventLogLib/TempPreUefiEventLogLib.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
   SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
   SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf
