@@ -28,7 +28,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         self.ActualTargets = []
         self.ActualArchitectures = []
         self.ActualToolChainTag = ""
-        self.UseBuiltInBaseTools = None
         self.ActualScopes = None
 
     # ####################################################################################### #
