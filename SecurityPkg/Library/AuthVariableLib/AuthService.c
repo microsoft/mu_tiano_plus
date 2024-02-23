@@ -2162,9 +2162,16 @@ VerifyTimeBasedPayload (
   //
   HashAlgId = FindHashAlgorithmIndex (SigData, SigDataSize);
   if ((Attributes & EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) != 0) {
-    if (HashAlgId >= (sizeof (mHashInfo) / sizeof (EFI_HASH_INFO))) {
+    // MU_CHANGE [START] SecurityPkg/Secureboot: Fix delete PK failing bug
+    //
+    // A SigDataSize of zero, is a special case. This means that the variable is being deleted.
+    // In this case, the payload is empty and the signature will not be verified.
+    //
+    if ((SigDataSize != 0) && (HashAlgId >= (sizeof (mHashInfo) / sizeof (EFI_HASH_INFO)))) {
       return EFI_SECURITY_VIOLATION;
     }
+
+    // MU_CHANGE [END] SecurityPkg/Secureboot: Fix delete PK failing bug
   }
 
   //
@@ -2178,6 +2185,17 @@ VerifyTimeBasedPayload (
     VerifyStatus = TRUE;
     goto Exit;
   }
+
+  // MU_CHANGE [START] SecurityPkg/Secureboot: Fix delete PK failing bug
+  //
+  // The SigDataSize should never be zero past this point.
+  // If it is zero, then the signature cannot be verified.
+  //
+  if (SigDataSize == 0) {
+    return EFI_SECURITY_VIOLATION;
+  }
+
+  // MU_CHANGE [END] SecurityPkg/Secureboot: Fix delete PK failing bug
 
   //
   // Construct a serialization buffer of the values of the VariableName, VendorGuid and Attributes
