@@ -37,14 +37,7 @@
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
   UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
   UefiRuntimeServicesTableLib|MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf
-
-# MU_CHANGE [BEGIN] - Add Stack Cookie Support
-SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf # MU_CHANGE - CodeQL change
-[LibraryClasses.X64]
-  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
-  NULL|MdePkg/Library/StackCheckLib/StackCheckLib.inf
-  StackCheckFailureLib|MdePkg/Library/StackCheckFailureLibNull/StackCheckFailureLibNull.inf
-# MU_CHANGE [END] - Add Stack Cookie Support
+  NULL|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf # MU_CHANGE: /GS and -fstack-protector support
 
 [LibraryClasses.IA32, LibraryClasses.X64]
   MtrrLib|UefiCpuPkg/Library/MtrrLib/MtrrLib.inf
@@ -52,7 +45,7 @@ SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf # MU_CHANGE - CodeQL
 [LibraryClasses.AARCH64]
   #NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
   NULL|MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf
-  NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
+  # NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf # MU_CHANGE
 
 [LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   #
@@ -162,7 +155,7 @@ SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf # MU_CHANGE - CodeQL
   MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf
 
   # Add support for GCC stack protector
-  MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
+  # MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf  # MU_CHANGE
 
 [BuildOptions]
 # Force deprecated interfaces off
