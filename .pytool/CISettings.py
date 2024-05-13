@@ -171,6 +171,8 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         If no RequiredSubmodules return an empty iterable
         '''
         rs = []
+        rs.append(RequiredSubmodule(
+            "SecurityPkg/DeviceSecurity/SpdmLib/libspdm", False))
         return rs
 
     def GetName(self):
