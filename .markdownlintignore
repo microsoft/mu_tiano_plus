@@ -6,3 +6,6 @@
 
 # Ignore cloned dependencies
 /MU_BASECORE
+
+# Ignore libspdm submodule
+/SecurityPkg/DeviceSecurity/SpdmLib/libspdm
