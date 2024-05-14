@@ -146,10 +146,11 @@
             "opalite",
             "loongarch",
             "loongson"
-
- 
         ],
         "IgnoreStandardPaths": [],   # Standard Plugin defined paths that should be ignore
+        "IgnoreFiles": [
+          "DeviceSecurity/SpdmLib/libspdm"
+        ],
         "AdditionalIncludePaths": [] # Additional paths to spell check (wildcards supported)
     },
 
