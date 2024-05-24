@@ -1,7 +1,7 @@
 /** @file
   The header file for Tcg2 SMM driver.
 
-Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
+Copyright (c) 2015 - 2024, Intel Corporation. All rights reserved.<BR>
 Copyright (c) Microsoft Corporation.
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -97,6 +97,17 @@ IsCommBufferValid (
 **/
 EFI_STATUS
 InitializeTcgCommon (
+  VOID
+  );
+
+/**
+  This function checks if the required DTPM instance is TPM 2.0.
+
+  @retval TRUE  The required DTPM instance is equal to gEfiTpmDeviceInstanceTpm20DtpmGuid.
+  @retval FALSE The required DTPM instance is not equal to gEfiTpmDeviceInstanceTpm20DtpmGuid.
+**/
+BOOLEAN
+IsTpm20Dtpm (
   VOID
   );
 
