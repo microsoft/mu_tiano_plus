@@ -68,15 +68,7 @@
     },
     "DscCompleteCheck": {
         "DscPath": "SecurityPkg.dsc",
-        "IgnoreInf": [
-            # MU_CHANGE [BEGIN]: Remove SPDM from the build until the cmocka
-            #                    submodule in the libspdm submodule is stable
-            #                    (on github)
-            SecurityPkg/DeviceSecurity/**
-            # MU_CHANGE [END]: Remove SPDM from the build until the cmocka
-            #                  submodule in the libspdm submodule is stable
-            #                  (on github)
-        ]
+        "IgnoreInf": []
     },
     ## options defined .pytool/Plugin/HostUnitTestDscCompleteCheck
     "HostUnitTestDscCompleteCheck": {
@@ -94,13 +86,7 @@
     "LibraryClassCheck": {
         "IgnoreHeaderFile": [
             "DeviceSecurity/SpdmLib/Include/library",
-            # MU_CHANGE [BEGIN]: Remove SPDM from the build until the cmocka
-            #                    submodule in the libspdm submodule is stable
-            #                    (on github)
-            # "DeviceSecurity/SpdmLib/libspdm/include/library",
-            # MU_CHANGE [END]: Remove SPDM from the build until the cmocka
-            #                  submodule in the libspdm submodule is stable
-            #                  (on github)
+            "DeviceSecurity/SpdmLib/libspdm/include/library",
         ],
         "skip": True
     },
@@ -162,15 +148,9 @@
             "loongson"
         ],
         "IgnoreStandardPaths": [],   # Standard Plugin defined paths that should be ignore
-        # MU_CHANGE [BEGIN]: Remove SPDM from the build until the cmocka
-        #                    submodule in the libspdm submodule is stable
-        #                    (on github)
-        # "IgnoreFiles": [
-        #   "DeviceSecurity/SpdmLib/libspdm"
-        # ],
-        # MU_CHANGE [END]: Remove SPDM from the build until the cmocka
-        #                  submodule in the libspdm submodule is stable
-        #                  (on github)
+        "IgnoreFiles": [
+          "DeviceSecurity/SpdmLib/libspdm"
+        ],
         "AdditionalIncludePaths": [] # Additional paths to spell check (wildcards supported)
     },
 

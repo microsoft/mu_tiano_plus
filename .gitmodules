@@ -1,0 +1,3 @@
+[submodule "SecurityPkg/DeviceSecurity/SpdmLib/libspdm"]
+	path = SecurityPkg/DeviceSecurity/SpdmLib/libspdm
+	url = https://github.com/DMTF/libspdm.git
