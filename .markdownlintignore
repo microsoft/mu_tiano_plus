@@ -7,11 +7,5 @@
 # Ignore cloned dependencies
 /MU_BASECORE
 
-# MU_CHANGE [BEGIN]: Remove SPDM from the build until the cmocka
-#                    submodule in the libspdm submodule is stable
-#                    (on github)
 # Ignore libspdm submodule
-# /SecurityPkg/DeviceSecurity/SpdmLib/libspdm
-# MU_CHANGE [END]: Remove SPDM from the build until the cmocka
-#                  submodule in the libspdm submodule is stable
-#                  (on github)
+/SecurityPkg/DeviceSecurity/SpdmLib/libspdm

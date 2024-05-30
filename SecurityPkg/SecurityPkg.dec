@@ -25,13 +25,7 @@
 
 [Includes.Common.Private]
   DeviceSecurity/SpdmLib/Include
-  # MU_CHANGE [BEGIN]: Remove SPDM from the build until the cmocka
-  #                    submodule in the libspdm submodule is stable
-  #                    (on github)
-  # DeviceSecurity/SpdmLib/libspdm/include
-  # MU_CHANGE [END]: Remove SPDM from the build until the cmocka
-  #                  submodule in the libspdm submodule is stable
-  #                  (on github)
+  DeviceSecurity/SpdmLib/libspdm/include
 
 [LibraryClasses]
   ##  @libraryclass  Provides hash interfaces from different implementations.

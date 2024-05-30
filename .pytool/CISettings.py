@@ -171,14 +171,8 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         If no RequiredSubmodules return an empty iterable
         '''
         rs = []
-        # MU_CHANGE [BEGIN]: Remove SPDM from the build until the cmocka
-        #                    submodule in the libspdm submodule is stable
-        #                    (on github)
-        # rs.append(RequiredSubmodule(
-        #     "SecurityPkg/DeviceSecurity/SpdmLib/libspdm", False))
-        # MU_CHANGE [END]: Remove SPDM from the build until the cmocka
-        #                  submodule in the libspdm submodule is stable
-        #                  (on github)
+        rs.append(RequiredSubmodule(
+            "SecurityPkg/DeviceSecurity/SpdmLib/libspdm", False))
         return rs
 
     def GetName(self):
