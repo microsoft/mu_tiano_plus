@@ -3,7 +3,7 @@
 
   The driver uses a platform provided RNG service to produce random numbers.
 
-  Copyright (C) Microsoft Corporation. All rights reserved.
+  Copyright (c) Microsoft Corporation.
   Copyright (c) 2013 - 2018, Intel Corporation. All rights reserved.<BR>
   (C) Copyright 2015 Hewlett Packard Enterprise Development LP<BR>
 
@@ -84,11 +84,12 @@ RngGetInfo (
 /**
   Fills a buffer of arbitrary size with random bytes.
 
-  @param[in]   Length        Size of the buffer, in bytes.
-  @param[out]  RandBuffer    Pointer to the buffer to store the random result.
+  @param[in]   Length           Size of the buffer, in bytes.
+  @param[out]  RandBuffer       Pointer to the buffer to store the random result.
 
-  @retval EFI_SUCCESS        Random bytes generation succeeded.
-  @retval EFI_NOT_READY      Failed to request random bytes.
+  @retval EFI_SUCCESS           Random bytes generation succeeded.
+  @retval EFI_INVALID_PARAMETER The RandBuffer argument is null.
+  @retval EFI_NOT_READY         Failed to request random bytes.
 
 **/
 EFI_STATUS
@@ -100,6 +101,10 @@ RngGetBytes (
 {
   BOOLEAN  IsRandom;
   UINT64   TempRand[2];
+
+  if (RandBuffer == NULL) {
+    return EFI_INVALID_PARAMETER;
+  }
 
   while (Length > 0) {
     IsRandom = GetRandomNumber128 (TempRand);
