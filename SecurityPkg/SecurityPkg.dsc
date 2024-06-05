@@ -258,6 +258,7 @@
   #
   # Random Number Generator
   #
+  SecurityPkg/RandomNumberGenerator/RngPei/RngPei.inf   # MU_CHANGE: Add RngPei
   SecurityPkg/RandomNumberGenerator/RngDxe/RngDxe.inf
 
   #
