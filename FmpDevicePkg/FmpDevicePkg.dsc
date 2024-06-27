@@ -55,14 +55,8 @@
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
   VariablePolicyHelperLib|MdeModulePkg/Library/VariablePolicyHelperLib/VariablePolicyHelperLib.inf
-!ifdef CONTINUOUS_INTEGRATION
   BaseCryptLib|CryptoPkg/Library/BaseCryptLibNull/BaseCryptLibNull.inf
-!else
-  IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
-  OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLib.inf
-  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   RngLib|MdePkg/Library/BaseRngLibNull/BaseRngLibNull.inf
-!endif
   FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibPkcs7/FmpAuthenticationLibPkcs7.inf
   CapsuleUpdatePolicyLib|FmpDevicePkg/Library/CapsuleUpdatePolicyLibNull/CapsuleUpdatePolicyLibNull.inf
   FmpPayloadHeaderLib|FmpDevicePkg/Library/FmpPayloadHeaderLibV1/FmpPayloadHeaderLibV1.inf
@@ -71,6 +65,7 @@
   FmpDependencyCheckLib|FmpDevicePkg/Library/FmpDependencyCheckLibNull/FmpDependencyCheckLibNull.inf
   FmpDependencyDeviceLib|FmpDevicePkg/Library/FmpDependencyDeviceLibNull/FmpDependencyDeviceLibNull.inf
   TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
+  NULL|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf # MU_CHANGE: /GS and -fstack-protector support
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
@@ -79,13 +74,14 @@
   # [LibraryClasses.ARM, LibraryClasses.AARCH64] and NULL mean link this library
   # into all ARM and AARCH64 images.
   #
-  NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
+  # NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf         # MU_CHANGE
+  NULL|MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf        # MU_CHANGE
 
   # Add support for stack protector
-  NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
+  # NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf             # MU_CHANGE
 
-[LibraryClasses.ARM]
-  ArmSoftFloatLib|ArmPkg/Library/ArmSoftFloatLib/ArmSoftFloatLib.inf
+# [LibraryClasses.ARM]                                                      # MU_CHANGE
+#   ArmSoftFloatLib|ArmPkg/Library/ArmSoftFloatLib/ArmSoftFloatLib.inf      # MU_CHANGE
 
 [PcdsPatchableInModule]
   gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageTypeIdGuid|{0}

@@ -83,6 +83,7 @@
   DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
   UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
+  NULL|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf # MU_CHANGE: /GS and -fstack-protector support
 
   DxeServicesTableLib|MdePkg/Library/DxeServicesTableLib/DxeServicesTableLib.inf
   UefiDriverEntryPoint|MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf
@@ -125,15 +126,16 @@
   ExtractGuidedSectionLib|EmbeddedPkg/Library/PrePiExtractGuidedSectionLib/PrePiExtractGuidedSectionLib.inf
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
-  ArmGicLib|ArmPkg/Drivers/ArmGic/ArmGicLib.inf
-  ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
-  SemihostLib|ArmPkg/Library/SemihostLib/SemihostLib.inf
-  NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
+  # ArmGicLib|ArmPkg/Drivers/ArmGic/ArmGicLib.inf                               # MU_CHANGE
+  # ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf                            # MU_CHANGE
+  # SemihostLib|ArmPkg/Library/SemihostLib/SemihostLib.inf                      # MU_CHANGE
+  # NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf         # MU_CHANGE
+  NULL|MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf        # MU_CHANGE
 
   # Add support for GCC stack protector
-  NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
+  # NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf                 # MU_CHANGE
 
-  ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
+  # ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf                                 # MU_CHANGE
 
 ################################################################################
 #
@@ -172,7 +174,7 @@
   gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0
 
 #
-# Optinal feature to help prevent EFI memory map fragments
+# Optional feature to help prevent EFI memory map fragments
 # Turned on and off via: PcdPrePiProduceMemoryTypeInformationHob
 # Values are in EFI Pages (4K). DXE Core will make sure that
 # at least this much of each type of memory can be allocated
@@ -216,7 +218,9 @@
   EmbeddedPkg/Library/CoherentDmaLib/CoherentDmaLib.inf
   EmbeddedPkg/Library/NonCoherentDmaLib/NonCoherentDmaLib.inf
   EmbeddedPkg/Library/DxeDtPlatformDtbLoaderLibDefault/DxeDtPlatformDtbLoaderLibDefault.inf
+!if $(TOOL_CHAIN_TAG) == GCC      # MU_CHANGE - Makes assumptions about GCC artifacts.
   EmbeddedPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.inf
+!endif                            # MU_CHANGE
 
   EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
@@ -227,17 +231,23 @@
       TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
   }
 
-  EmbeddedPkg/Universal/MmcDxe/MmcDxe.inf
+  # EmbeddedPkg/Universal/MmcDxe/MmcDxe.inf     # MU_CHANGE - Too many conversion errors to trust.
 
   EmbeddedPkg/Library/AcpiLib/AcpiLib.inf
   EmbeddedPkg/Library/DebugAgentTimerLibNull/DebugAgentTimerLibNull.inf
+!if $(TOOL_CHAIN_TAG) == GCC      # MU_CHANGE - Too many external errors to deal with.
   EmbeddedPkg/Library/FdtLib/FdtLib.inf
+!endif                            # MU_CHANGE
   EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
   EmbeddedPkg/Library/PrePiMemoryAllocationLib/PrePiMemoryAllocationLib.inf
 
+!if $(TOOL_CHAIN_TAG) == GCC      # MU_CHANGE - Requires FdtLib, which is also broken.
   EmbeddedPkg/Drivers/ConsolePrefDxe/ConsolePrefDxe.inf
+!endif                            # MU_CHANGE
   EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf
+!if $(TOOL_CHAIN_TAG) == GCC      # MU_CHANGE - Requires FdtLib, which is also broken.
   EmbeddedPkg/Drivers/FdtClientDxe/FdtClientDxe.inf
+!endif                            # MU_CHANGE
 
   EmbeddedPkg/Drivers/NonCoherentIoMmuDxe/NonCoherentIoMmuDxe.inf {
     <LibraryClasses>
