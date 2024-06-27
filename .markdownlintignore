@@ -1,0 +1,11 @@
+# Ignore build directory
+/Build/
+
+# Ignore external dependencies
+*_extdep/
+
+# Ignore cloned dependencies
+/MU_BASECORE
+
+# Ignore libspdm submodule
+/SecurityPkg/DeviceSecurity/SpdmLib/libspdm

@@ -73,7 +73,7 @@ The PrmPkg can be built targetting the IA32/X64 and AArch64 architectures.
 
    > ***Note***: Only builds with the GCC5 toolchain have been tested.
    > ***Note***: For builds with the GCC5 toolchain, the PrmModuleExportDescriptor and any other handler entry points
-   symbols, tobe listed in the PRMT, must be explicitly preserved by enumerating these in the AARCH64 linker flags.
+   symbols, to be listed in the PRMT, must be explicitly preserved by enumerating these in the AARCH64 linker flags.
    The --require-defined linker flag must be used for each symbol to be preserved.
 
 ### PRM Platform GUID
