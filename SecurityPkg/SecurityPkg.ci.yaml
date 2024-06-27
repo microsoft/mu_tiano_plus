@@ -6,6 +6,11 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 {
+    # MU_CHANGE begin
+    "PrEval": {
+        "DscPath": "SecurityPkg.dsc",
+    },
+    # MU_CHANGE end
     "LicenseCheck": {
         "IgnoreFiles": [
             "DeviceSecurity/SpdmLib/Include",
@@ -48,7 +53,12 @@
             "UnitTestFrameworkPkg/UnitTestFrameworkPkg.dec",
             "SecurityPkg/SecurityPkg.dec",
             "StandaloneMmPkg/StandaloneMmPkg.dec",
-            "CryptoPkg/CryptoPkg.dec"
+            "CryptoPkg/CryptoPkg.dec",
+            # MU_CHANGE - Measure into PCR7 if Debug is enabled.
+            "SourceLevelDebugPkg/SourceLevelDebugPkg.dec",
+            # MU_CHANGE - Only used by FmpAuthenticationLibs that perhaps should move
+            #             to the FmpDevicePkg.
+            "FmpDevicePkg/FmpDevicePkg.dec"
         ],
         # For host based unit tests
         "AcceptableDependencies-HOST_APPLICATION":[],
@@ -109,9 +119,38 @@
             "tpmcommlib",
             "tpmnvvaluelength",
             "wrlocked",
-            "xored"
+            "xored",
+            "certsn",
+            "certdb",
+            "certdbv",
+            "unownered",
+            "defaultdb",
+            "defaultdbx",
+            "smuid",
+            "researvedf", # Typo that cannot be easily fixed
+            "researved",
+            "revertsp",
+            "rdlocked",
+            "ssclite",
+            "mechanish",
+            "rquuse",
+            "rsassa",
+            "ecdaa",
+            "cphash",
+            "nuvia",
+            "certn",
+            "rsapss",
+            "rsaes",
+            "communciate", #typo that cannot be easily fixed
+            "rngdxe",
+            "opalite",
+            "loongarch",
+            "loongson"
         ],
         "IgnoreStandardPaths": [],   # Standard Plugin defined paths that should be ignore
+        "IgnoreFiles": [
+          "DeviceSecurity/SpdmLib/libspdm"
+        ],
         "AdditionalIncludePaths": [] # Additional paths to spell check (wildcards supported)
     },
 
