@@ -37,13 +37,16 @@
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
   UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
   UefiRuntimeServicesTableLib|MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf
+  SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf # MU_CHANGE - CodeQL change
+  NULL|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf # MU_CHANGE: /GS and -fstack-protector support
 
 [LibraryClasses.IA32, LibraryClasses.X64]
   MtrrLib|UefiCpuPkg/Library/MtrrLib/MtrrLib.inf
 
 [LibraryClasses.AARCH64]
-  NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
-  NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
+  #NULL|ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
+  NULL|MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf
+  # NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf # MU_CHANGE
 
 [LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   #
@@ -149,10 +152,11 @@
   $(PLATFORM_PACKAGE)/Samples/PrmSampleHardwareAccessModule/PrmSampleHardwareAccessModule.inf
 
 [Components.AARCH64]
-  ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
+  #ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf
+  MdePkg/Library/CompilerIntrinsicsLib/ArmCompilerIntrinsicsLib.inf
 
   # Add support for GCC stack protector
-  MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
+  # MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf  # MU_CHANGE
 
 [BuildOptions]
 # Force deprecated interfaces off
