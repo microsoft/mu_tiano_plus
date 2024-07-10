@@ -57,7 +57,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         return ("SecurityPkg",
                 "FmpDevicePkg",
                 "FatPkg",
-                "SourceLevelDebugPkg",
                 "EmbeddedPkg",
                 "PrmPkg"
                 )
