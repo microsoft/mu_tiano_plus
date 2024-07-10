@@ -30,7 +30,7 @@ extends:
     os_type: Windows_NT
     build_matrix:
       TARGET_OTHER:
-        Pkgs: 'EmbeddedPkg,PrmPkg,SourceLevelDebugPkg'
+        Pkgs: 'EmbeddedPkg,PrmPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
       TARGET_FMP_FAT:
@@ -42,7 +42,7 @@ extends:
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
       TARGET_OTHER_ARM:
-        Pkgs: 'EmbeddedPkg,PrmPkg,SourceLevelDebugPkg'
+        Pkgs: 'EmbeddedPkg,PrmPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
         SelfHostAgent: true

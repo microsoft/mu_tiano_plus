@@ -16,7 +16,6 @@ BuildConfig.conf
 # FatPkg
 # FmpDevicePkg
 # SecurityPkg
-# SourceLevelDebugPkg
 
 # Ignore unused EDK2 packages.
 /ArmPkg/
@@ -51,6 +50,7 @@ BuildConfig.conf
 /QuarkSocPkg/
 /ShellPkg/
 /SignedCapsulePkg/
+/SourceLevelDebugPkg/
 /StandaloneMmPkg/
 /StdLib/
 /StdLibPrivateInternalFiles/

@@ -11,8 +11,6 @@
 ###################################################
 # [CHERRY-PICK] SecurityPkg: Apply uncrustify formatting to relevant files
 48e292c218697ad90dda70125229a3ba3cd7e5c4
-# SourceLevelDebugPkg: Apply uncrustify changes
-c1e126b1196de75e0a4cda21e4551ea9bb05e059
 # SecurityPkg: Apply uncrustify changes
 c411b485b63a671a1e276700cff025c73997233c
 # PrmPkg: Apply uncrustify changes
