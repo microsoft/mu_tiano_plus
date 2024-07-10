@@ -16,5 +16,3 @@ flags:
     carryforward: true
   SecurityPkg:
     carryforward: true
-  SourceLevelDebugPkg:
-    carryforward: true
