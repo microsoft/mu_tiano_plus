@@ -228,7 +228,7 @@ EvaluateDependency (
 {
   EFI_STATUS     Status;
   UINT8          *Iterator;
-  UINT8          Index;
+  UINTN          Index;   // MU_CHANGE Start - CodeQL change - comparison-with-wider-type
   DEPEX_ELEMENT  Element1;
   DEPEX_ELEMENT  Element2;
   GUID           ImageTypeId;
