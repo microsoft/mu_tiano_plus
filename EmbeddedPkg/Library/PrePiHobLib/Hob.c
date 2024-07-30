@@ -505,7 +505,12 @@ BuildGuidDataHob (
   ASSERT (Data != NULL || DataLength == 0);
 
   HobData = BuildGuidHob (Guid, DataLength);
+  // MU_CHANGE Start - CodeQL change - unguardednullreturndereference
+  if (HobData == NULL) {
+    return NULL;
+  }
 
+  // MU_CHANGE End - CodeQL change - unguardednullreturndereference
   return CopyMem (HobData, Data, DataLength);
 }
 
