@@ -303,6 +303,8 @@ FatSetFileInfo (
   UINT8          NewAttribute;
   BOOLEAN        ReadOnly;
 
+  TempDirEnt = NULL;        // MU_CHANGE - CodeQL Change - conditionallyuninitializedvariable
+
   ZeroMem (&ZeroTime, sizeof (EFI_TIME));
   Parent = OFile->Parent;
   DirEnt = OFile->DirEnt;
