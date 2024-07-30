@@ -639,6 +639,8 @@ DmaFreeBuffer (
   BOOLEAN              Found;
   EFI_STATUS           Status;
 
+  Alloc = NULL; // MU_CHANGE - CodeQL change - conditionallyuninitializedvariable
+
   if (HostAddress == NULL) {
     return EFI_INVALID_PARAMETER;
   }
@@ -654,7 +656,9 @@ DmaFreeBuffer (
     }
   }
 
-  if (!Found) {
+  // MU_CHANGE Start - CodeQL change - unguardednullreturndereference
+  if (!Found || (Alloc == NULL)) {
+    // MU_CHANGE End - CodeQL change - unguardednullreturndereference
     ASSERT (FALSE);
     return EFI_INVALID_PARAMETER;
   }

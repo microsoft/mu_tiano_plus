@@ -385,6 +385,13 @@ overlay_update_local_node_references (
                                       );
     int  tree_child;
 
+    // MU_CHANGE Start - CodeQL change - unguardednullreturndereference
+    if (fixup_child_name == NULL) {
+      return -FDT_ERR_BADOVERLAY;
+    }
+
+    // MU_CHANGE End - CodeQL change - unguardednullreturndereference
+
     tree_child = fdt_subnode_offset (
                    fdto,
                    tree_node,
@@ -758,7 +765,9 @@ overlay_apply_node (
              &name,
              &prop_len
              );
-    if (prop_len == -FDT_ERR_NOTFOUND) {
+    // MU_CHANGE Start - CodeQL change - unguardednullreturndereference
+    if ((prop == NULL) || (prop_len == -FDT_ERR_NOTFOUND)) {
+      // MU_CHANGE End - CodeQL change - unguardednullreturndereference
       return -FDT_ERR_INTERNAL;
     }
 
@@ -777,6 +786,12 @@ overlay_apply_node (
     int         nnode;
     int         ret;
 
+    // MU_CHANGE Start - CodeQL change - unguardednullreturndereference
+    if (name == NULL) {
+      return -FDT_ERR_INTERNAL;
+    }
+
+    // MU_CHANGE End - CodeQL change - unguardednullreturndereference
     nnode = fdt_add_subnode (fdt, target, name);
     if (nnode == -FDT_ERR_EXISTS) {
       nnode = fdt_subnode_offset (fdt, target, name);
