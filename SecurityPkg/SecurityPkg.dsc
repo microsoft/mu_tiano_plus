@@ -268,12 +268,16 @@
   SecurityPkg/Library/TcgEventLogRecordLib/TcgEventLogRecordLib.inf
 
 # MU_CHANGE [BEGIN]
-  SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf
-  SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLibVendorNull.inf
   SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf
   SecurityPkg/Library/DxeHash2CryptoLib/DxeHash2CryptoLib.inf
+  SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf
+  SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLibVendorNull.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibSimple.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibVerbose.inf
+  SecurityPkg/Library/DxeTpmMeasurementLib/DxeTpmMeasurementLib.inf
+  SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
+  SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
+  SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
   SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
   SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf
