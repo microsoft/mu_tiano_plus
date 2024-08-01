@@ -898,7 +898,7 @@ Tcg2ExecutePendingTpmRequest (
       return;
   }
 
-  Print (L"Rebooting system to make TPM2 settings in effect\n");
+  // Print (L"Rebooting system to make TPM2 settings in effect\n");         // MU_CHANGE
   gRT->ResetSystem (EfiResetCold, EFI_SUCCESS, 0, NULL);
   ASSERT (FALSE);
 }
