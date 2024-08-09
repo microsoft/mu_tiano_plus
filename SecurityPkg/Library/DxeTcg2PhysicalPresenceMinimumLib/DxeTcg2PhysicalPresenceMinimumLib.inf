@@ -8,7 +8,7 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ##
-#Override : 00000002 | SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf | 5e768c09274dafc2fbee2fb0cdb76055| 2024-07-24T18-06-30 | 69ff4b6fc889c8e66101cad3dcf8be3d516e038d
+#Override : 00000002 | SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf | 9755efb1cbfd445f85b13fac552bcadc| 2024-07-24T18-06-30 | 69ff4b6fc889c8e66101cad3dcf8be3d516e038d
 # This is not a true override, but spell changes to ensure mu_tiano_plus passes CI is required and changes the hash.
 
 [Defines]
