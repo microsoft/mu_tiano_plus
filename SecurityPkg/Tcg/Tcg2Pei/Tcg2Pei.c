@@ -46,6 +46,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 // MU_CHANGE [BEGIN] - Add the OemTpm2InitLib
 #include <Library/OemTpm2InitLib.h>
 // MU_CHANGE [END]
+// MU_CHANGE_131467
+// MU_CHANGE [BEGIN] - Move to 256-bit PCRs.
+#include <Library/Tcg2PreUefiEventLogLib.h>
+// MU_CHANGE [END]
 #define PERF_ID_TCG2_PEI  0x3080
 
 typedef struct {
@@ -355,7 +359,14 @@ SyncPcrAllocationsAndPcrMask (
   // Determine the current TPM support and the Platform PCR mask.
   //
   Status = Tpm2GetCapabilitySupportedAndActivePcrs (&TpmHashAlgorithmBitmap, &TpmActivePcrBanks);
-  ASSERT_EFI_ERROR (Status);
+  // MU_CHANGE [BEGIN]
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a - Failed to determine TPM capabilities!\n", __func__));
+    ASSERT_EFI_ERROR (Status);
+    return;
+  }
+
+  // MU_CHANGE [END]
 
   Tpm2PcrMask = PcdGet32 (PcdTpm2HashMask);
   if (Tpm2PcrMask == 0) {
@@ -1057,6 +1068,11 @@ PeimEntryMP (
   Status = PeiServicesInstallPpi (&mTcgPpiList);
   ASSERT_EFI_ERROR (Status);
 
+  // MU_CHANGE_103691
+  // MU_CHANGE [BEGIN] - Add support for measurements extended before Tcg2 stack is available.
+  CreateTcg2PreUefiEventLogEntries ();
+  // MU_CHANGE [END]
+
   if (PcdGet8 (PcdTpm2ScrtmPolicy) == 1) {
     Status = MeasureCRTMVersion ();
   }
@@ -1188,6 +1204,11 @@ PeimEntryMA (
       }
 
       if (EFI_ERROR (Status)) {
+        // MU_CHANGE_58957
+        // MU_CHANGE [BEGIN] - Make sure that TPM2_Startup() can report an error.
+        DEBUG ((DEBUG_ERROR, "Tcg2Pei::%a - TPM failed Startup!\n", __func__));
+        ASSERT_EFI_ERROR (Status);
+        // MU_CHANGE [END]
         goto Done;
       }
     }
@@ -1220,6 +1241,10 @@ PeimEntryMA (
       if (PcdGet8 (PcdTpm2SelfTestPolicy) == 1) {
         Status = Tpm2SelfTest (NO);
         if (EFI_ERROR (Status)) {
+          // MU_CHANGE_58957
+          // MU_CHANGE [BEGIN] - Make sure that TPM2_Startup() can report an error.
+          DEBUG ((DEBUG_ERROR, "Tcg2Pei::%a - TPM failed Startup!\n", __func__));
+          // MU_CHANGE [END]
           goto Done;
         }
       }
