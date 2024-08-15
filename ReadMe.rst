@@ -5,7 +5,7 @@ Project Mu Tiano Plus Repository
 ============================= ================= =============== ===================
  Host Type & Toolchain        Build Status      Test Status     Code Coverage
 ============================= ================= =============== ===================
-Windows_VS2019_               |WindowsCiBuild|  |WindowsCiTest| |WindowsCiCoverage|
+Windows_VS2022_               |WindowsCiBuild|  |WindowsCiTest| |WindowsCiCoverage|
 Ubuntu_GCC5_                  |UbuntuCiBuild|   |UbuntuCiTest|  |UbuntuCiCoverage|
 ============================= ================= =============== ===================
 
@@ -18,43 +18,31 @@ Branch Status - release/202405
   In Development
 
 :Entered Development:
-  Todo
+  2023/11/24
 
 :Anticipated Stabilization:
-  Todo
+  Nov 2024
 
 Branch Changes - release/202405
 ===============================
 
+202405 is a larger deviation than previous releases. As part of upstreaming changes to EDK2, the commits were reviewed, squashed, and some were dropped.
+Due to these changes, there maybe more work minor work required to bring an existing platforms up to 202405 compatibality. 
+
 Breaking Changes-dev
 --------------------
+- SourceLevelDebugPkg has been dropped. Please reevaluate useage of this Package.
+- SecurityPkg\Library\HashLibTdx\HashLibTdx.inf has been dropped. Please use another instance of HashLib.
+- SecurityPkg\Library\SecTpmMeasurementLib\SecTpmMeasurementLibTdx.inf has been dropped. Please use another instance of TpmMeasurementLib.
+- SecurityPkg\Tcg\TdTcg2Dxe\TdTcg2Dxe.inf has been dropped. Please use Tcg2Dxe. 
+- TOOL_CHAIN_TAG=GCC and TOOL_CHAIN_TAG=GCC5 are both supported. GCC will become the normal in a future release.
 
-- Todo
 
 Main Changes-dev
 ----------------
+- SecurityPkg:Add EFI Device Authentication Signature Database and SPDM
 
-- Todo
 
-Bug Fixes-dev
--------------
-
-- Todo
-
-2311_RefBoot Changes
---------------------
-
-- Todo
-
-2311_CIBuild Changes
---------------------
-
-- Todo
-
-2405_Rebase Changes
--------------------
-
-Todo
 
 Code of Conduct
 ===============
@@ -138,12 +126,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 .. CoreCI
 
-.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=55&&branchName=release%2F202311
-.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20VS2019?branchName=release%2F202311
+.. _Windows_VS2022: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=55&&branchName=release%2F202405
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20VS2019?branchName=release%2F202405
 .. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/55.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
-.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=56&branchName=release%2F202311
-.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20Ubuntu%20GCC5?branchName=release%2F202311
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=56&branchName=release%2F202405
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20Ubuntu%20GCC5?branchName=release%2F202405
 .. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/56.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
