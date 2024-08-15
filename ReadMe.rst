@@ -27,7 +27,7 @@ Branch Changes - release/202405
 ===============================
 
 202405 is a larger deviation than previous releases. As part of upstreaming changes to EDK2, the commits were reviewed, squashed, and some were dropped.
-Due to these changes, there maybe more work minor work required to bring an existing platforms up to 202405 compatibality. 
+Due to these changes, there maybe more work minor work required to bring an existing platforms up to 202405 compatibility. 
 
 Breaking Changes-dev
 --------------------
@@ -37,12 +37,13 @@ Breaking Changes-dev
 - SecurityPkg\Tcg\TdTcg2Dxe\TdTcg2Dxe.inf has been dropped. Please use Tcg2Dxe. 
 - TOOL_CHAIN_TAG=GCC and TOOL_CHAIN_TAG=GCC5 are both supported. GCC will become the normal in a future release.
 
-
 Main Changes-dev
 ----------------
 - SecurityPkg:Add EFI Device Authentication Signature Database and SPDM
 
-
+Platform Integration Reference
+----------------
+Reference platforms which consume release/202405 are available in [mu_tiano_platforms](https://github.com/microsoft/mu_tiano_platforms).
 
 Code of Conduct
 ===============
