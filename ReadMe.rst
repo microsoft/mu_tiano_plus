@@ -9,7 +9,7 @@ Windows_VS2022_               |WindowsCiBuild|  |WindowsCiTest| |WindowsCiCovera
 Ubuntu_GCC5_                  |UbuntuCiBuild|   |UbuntuCiTest|  |UbuntuCiCoverage|
 ============================= ================= =============== ===================
 
-This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
+This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu.
 
 Branch Status - release/202405
 ==============================
@@ -18,7 +18,7 @@ Branch Status - release/202405
   In Development
 
 :Entered Development:
-  2023/11/24
+  2023/11/24 (Date Edk2 started accepting changes which were not in a previous release)
 
 :Anticipated Stabilization:
   Nov 2024
@@ -40,9 +40,15 @@ Breaking Changes-dev
 Main Changes-dev
 ----------------
 - SecurityPkg:Add EFI Device Authentication Signature Database and SPDM
+- Out of bound read in Tcg2MeasureGptTable() and TcgMeasureGptTable()
+- SecurityPkg/SecureBootConfigDxe: Should not call HiiGetBrowserData() in FORM_OPEN action callback
+- Heap Buffer Overflow in Tcg2MeasureGptTable()
+- SecurityPkg\OpalPasswordDxe: BrowserCallback() cannot be used within FORM_OPEN browser action
+- Tcg2Pei: Assert issue in SyncPcrAllocationsAndPcrMask() with a specific configuration
+
 
 Platform Integration Reference
-----------------
+------------------------------
 Reference platforms which consume release/202405 are available in [mu_tiano_platforms](https://github.com/microsoft/mu_tiano_platforms).
 
 Code of Conduct
@@ -59,11 +65,12 @@ Contributions
 Contributions are always welcome and encouraged!
 Please open any issues in the Project Mu GitHub tracker and read https://microsoft.github.io/mu/How/contributing/
 
+For documentation:
 
 Copyright & License
 ===================
 
-| Copyright (C) Microsoft Corporation
+| Copyright (c) Microsoft Corporation
 | SPDX-License-Identifier: BSD-2-Clause-Patent
 
 Upstream License (TianoCore)
