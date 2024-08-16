@@ -47,6 +47,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/SecurityManagementLib.h>
 #include <Library/HobLib.h>
 #include <Protocol/CcMeasurement.h>
+#include <Protocol/FirmwareVolume2.h>
 
 #include "DxeTpm2MeasureBootLibSanitization.h"
 
@@ -756,13 +757,31 @@ DxeTpm2MeasureBootHandler (
       return EFI_SUCCESS;
     }
 
+    // MU_CHANGE [BEGIN]
     //
     // The PE image from unmeasured Firmware volume need be measured
     // The PE image from measured Firmware volume will be measured according to policy below.
     //   If it is driver, do not measure
-    //   If it is application, still measure.
+    //   If it is application:
+    //      From measured firmware volume: do not measure
+    //      From unmeasured firmware volume: measure
     //
     ApplicationRequired = TRUE;
+
+    // Check that the EFI Application comes from measured firmware
+    // TODO - This certainly checks the the application originated from FV - how do I confirm this is measured and not unmeasured
+    Status = gBS->OpenProtocol (
+                    Handle,
+                    &gEfiFirmwareVolume2ProtocolGuid,
+                    NULL,
+                    NULL,
+                    NULL,
+                    EFI_OPEN_PROTOCOL_TEST_PROTOCOL
+                    );
+    if (!EFI_ERROR (Status)) {
+      return EFI_SUCCESS;
+    }
+    // MU_CHANGE [END]
 
     if ((mTcg2CacheMeasuredHandle != Handle) && (mTcg2MeasuredHobData != NULL)) {
       //

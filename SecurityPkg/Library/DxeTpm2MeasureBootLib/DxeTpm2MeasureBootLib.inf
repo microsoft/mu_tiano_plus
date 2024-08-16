@@ -69,3 +69,4 @@
   gEfiFirmwareVolumeBlockProtocolGuid   ## SOMETIMES_CONSUMES
   gEfiBlockIoProtocolGuid               ## SOMETIMES_CONSUMES
   gEfiDiskIoProtocolGuid                ## SOMETIMES_CONSUMES
+  gEfiFirmwareVolume2ProtocolGuid       ## SOMETIMES_CONSUMES
