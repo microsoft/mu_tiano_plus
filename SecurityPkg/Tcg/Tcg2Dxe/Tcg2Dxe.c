@@ -57,6 +57,14 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 // #define PERF_ID_TCG2_DXE  0x3120 // MU_CHANGE
 
+// MU_CHANGE [BEGIN]
+//
+// Signaling data for change in (PROTOTYPE NOT ACCEPTED) TCG Spec
+// TCG_SPEC_CHANGE: <PCR>_<RULE>
+//
+#define SPEC_CHG_PCR4_SKIP_FV_APP_EVENT_DATA "TCG_SPEC_CHANGE: PCR4_SKIP_FV_APP"
+// MU_CHANGE [END]
+
 typedef struct {
   CHAR16      *VariableName;
   EFI_GUID    *VendorGuid;
@@ -2817,6 +2825,72 @@ OnResetNotificationInstall (
   }
 }
 
+// MU_CHANGE [BEGIN]
+/**
+  Logs a non-measured event in the TCG event log.
+
+  This function is responsible for logging events that are not measured by the TPM. These events
+  do not affect the TPM's Platform Configuration Registers (PCRs) but are recorded for signaling to
+  an OS auditing the log. The function takes in the size of the event and the event data itself,
+  creates an EFI_TCG2_EVENT structure, and logs the event using the Tcg2LogEvent function.
+
+  @param[in] EventSize   The size of the event data to be logged.
+  @param[in] EventData   A pointer to the event data.
+
+  @retval EFI_SUCCESS            The event was logged successfully.
+  @retval EFI_OUT_OF_RESOURCES   Memory allocation failed, or the event size is too large.
+  @retval Other                  An error returned by the Tcg2LogEvent function.
+**/
+EFI_STATUS
+Tcg2LogNonMeasuredEvent (
+  IN UINTN  EventSize,
+  IN VOID   *EventData
+  )
+{
+  EFI_TCG2_EVENT    *Tcg2Event;
+  EFI_STATUS        Status;
+
+  TPML_DIGEST_VALUES NoActionDigestList;
+
+  //
+  // Normally the digest list represents the hashes of the event data.
+  // In this case, there is no event data to hash, so the list is empty.
+  //
+  ZeroMem(&NoActionDigestList, sizeof(NoActionDigestList));
+  NoActionDigestList.count = 0;
+
+  // Handle the case where the event size is too large
+  if (EventSize > MAX_UINT32 - sizeof (EFI_TCG2_EVENT)) {
+    DEBUG ((DEBUG_ERROR, "Event size is too large\n"));
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  // Allocate memory for the event
+  Tcg2Event = AllocateZeroPool (sizeof (EFI_TCG2_EVENT) + EventSize);
+  if (Tcg2Event == NULL) {
+    DEBUG ((DEBUG_ERROR, "Failed to allocate memory for the non-measured event\n"));
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  Tcg2Event->Size                 = sizeof (EFI_TCG2_EVENT) + EventSize - sizeof (Tcg2Event->Event);
+  Tcg2Event->Header.HeaderSize    = sizeof (EFI_TCG2_EVENT_HEADER);
+  Tcg2Event->Header.HeaderVersion = EFI_TCG2_EVENT_HEADER_VERSION;
+  Tcg2Event->Header.PCRIndex      = 0; // For EV_NO_ACTION
+  Tcg2Event->Header.EventType     = EV_NO_ACTION;
+  CopyMem (Tcg2Event->Event, EventData, EventSize); // Ensure EventData is not NULL
+
+  Status = Tcg2LogEvent (&mMuTcg2Protocol, &NoActionDigestList, Tcg2Event);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Failed to log the non-measured event\n"));
+  }
+
+  // Free the allocated memory
+  FreePool (Tcg2Event);
+
+  return Status;
+}
+// MU_CHANGE [END]
+
 /**
   The function install Tcg2 protocol.
 
@@ -2832,6 +2906,18 @@ InstallTcg2 (
   EFI_HANDLE  Handle;
 
   Handle = NULL;
+
+  // MU_CHANGE [BEGIN]
+  //
+  // Log the SKIP_FV_APP signalling event
+  //
+  Status =   Tcg2LogNonMeasuredEvent (sizeof(SPEC_CHG_PCR4_SKIP_FV_APP_EVENT_DATA), SPEC_CHG_PCR4_SKIP_FV_APP_EVENT_DATA);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Failed to log the non-measured signalling event\n"));
+    return Status;
+  }
+  // MU_CHANGE [END]
+
   Status = gBS->InstallMultipleProtocolInterfaces (
                   &Handle,
                   &gEfiTcg2ProtocolGuid,
