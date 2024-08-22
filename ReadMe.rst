@@ -5,11 +5,11 @@ Project Mu Tiano Plus Repository
 ============================= ================= =============== ===================
  Host Type & Toolchain        Build Status      Test Status     Code Coverage
 ============================= ================= =============== ===================
-Windows_VS2019_               |WindowsCiBuild|  |WindowsCiTest| |WindowsCiCoverage|
+Windows_VS2022_               |WindowsCiBuild|  |WindowsCiTest| |WindowsCiCoverage|
 Ubuntu_GCC5_                  |UbuntuCiBuild|   |UbuntuCiTest|  |UbuntuCiCoverage|
 ============================= ================= =============== ===================
 
-This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
+This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu.
 
 Branch Status - release/202405
 ==============================
@@ -18,43 +18,38 @@ Branch Status - release/202405
   In Development
 
 :Entered Development:
-  Todo
+  2023/11/24 (Date Edk2 started accepting changes which were not in a previous release)
 
 :Anticipated Stabilization:
-  Todo
+  Nov 2024
 
 Branch Changes - release/202405
 ===============================
 
+202405 is a larger deviation than previous releases. As part of upstreaming changes to EDK2, the commits were reviewed, squashed, and some were dropped.
+Due to these changes, there may be more work required to bring an existing platform up to 202405 compatibility. 
+
 Breaking Changes-dev
 --------------------
-
-- Todo
+- SourceLevelDebugPkg has been dropped. Please reevaluate useage of this Package.
+- SecurityPkg\Library\HashLibTdx\HashLibTdx.inf has been dropped. Please use another instance of HashLib.
+- SecurityPkg\Library\SecTpmMeasurementLib\SecTpmMeasurementLibTdx.inf has been dropped. Please use another instance of TpmMeasurementLib.
+- SecurityPkg\Tcg\TdTcg2Dxe\TdTcg2Dxe.inf has been dropped. Please use Tcg2Dxe. 
+- TOOL_CHAIN_TAG=GCC and TOOL_CHAIN_TAG=GCC5 are both supported. GCC will become the normal in a future release.
 
 Main Changes-dev
 ----------------
+- SecurityPkg:Add EFI Device Authentication Signature Database and SPDM
+- Out of bound read in Tcg2MeasureGptTable() and TcgMeasureGptTable()
+- SecurityPkg/SecureBootConfigDxe: Should not call HiiGetBrowserData() in FORM_OPEN action callback
+- Heap Buffer Overflow in Tcg2MeasureGptTable()
+- SecurityPkg\OpalPasswordDxe: BrowserCallback() cannot be used within FORM_OPEN browser action
+- Tcg2Pei: Assert issue in SyncPcrAllocationsAndPcrMask() with a specific configuration
 
-- Todo
 
-Bug Fixes-dev
--------------
-
-- Todo
-
-2311_RefBoot Changes
---------------------
-
-- Todo
-
-2311_CIBuild Changes
---------------------
-
-- Todo
-
-2405_Rebase Changes
--------------------
-
-Todo
+Platform Integration Reference
+------------------------------
+Reference platforms which consume release/202405 are available in [mu_tiano_platforms](https://github.com/microsoft/mu_tiano_platforms).
 
 Code of Conduct
 ===============
@@ -70,11 +65,12 @@ Contributions
 Contributions are always welcome and encouraged!
 Please open any issues in the Project Mu GitHub tracker and read https://microsoft.github.io/mu/How/contributing/
 
+For documentation:
 
 Copyright & License
 ===================
 
-| Copyright (C) Microsoft Corporation
+| Copyright (c) Microsoft Corporation
 | SPDX-License-Identifier: BSD-2-Clause-Patent
 
 Upstream License (TianoCore)
@@ -138,12 +134,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 .. CoreCI
 
-.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=55&&branchName=release%2F202311
-.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20VS2019?branchName=release%2F202311
+.. _Windows_VS2022: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=55&&branchName=release%2F202405
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20VS2019?branchName=release%2F202405
 .. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/55.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
-.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=56&branchName=release%2F202311
-.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20Ubuntu%20GCC5?branchName=release%2F202311
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=56&branchName=release%2F202405
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Tiano%20Plus%20CI%20Ubuntu%20GCC5?branchName=release%2F202405
 .. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/56.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
