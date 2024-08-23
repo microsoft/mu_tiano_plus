@@ -15,6 +15,6 @@
 edk2-pytool-library==0.21.7
 edk2-pytool-extensions==0.27.5
 antlr4-python3-runtime==4.13.1
-regex==2024.5.15
+regex==2024.7.24
 lcov-cobertura==2.0.2
 pygount==1.8.0
