@@ -101,8 +101,6 @@
   Tcg2PreUefiEventLogLib|SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf  ## MU_CHANGE
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
-  ArmSoftFloatLib|ArmPkg/Library/ArmSoftFloatLib/ArmSoftFloatLib.inf
-
   ArmTrngLib|MdePkg/Library/BaseArmTrngLibNull/BaseArmTrngLibNull.inf
 
 [LibraryClasses.ARM]
