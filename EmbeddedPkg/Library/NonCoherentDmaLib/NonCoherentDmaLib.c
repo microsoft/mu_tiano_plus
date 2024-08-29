@@ -557,7 +557,7 @@ DmaAllocateAlignedBuffer (
   Status = gDS->SetMemorySpaceAttributes (
                   (PHYSICAL_ADDRESS)(UINTN)Allocation,
                   EFI_PAGES_TO_SIZE (Pages),
-                  MemType | EFI_MEMORY_XP // MU_CHANGE: Allocate DMA memory XP by default
+                  MemType
                   );
   if (EFI_ERROR (Status)) {
     goto FreeAlloc;
