@@ -857,7 +857,8 @@ BuildMemoryTypeInformationHob (
   VOID
   )
 {
-  EFI_MEMORY_TYPE_INFORMATION  Info[10];
+  // MU_CHANGE [BEGIN] - Remove non-RT types from Mem Type Info Settings
+  EFI_MEMORY_TYPE_INFORMATION  Info[6];
 
   Info[0].Type          = EfiACPIReclaimMemory;
   Info[0].NumberOfPages = PcdGet32 (PcdMemoryTypeEfiACPIReclaimMemory);
@@ -869,18 +870,10 @@ BuildMemoryTypeInformationHob (
   Info[3].NumberOfPages = PcdGet32 (PcdMemoryTypeEfiRuntimeServicesData);
   Info[4].Type          = EfiRuntimeServicesCode;
   Info[4].NumberOfPages = PcdGet32 (PcdMemoryTypeEfiRuntimeServicesCode);
-  Info[5].Type          = EfiBootServicesCode;
-  Info[5].NumberOfPages = PcdGet32 (PcdMemoryTypeEfiBootServicesCode);
-  Info[6].Type          = EfiBootServicesData;
-  Info[6].NumberOfPages = PcdGet32 (PcdMemoryTypeEfiBootServicesData);
-  Info[7].Type          = EfiLoaderCode;
-  Info[7].NumberOfPages = PcdGet32 (PcdMemoryTypeEfiLoaderCode);
-  Info[8].Type          = EfiLoaderData;
-  Info[8].NumberOfPages = PcdGet32 (PcdMemoryTypeEfiLoaderData);
-
   // Terminator for the list
-  Info[9].Type          = EfiMaxMemoryType;
-  Info[9].NumberOfPages = 0;
+  Info[5].Type          = EfiMaxMemoryType;
+  Info[5].NumberOfPages = 0;
+  // MU_CHANGE [END] - Remove non-RT types from Mem Type Info Settings
 
   BuildGuidDataHob (&gEfiMemoryTypeInformationGuid, &Info, sizeof (Info));
 }
