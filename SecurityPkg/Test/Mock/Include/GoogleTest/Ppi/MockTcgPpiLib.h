@@ -4,6 +4,7 @@
   Copyright (c) Microsoft Corporation.
   SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
+
 #ifndef __MOCK_TCG_PPI_H__
 #define __MOCK_TCG_PPI_H__
 
@@ -80,13 +81,13 @@ extern "C" {
   typedef
     EFI_STATUS
   (EFIAPI *EDKII_TCG_HASH_LOG_EXTEND_EVENT)(
-                                            IN      EDKII_TCG_PPI             *This,
-                                            IN      UINT64                    Flags,
-                                            IN      UINT8                     *HashData,
-                                            IN      UINTN                     HashDataLen,
-                                            IN      TCG_PCR_EVENT_HDR         *NewEventHdr,
-                                            IN      UINT8                     *NewEventData
-                                            );
+  IN      EDKII_TCG_PPI             *This,
+  IN      UINT64                    Flags,
+  IN      UINT8                     *HashData,
+  IN      UINTN                     HashDataLen,
+  IN      TCG_PCR_EVENT_HDR         *NewEventHdr,
+  IN      UINT8                     *NewEventData
+  );
 
   ///
   /// The EFI_TCG Protocol abstracts TCG activity.
@@ -102,15 +103,15 @@ struct MockTcgPpiLib {
   MOCK_INTERFACE_DECLARATION (MockTcgPpiLib);
 
   MOCK_FUNCTION_DECLARATION (
-                             EFI_STATUS,
-                             HashLogExtendEvent,
-                             (IN      EDKII_TCG_PPI             *This,
-                              IN      UINT64                    Flags,
-                              IN      UINT8                     *HashData,
-                              IN      UINTN                     HashDataLen,
-                              IN      TCG_PCR_EVENT_HDR         *NewEventHdr,
-                              IN      UINT8                     *NewEventData)
-                             );
+    EFI_STATUS,
+    HashLogExtendEvent,
+    (IN      EDKII_TCG_PPI             *This,
+     IN      UINT64                    Flags,
+     IN      UINT8                     *HashData,
+     IN      UINTN                     HashDataLen,
+     IN      TCG_PCR_EVENT_HDR         *NewEventHdr,
+     IN      UINT8                     *NewEventData)
+    );
 };
 
 #endif
