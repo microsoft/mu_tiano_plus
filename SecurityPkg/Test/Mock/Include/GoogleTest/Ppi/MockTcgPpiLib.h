@@ -5,7 +5,8 @@
   SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 
-#ifndef __MOCK_TCG_PPI_H__
+#ifndef MOCK_TCG_PPI_H__
+
 #define __MOCK_TCG_PPI_H__
 
 #include <Library/GoogleTestLib.h>
