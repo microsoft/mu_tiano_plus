@@ -115,4 +115,8 @@ struct MockTcgPpiLib {
     );
 };
 
+MOCK_INTERFACE_DEFINITION (MockTcgPpiLib);
+
+MOCK_FUNCTION_DEFINITION (MockTcgPpiLib, HashLogExtendEvent, 6, EFIAPI);
+
 #endif
