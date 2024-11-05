@@ -7,7 +7,7 @@
 
 #ifndef MOCK_TCG_PPI_H__
 
-#define __MOCK_TCG_PPI_H__
+#define MOCK_TCG_PPI_H__
 
 #include <Library/GoogleTestLib.h>
 #include <Library/FunctionMockLib.h>
