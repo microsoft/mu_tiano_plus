@@ -424,14 +424,6 @@
   # FALSE -The Platform will not measure those events
   gEfiSecurityPkgTokenSpaceGuid.TcgMeasureBootStringsInPcr4|TRUE|BOOLEAN|0x0000000B
 
-  ## MU_CHANGE: Add a PCD to determine partition ID of TPM Service.
-  #
-  # Define the partition ID for TPM Service.
-  # Default PcdTpmServiceFfaPartitionId = 0x0, which should never be set to by
-  # the FF-A framework.
-  #
-  gEfiSecurityPkgTokenSpaceGuid.PcdTpmServiceFfaPartitionId|0|UINT16|0x0000000C
-
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
   ## Indicates whether TPM physical presence is locked during platform initialization.
   #  Once it is locked, it can not be unlocked for TPM life time.<BR><BR>
@@ -666,6 +658,14 @@
 
   ## This PCD records LASA field in CC EVENTLOG ACPI table.
   gEfiSecurityPkgTokenSpaceGuid.PcdCcEventlogAcpiTableLasa|0|UINT64|0x00010026
+
+  ## MU_CHANGE: Add a PCD to determine partition ID of TPM Service.
+  #
+  # Define the partition ID for TPM Service.
+  # Default PcdTpmServiceFfaPartitionId = 0x0, which should never be set to by
+  # the FF-A framework.
+  #
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmServiceFfaPartitionId|0|UINT16|0x0001002B
 
 [PcdsFeatureFlag]
   ## Indicates if the platform requires PK to be self-signed when setting the PK in setup mode.

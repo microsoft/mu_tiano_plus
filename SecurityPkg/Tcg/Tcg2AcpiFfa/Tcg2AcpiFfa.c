@@ -658,8 +658,10 @@ PublishTpm2 (
   }
 
   InterfaceType = PcdGet8 (PcdActiveTpmInterfaceType);
-  PartitionId   = PcdGet16 (PcdTpmServiceFfaPartitionId);
   DEBUG ((DEBUG_INFO, "Tpm Active Interface Type %d\n", InterfaceType));
+
+  PartitionId   = PcdGet16 (PcdTpmServiceFfaPartitionId);
+  ASSERT (PartitionId != 0);
   if (InterfaceType == Tpm2PtpInterfaceCrb) {
     mTpm2AcpiTemplate.StartMethod                   = EFI_TPM2_ACPI_TABLE_START_METHOD_COMMAND_RESPONSE_BUFFER_INTERFACE_WITH_FFA;
     mTpm2AcpiTemplate.AddressOfControlArea          = PcdGet64 (PcdTpmBaseAddress) + 0x40;
