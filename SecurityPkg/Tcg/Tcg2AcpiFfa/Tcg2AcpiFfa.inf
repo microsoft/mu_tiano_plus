@@ -65,6 +65,7 @@
   gEfiSecurityPkgTokenSpaceGuid.PcdSkipTcgSmmAcpiMeasurements       ## CONSUMES
   gEfiSecurityPkgTokenSpaceGuid.PcdTpm2AcpiTableLaml                ## CONSUMES
   gEfiSecurityPkgTokenSpaceGuid.PcdTpm2AcpiTableLasa                ## CONSUMES
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmServiceFfaPartitionId         ## CONSUMES
 
 [FixedPcd]
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmBaseAddress                   ## CONSUMES

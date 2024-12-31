@@ -623,6 +623,7 @@ PublishTpm2 (
   UINT64                      OemTableId;
   EFI_TPM2_ACPI_CONTROL_AREA  *ControlArea;
   TPM2_PTP_INTERFACE_TYPE     InterfaceType;
+  UINT64                      PartitionId;
 
   // Allow a platform to drop TCG ACPI measurements until we have a chance to make them more
   // consistent and functional.
@@ -657,14 +658,15 @@ PublishTpm2 (
   }
 
   InterfaceType = PcdGet8 (PcdActiveTpmInterfaceType);
+  PartitionId   = PcdGet16 (PcdTpmServiceFfaPartitionId);
   DEBUG ((DEBUG_INFO, "Tpm Active Interface Type %d\n", InterfaceType));
   if (InterfaceType == Tpm2PtpInterfaceCrb) {
     mTpm2AcpiTemplate.StartMethod                   = EFI_TPM2_ACPI_TABLE_START_METHOD_COMMAND_RESPONSE_BUFFER_INTERFACE_WITH_FFA;
     mTpm2AcpiTemplate.AddressOfControlArea          = PcdGet64 (PcdTpmBaseAddress) + 0x40;
     mTpm2AcpiTemplate.PlatformSpecificParameters[0] = 0x00;   // Notifications Not Supported
     mTpm2AcpiTemplate.PlatformSpecificParameters[1] = 0x00;   // CRB 4KiB size, Not Cacheable
-    mTpm2AcpiTemplate.PlatformSpecificParameters[2] = 0x80;   // HI Byte of Partition ID
-    mTpm2AcpiTemplate.PlatformSpecificParameters[3] = 0x02;   // LO Byte of Partition ID
+    mTpm2AcpiTemplate.PlatformSpecificParameters[2] = (PartitionId >> 8) & MAX_UINT8; // HI Byte of Partition ID
+    mTpm2AcpiTemplate.PlatformSpecificParameters[3] = (PartitionId) & MAX_UINT8;      // LO Byte of Partition ID
     ControlArea                                     = (EFI_TPM2_ACPI_CONTROL_AREA *)(UINTN)mTpm2AcpiTemplate.AddressOfControlArea;
     ControlArea->CommandSize                        = 0xF80;
     ControlArea->ResponseSize                       = 0xF80;
