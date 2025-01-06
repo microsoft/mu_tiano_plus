@@ -660,13 +660,13 @@ PublishTpm2 (
   InterfaceType = PcdGet8 (PcdActiveTpmInterfaceType);
   DEBUG ((DEBUG_INFO, "Tpm Active Interface Type %d\n", InterfaceType));
 
-  PartitionId   = PcdGet16 (PcdTpmServiceFfaPartitionId);
+  PartitionId = PcdGet16 (PcdTpmServiceFfaPartitionId);
   ASSERT (PartitionId != 0);
   if (InterfaceType == Tpm2PtpInterfaceCrb) {
     mTpm2AcpiTemplate.StartMethod                   = EFI_TPM2_ACPI_TABLE_START_METHOD_COMMAND_RESPONSE_BUFFER_INTERFACE_WITH_FFA;
     mTpm2AcpiTemplate.AddressOfControlArea          = PcdGet64 (PcdTpmBaseAddress) + 0x40;
-    mTpm2AcpiTemplate.PlatformSpecificParameters[0] = 0x00;   // Notifications Not Supported
-    mTpm2AcpiTemplate.PlatformSpecificParameters[1] = 0x00;   // CRB 4KiB size, Not Cacheable
+    mTpm2AcpiTemplate.PlatformSpecificParameters[0] = 0x00;                           // Notifications Not Supported
+    mTpm2AcpiTemplate.PlatformSpecificParameters[1] = 0x00;                           // CRB 4KiB size, Not Cacheable
     mTpm2AcpiTemplate.PlatformSpecificParameters[2] = (PartitionId >> 8) & MAX_UINT8; // HI Byte of Partition ID
     mTpm2AcpiTemplate.PlatformSpecificParameters[3] = (PartitionId) & MAX_UINT8;      // LO Byte of Partition ID
     ControlArea                                     = (EFI_TPM2_ACPI_CONTROL_AREA *)(UINTN)mTpm2AcpiTemplate.AddressOfControlArea;
