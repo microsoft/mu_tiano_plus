@@ -12,7 +12,7 @@
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005
   OUTPUT_DIRECTORY               = Build/$(PLATFORM_NAME)
-  SUPPORTED_ARCHITECTURES        = IA32|X64|AARCH64
+  SUPPORTED_ARCHITECTURES        = X64|AARCH64
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
   SKUID_IDENTIFIER               = DEFAULT
 
@@ -40,7 +40,7 @@
   SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf # MU_CHANGE - CodeQL change
   NULL|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf # MU_CHANGE: /GS and -fstack-protector support
 
-[LibraryClasses.IA32, LibraryClasses.X64]
+[LibraryClasses.X64]
   MtrrLib|UefiCpuPkg/Library/MtrrLib/MtrrLib.inf
 
 [LibraryClasses.AARCH64]
@@ -145,9 +145,9 @@
   #
   $(PLATFORM_PACKAGE)/Application/PrmInfo/PrmInfo.inf
 
-[Components.IA32, Components.X64]
+[Components.X64]
   #
-  # PRM Sample Modules for IA32 and X64
+  # PRM Sample Modules for X64
   #
   $(PLATFORM_PACKAGE)/Samples/PrmSampleHardwareAccessModule/PrmSampleHardwareAccessModule.inf
 
