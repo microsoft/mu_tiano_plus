@@ -509,11 +509,15 @@
 
     ## This PCD indicates internal TPM base address.<BR><BR>
   # @Prompt TPM device base address.
-  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInternalBaseAddress|0x10000010000|UINT64|0x0001002A
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInternalBaseAddress|0x10000200000|UINT64|0x0001002A
 
   ## This PCD indicates TPM max address.<BR><BR>
   # @Prompt TPM device max address.
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmMaxAddress|0xFED44FFF|UINT64|0x00010029
+
+  ## This PCD indicates the size of the TPM CRB region.<BR><BR>
+  # @Prompt TPM device CRB region size.
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmCrbRegionSize|0x5000|UINT32|0x0001002C
 
   ## This PCR means the OEM configured number of PCR banks.
   #  0 means dynamic get from supported HASH algorithm

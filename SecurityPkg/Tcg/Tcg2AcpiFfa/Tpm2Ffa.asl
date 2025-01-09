@@ -24,7 +24,7 @@ DefinitionBlock (
       //
       // Operational region for TPM access
       //
-      OperationRegion (TPMR, SystemMemory, FixedPcdGet64 (PcdTpmBaseAddress), 0x5000)
+      OperationRegion (TPMR, SystemMemory, FixedPcdGet64 (PcdTpmBaseAddress), FixedPcdGet32 (PcdTpmCrbRegionSize))
       Field (TPMR, AnyAcc, NoLock, Preserve)
       {
         ACC0, 8,  // TPM_ACCESS_0
@@ -56,7 +56,7 @@ DefinitionBlock (
             FixedPcdGet64 (PcdTpmBaseAddress), 
             FixedPcdGet64 (PcdTpmMaxAddress), 
             0x0, 
-            0x5000)
+            FixedPcdGet32 (PcdTpmCrbRegionSize))
         })
         Return (RBUF)
       }

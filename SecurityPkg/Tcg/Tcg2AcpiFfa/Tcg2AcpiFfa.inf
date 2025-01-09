@@ -70,6 +70,7 @@
 [FixedPcd]
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmBaseAddress                   ## CONSUMES
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmMaxAddress                    ## CONSUMES
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmCrbRegionSize                 ## CONSUMES
 
 [Depex]
   gEfiAcpiTableProtocolGuid AND

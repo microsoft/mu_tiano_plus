@@ -625,6 +625,8 @@ PublishTpm2 (
   TPM2_PTP_INTERFACE_TYPE     InterfaceType;
   UINT64                      PartitionId;
 
+  STATIC_ASSERT ((FixedPcdGet64 (PcdTpmMaxAddress) - FixedPcdGet64 (PcdTpmBaseAddress)) == (FixedPcdGet32 (PcdTpmCrbRegionSize) - 1), "TPM CRB region size mismatch");
+
   // Allow a platform to drop TCG ACPI measurements until we have a chance to make them more
   // consistent and functional.
   if (!FixedPcdGetBool (PcdSkipTcgSmmAcpiMeasurements)) {
