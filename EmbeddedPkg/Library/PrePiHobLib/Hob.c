@@ -206,7 +206,7 @@ BuildResourceDescriptorV2 (
 {
   EFI_HOB_RESOURCE_DESCRIPTOR_V2  *Hob;
 
-  Hob = CreateHob (EFI_HOB_TYPE_RESOURCE_DESCRIPTOR, sizeof (EFI_HOB_RESOURCE_DESCRIPTOR_V2));
+  Hob = CreateHob (EFI_HOB_TYPE_RESOURCE_DESCRIPTOR2, sizeof (EFI_HOB_RESOURCE_DESCRIPTOR_V2));
   ASSERT (Hob != NULL);
   if (Hob == NULL) {
     return;
