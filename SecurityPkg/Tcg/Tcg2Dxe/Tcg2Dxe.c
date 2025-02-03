@@ -2013,6 +2013,9 @@ TcgMeasureAction (
   TcgEvent.PCRIndex  = PCRIndex;
   TcgEvent.EventType = EV_EFI_ACTION;
   TcgEvent.EventSize = (UINT32)AsciiStrLen (String);
+  // MU_CHANGE [BEGIN]
+  DEBUG ((DEBUG_INFO, "PCR[%x] MeasureAction: %a\n", PCRIndex, String));
+  // MU_CHANGE [END]
   return TcgDxeHashLogExtendEvent (
            0,
            (UINT8 *)String,
@@ -2058,7 +2061,9 @@ MeasureHandoffTables (
       HandoffTables.NumberOfTables            = 1;
       HandoffTables.TableEntry[0].VendorGuid  = gEfiMpServiceProtocolGuid;
       HandoffTables.TableEntry[0].VendorTable = ProcessorLocBuf;
-
+      // MU_CHANGE [BEGIN]
+      DEBUG ((DEBUG_INFO, "PCR[%x] MeasureHandoffTables\n", TcgEvent.PCRIndex));
+      // MU_CHANGE [END]
       Status = TcgDxeHashLogExtendEvent (
                  0,
                  (UINT8 *)(UINTN)ProcessorLocBuf,
@@ -2091,8 +2096,9 @@ MeasureSeparatorEvent (
   TCG_PCR_EVENT_HDR  TcgEvent;
   UINT32             EventData;
 
-  DEBUG ((DEBUG_INFO, "MeasureSeparatorEvent Pcr - %x\n", PCRIndex));
-
+  // MU_CHANGE [BEGIN]
+  DEBUG ((DEBUG_INFO, "PCR[%x] MeasureSeparatorEvent\n", PCRIndex));
+  // MU_CHANGE [END]
   EventData          = 0;
   TcgEvent.PCRIndex  = PCRIndex;
   TcgEvent.EventType = EV_SEPARATOR;
@@ -2136,8 +2142,9 @@ MeasureVariable (
   UINTN               VarNameLength;
   UEFI_VARIABLE_DATA  *VarLog;
 
-  DEBUG ((DEBUG_INFO, "Tcg2Dxe: MeasureVariable (Pcr - %x, EventType - %x, ", (UINTN)PCRIndex, (UINTN)EventType));
-  DEBUG ((DEBUG_INFO, "VariableName - %s, VendorGuid - %g)\n", VarName, VendorGuid));
+  // MU_CHANGE [BEGIN]
+  DEBUG ((DEBUG_INFO, "PCR[%x] MeasureVariable (EventType(%x), VariableName(%g), VendorGuid(%g))\n", PCRIndex, EventType, VarName, VendorGuid));
+  // MU_CHANGE [END]
 
   VarNameLength      = StrLen (VarName);
   TcgEvent.PCRIndex  = PCRIndex;

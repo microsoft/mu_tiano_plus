@@ -297,6 +297,10 @@ Tcg2MeasureGptTable (
     PartitionEntry = (EFI_PARTITION_ENTRY *)((UINT8 *)PartitionEntry + PrimaryHeader->SizeOfPartitionEntry);
   }
 
+  // MU_CHANGE [BEGIN]
+  DEBUG ((DEBUG_INFO, "PCR[%x] MeasureGptTable\n",Tcg2Event->Header.PCRIndex));
+  // MU_CHANGE [END]
+
   //
   // Only one of TCG2_PROTOCOL or CC_MEASUREMENT_PROTOCOL is exposed.
   // So Measure the GPT data with one of the protocol.
@@ -474,6 +478,24 @@ Tcg2MeasurePeImage (
   if ((FilePath != NULL) && (FilePathSize != 0)) {
     CopyMem (ImageLoad->DevicePath, FilePath, FilePathSize);
   }
+
+  // MU_CHANGE [END]
+  DEBUG_CODE_BEGIN ();
+
+  CHAR16  *ToText;
+  ToText = ConvertDevicePathToText (
+            ImageLoad->DevicePath,
+            FALSE,
+            TRUE
+            );
+  if (ToText != NULL) {
+    DEBUG ((DEBUG_INFO, "PCR[%x] MeasurePeImage (%s)\n",Tcg2Event->Header.PCRIndex, ToText));
+    FreePool (ToText);
+  } else {
+    DEBUG ((DEBUG_INFO, "PCR[%x] MeasurePeImage (N/A)\n",Tcg2Event->Header.PCRIndex));
+  }
+
+  DEBUG_CODE_END ();
 
   //
   // Log the PE data
