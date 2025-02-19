@@ -429,11 +429,6 @@
   #   TRUE  - A random password will be used
   #   FALSE - The hierarchy will be disabled
   gEfiSecurityPkgTokenSpaceGuid.PcdRandomizePlatformHierarchy|TRUE|BOOLEAN|0x00010024
-  ## MU_CHANGE - Support mode where Ready To Boot Strings/Events are not measured into
-  ## PCR 4.
-  # TRUE - The Platform will measure
-  # FALSE -The Platform will not measure those events
-  gEfiSecurityPkgTokenSpaceGuid.TcgMeasureBootStringsInPcr4|TRUE|BOOLEAN|0x0000000B
 
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
   ## Indicates whether TPM physical presence is locked during platform initialization.

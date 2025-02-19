@@ -59,10 +59,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 // MU_CHANGE [BEGIN]
 //
-// Signaling data for change in (PROTOTYPE NOT ACCEPTED) TCG Spec
-// TCG_SPEC_CHANGE: <PCR>_<RULE>
+// Event signals that this code adheres to the TCG PC Client Platform Firmware Profile Specification
+// Version 1.05 Revision 23
 //
-#define SPEC_CHG_PCR4_SKIP_FV_APP_EVENT_DATA "TCG_SPEC_CHANGE: PCR4_SKIP_FV_APP"
+#define TCG_SPEC_VERSION_EVENT_DATA  "TCG PC Client Platform Firmware Profile Specification: Version 1.05, Revision 23"
 // MU_CHANGE [END]
 
 typedef struct {
@@ -2610,22 +2610,6 @@ OnReadyToBoot (
       DEBUG ((DEBUG_ERROR, "Boot Variables not Measured. Error!\n"));
     }
 
-    if (PcdGetBool (TcgMeasureBootStringsInPcr4)) {
-      // MU_CHANGE for some platform uefi compat
-      //
-      // 1. This is the first boot attempt.
-      //
-      Status = TcgMeasureAction (
-                 4,
-                 EFI_CALLING_EFI_APPLICATION
-                 );
-      if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a not Measured. Error!\n", EFI_CALLING_EFI_APPLICATION));
-      }
-    } else {
-      DEBUG ((DEBUG_WARN, "Tcg2Dxe PCD set to skip Measure Boot String in PCR4\n"));
-    }
-
     //
     // 2. Draw a line between pre-boot env and entering post-boot env.
     // PCR[7] is already done.
@@ -2648,35 +2632,6 @@ OnReadyToBoot (
     //
     // 5. Read & Measure variable. BootOrder already measured.
     //
-  } else {
-    if (PcdGetBool (TcgMeasureBootStringsInPcr4)) {
-      // MU_CHANGE for platform uefi compat
-      //
-      // 6. Not first attempt, meaning a return from last attempt
-      //
-      Status = TcgMeasureAction (
-                 4,
-                 EFI_RETURNING_FROM_EFI_APPLICATION
-                 );
-      if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a not Measured. Error!\n", EFI_RETURNING_FROM_EFI_APPLICATION));
-      }
-
-      //
-      // 7. Next boot attempt, measure "Calling EFI Application from Boot Option" again
-      // TCG PC Client PFP spec Section 2.4.4.5 Step 4
-      //
-      Status = TcgMeasureAction (
-                 4,
-                 EFI_CALLING_EFI_APPLICATION
-                 );
-      if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a not Measured. Error!\n", EFI_CALLING_EFI_APPLICATION));
-      }
-    } else {
-      // MU_CHANGE
-      DEBUG ((DEBUG_WARN, "Tcg2Dxe PCD set to skip Measure Boot String in PCR4\n"));
-    }
   }
 
   DEBUG ((DEBUG_INFO, "TPM2 Tcg2Dxe Measure Data when ReadyToBoot\n"));
@@ -2833,6 +2788,7 @@ OnResetNotificationInstall (
 }
 
 // MU_CHANGE [BEGIN]
+
 /**
   Logs a non-measured event in the TCG event log.
 
@@ -2854,16 +2810,16 @@ Tcg2LogNonMeasuredEvent (
   IN VOID   *EventData
   )
 {
-  EFI_TCG2_EVENT    *Tcg2Event;
-  EFI_STATUS        Status;
+  EFI_TCG2_EVENT  *Tcg2Event;
+  EFI_STATUS      Status;
 
-  TPML_DIGEST_VALUES NoActionDigestList;
+  TPML_DIGEST_VALUES  NoActionDigestList;
 
   //
   // Normally the digest list represents the hashes of the event data.
   // In this case, there is no event data to hash, so the list is empty.
   //
-  ZeroMem(&NoActionDigestList, sizeof(NoActionDigestList));
+  ZeroMem (&NoActionDigestList, sizeof (NoActionDigestList));
   NoActionDigestList.count = 0;
 
   // Handle the case where the event size is too large
@@ -2896,6 +2852,7 @@ Tcg2LogNonMeasuredEvent (
 
   return Status;
 }
+
 // MU_CHANGE [END]
 
 /**
@@ -2916,13 +2873,14 @@ InstallTcg2 (
 
   // MU_CHANGE [BEGIN]
   //
-  // Log the SKIP_FV_APP signalling event
+  // Log the the version of the TCG specification that the platform implements.
   //
-  Status =   Tcg2LogNonMeasuredEvent (sizeof(SPEC_CHG_PCR4_SKIP_FV_APP_EVENT_DATA), SPEC_CHG_PCR4_SKIP_FV_APP_EVENT_DATA);
+  Status =   Tcg2LogNonMeasuredEvent (sizeof (TCG_SPEC_VERSION_EVENT_DATA), TCG_SPEC_VERSION_EVENT_DATA);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "Failed to log the non-measured signalling event\n"));
     return Status;
   }
+
   // MU_CHANGE [END]
 
   Status = gBS->InstallMultipleProtocolInterfaces (
