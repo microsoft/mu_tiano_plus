@@ -71,6 +71,10 @@
   OemTpm2InitLib
 ## MU_CHANGE [END]
   PcdLib  # MU_CHANGE
+  ## MU_CHANGE [BEGIN] - Measure Firmware Debugger Enabled
+  DeviceStateLib
+  PanicLib
+  ## MU_CHANGE [END]
 
 [Guids]
   ## SOMETIMES_CONSUMES     ## Variable:L"SecureBoot"
@@ -105,7 +109,7 @@
 
 [Pcd]
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmPlatformClass                         ## SOMETIMES_CONSUMES
-  gEfiSecurityPkgTokenSpaceGuid.PcdFirmwareDebuggerInitialized              ## SOMETIMES_CONSUMES
+  # gEfiSecurityPkgTokenSpaceGuid.PcdFirmwareDebuggerInitialized            ## SOMETIMES_CONSUMES # MU_CHANGE - Remove PCD
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid                          ## CONSUMES
   gEfiSecurityPkgTokenSpaceGuid.PcdStatusCodeSubClassTpmDevice              ## SOMETIMES_CONSUMES
   gEfiSecurityPkgTokenSpaceGuid.PcdTcg2HashAlgorithmBitmap                  ## CONSUMES
