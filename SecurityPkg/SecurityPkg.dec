@@ -517,7 +517,7 @@
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmAutoDetection|TRUE|BOOLEAN|0x00010011
 
   ## This PCD indicates TPM base address.<BR><BR>
-  # @Prompt TPM device base address.
+  # @Prompt TPM device address.
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmBaseAddress|0xFED40000|UINT64|0x00010012
 
     ## This PCD indicates internal TPM base address.<BR><BR>
