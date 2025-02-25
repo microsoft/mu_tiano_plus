@@ -22,6 +22,10 @@
   VERSION_STRING                 = 1.0
   ENTRY_POINT                    = InitializeTcgAcpiFfa
 
+#
+#  VALID_ARCHITECTURES           = AARCH64
+#
+
 [Sources]
   Tcg2AcpiFfa.c
   Tpm2Ffa.asl
