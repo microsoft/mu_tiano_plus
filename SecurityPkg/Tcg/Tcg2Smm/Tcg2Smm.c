@@ -318,37 +318,60 @@ InitializeTcgCommon (
     goto Cleanup;
   }
 
-  //
-  // Get the Sw dispatch protocol and register SMI callback functions.
-  //
-  Status = gMmst->MmLocateProtocol (&gEfiSmmSwDispatch2ProtocolGuid, NULL, (VOID **)&SwDispatch);
-  ASSERT_EFI_ERROR (Status);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "[%a] Failed to locate Sw dispatch protocol - %r!\n", __func__, Status));
-    goto Cleanup;
+  if (!PcdGetBool (PcdTpmOverFfa)) {
+    //
+    // Get the Sw dispatch protocol and register SMI callback functions.
+    //
+    Status = gMmst->MmLocateProtocol (&gEfiSmmSwDispatch2ProtocolGuid, NULL, (VOID **)&SwDispatch);
+    ASSERT_EFI_ERROR (Status);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "[%a] Failed to locate Sw dispatch protocol - %r!\n", __func__, Status));
+      goto Cleanup;
+    }
+
+    SwContext.SwSmiInputValue = (UINTN)-1;
+    Status                    = SwDispatch->Register (SwDispatch, PhysicalPresenceCallback, &SwContext, &PpSwHandle);
+    ASSERT_EFI_ERROR (Status);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "[%a] Failed to register PP callback as SW MM handler - %r!\n", __func__, Status));
+      goto Cleanup;
+    }
+
+    mPpSoftwareSmi = SwContext.SwSmiInputValue;
+
+#if 0  // MU_CHANGE Begin - MemoryClear SMI handler is not used
+    SwContext.SwSmiInputValue = (UINTN)-1;
+    Status                    = SwDispatch->Register (SwDispatch, MemoryClearCallback, &SwContext, &McSwHandle);
+    ASSERT_EFI_ERROR (Status);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "[%a] Failed to register MC callback as SW MM handler - %r!\n", __func__, Status));
+      goto Cleanup;
+    }
+
+    mMcSoftwareSmi = SwContext.SwSmiInputValue;
+#endif // MU_CHANGE End
+  } else {
+    Status = gMmst->MmiHandlerRegister (PhysicalPresenceCallback, &gEfiTcg2PhysicalPresenceGuid, &PpSwHandle);
+    ASSERT_EFI_ERROR (Status);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "[%a] Failed to register PP callback as MMI handler - %r!\n", __func__, Status));
+      goto Cleanup;
+    }
+
+    mPpSoftwareSmi = PpSwHandle;
+
+#if 0  // MU_CHANGE Begin - MemoryClear SMI handler is not used
+    SwContext.SwSmiInputValue = (UINTN)-1;
+    Status = gMmst->MmiHandlerRegister (MemoryClearCallback, &gEfiMemoryOverwriteControlDataGuid, &McSwHandle);
+    ASSERT_EFI_ERROR (Status);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "[%a] Failed to register MC callback as MMI handler - %r!\n", __func__, Status));
+      goto Cleanup;
+    }
+
+    mMcSoftwareSmi = McSwHandle;
+#endif // MU_CHANGE End
   }
-
-  SwContext.SwSmiInputValue = (UINTN)-1;
-  Status                    = SwDispatch->Register (SwDispatch, PhysicalPresenceCallback, &SwContext, &PpSwHandle);
-  ASSERT_EFI_ERROR (Status);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "[%a] Failed to register PP callback as SW MM handler - %r!\n", __func__, Status));
-    goto Cleanup;
-  }
-
-  mPpSoftwareSmi = SwContext.SwSmiInputValue;
-
- #if 0  // MU_CHANGE Begin - MemoryClear SMI handler is not used
-  SwContext.SwSmiInputValue = (UINTN)-1;
-  Status                    = SwDispatch->Register (SwDispatch, MemoryClearCallback, &SwContext, &McSwHandle);
-  ASSERT_EFI_ERROR (Status);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "[%a] Failed to register MC callback as SW MM handler - %r!\n", __func__, Status));
-    goto Cleanup;
-  }
-
-  mMcSoftwareSmi = SwContext.SwSmiInputValue;
- #endif // MU_CHANGE End
 
   //
   // Locate SmmVariableProtocol.
