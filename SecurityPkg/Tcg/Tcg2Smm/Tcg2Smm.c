@@ -358,7 +358,7 @@ InitializeTcgCommon (
       goto Cleanup;
     }
 
-    mPpSoftwareSmi = PpSwHandle;
+    mPpSoftwareSmi = (UINTN)PpSwHandle;
 
 #if 0  // MU_CHANGE Begin - MemoryClear SMI handler is not used
     SwContext.SwSmiInputValue = (UINTN)-1;
@@ -369,7 +369,7 @@ InitializeTcgCommon (
       goto Cleanup;
     }
 
-    mMcSoftwareSmi = McSwHandle;
+    mMcSoftwareSmi = (UINTN)McSwHandle;
 #endif // MU_CHANGE End
   }
 

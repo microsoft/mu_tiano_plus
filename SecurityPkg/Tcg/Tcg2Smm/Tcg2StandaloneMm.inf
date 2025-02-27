@@ -71,6 +71,7 @@
 
 [Pcd]
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid              ## CONSUMES
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmOverFfa
 
 [Depex]
   gEfiSmmSwDispatch2ProtocolGuid AND
