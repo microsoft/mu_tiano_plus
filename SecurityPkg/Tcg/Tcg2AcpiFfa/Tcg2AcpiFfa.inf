@@ -42,12 +42,15 @@
   Tpm2CommandLib
   Tcg2PhysicalPresenceLib
   PcdLib
+  MmUnblockMemoryLib
 
 [Guids]
   gEfiTpmDeviceInstanceTpm20DtpmGuid                            ## PRODUCES ## GUID # TPM device identifier
+  gTpmNvsMmGuid
 
 [Protocols]
   gEfiAcpiTableProtocolGuid                                     ## CONSUMES
+  gEfiMmCommunicationProtocolGuid
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId                ## SOMETIMES_CONSUMES

@@ -17,13 +17,6 @@ DefinitionBlock (
   )
 {
   Scope (_SB) {
-    Device(FFA0) {
-      Name(_HID, "MSFT000C")
-
-      OperationRegion(AFFH, FFixedHw, 4, 144)
-      Field(AFFH, BufferAcc, NoLock, Preserve) { AccessAs(BufferAcc, 0x1), FFAC, 1152 }
-    }
-
     Device(TPM0) {
       Name (_HID, "NNNN0000")
       Name (_CID, "MSFT0101")
@@ -51,9 +44,9 @@ DefinitionBlock (
 
       //
       // Operational region for TPM support, TPM Physical Presence and TPM Memory Clear
-      // Region Offset 0xFFFF0000 and Length 0xF0 will be fixed in C code.
+      // Region Offset 0xFFFFFFFFFFFF0000 and Length 0xF0 will be fixed in C code.
       //
-      OperationRegion (TNVS, SystemMemory, 0xFFFF0000, 0xF0)
+      OperationRegion (TNVS, SystemMemory, 0xFFFFFFFFFFFF0000, 0xF0)
       Field (TNVS, AnyAcc, NoLock, Preserve)
       {
         PPIN,   8,  //   Software SMI for Physical Presence Interface
@@ -123,6 +116,8 @@ DefinitionBlock (
       //
       // FFA Direct Req2 Wrapper
       //
+      OperationRegion(AFFH, FFixedHw, 4, 144)
+      Field(AFFH, BufferAcc, NoLock, Preserve) { AccessAs(BufferAcc, 0x1), FFAC, 1152 }
       Method (FDR2, 1, Serialized) {
         CreateByteField(BUFF,0,STAT) // Out – Status for req/rsp
         CreateByteField(BUFF,1,LENG) // In/Out – Bytes in req, updates bytes returned
@@ -131,7 +126,7 @@ DefinitionBlock (
         Store(0x20, LENG)
         // Service UUID from the input
         Store(Arg0, UUID)
-        Store(Store(BUFF, \_SB_.FFA0.FFAC), BUFF)
+        Store(Store(BUFF, \_SB_.TPM0.FFAC), BUFF)
       }
 
       //

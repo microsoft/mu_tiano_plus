@@ -33,6 +33,8 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/Tpm2DeviceLib.h>
 #include <Library/Tpm2CommandLib.h>
 #include <Library/UefiLib.h>
+#include <Library/MmUnblockMemoryLib.h>
+#include <Library/MemoryAllocationLib.h>
 
 //
 // Physical Presence Interface Version supported by Platform
@@ -99,6 +101,140 @@ EFI_TPM2_ACPI_TABLE_V4  mTpm2AcpiTemplate = {
   0,                                    // Control Area
   EFI_TPM2_ACPI_TABLE_START_METHOD_TIS, // StartMethod
 };
+
+TCG_NVS  *mTcgNvs;
+
+/**
+  Find the operation region in TCG ACPI table by given Name and Size,
+  and initialize it if the region is found.
+
+  @param[in, out] Table          The TPM item in ACPI table.
+  @param[in]      Name           The name string to find in TPM table.
+  @param[in]      Size           The size of the region to find.
+
+  @return                        The allocated address for the found region.
+
+**/
+VOID *
+AssignOpRegion (
+  EFI_ACPI_DESCRIPTION_HEADER  *Table,
+  UINT32                       Name,
+  UINT16                       Size
+  )
+{
+  EFI_STATUS            Status;
+  AML_OP_REGION_64_8    *OpRegion;
+  EFI_PHYSICAL_ADDRESS  MemoryAddress;
+
+  MemoryAddress = MAX_ALLOC_ADDRESS;
+
+  //
+  // Patch some pointers for the ASL code before loading the SSDT.
+  //
+  for (OpRegion  = (AML_OP_REGION_64_8 *)(Table + 1);
+       OpRegion <= (AML_OP_REGION_64_8 *)((UINT8 *)Table + Table->Length);
+       OpRegion  = (AML_OP_REGION_64_8 *)((UINT8 *)OpRegion + 1))
+  {
+    if ((OpRegion->OpRegionOp  == AML_EXT_REGION_OP) &&
+        (OpRegion->NameString  == Name) &&
+        (OpRegion->QWordPrefix == AML_QWORD_PREFIX) &&
+        (OpRegion->BytePrefix  == AML_BYTE_PREFIX))
+    {
+      Status = gBS->AllocatePages (AllocateMaxAddress, EfiACPIMemoryNVS, EFI_SIZE_TO_PAGES (Size), &MemoryAddress);
+      ASSERT_EFI_ERROR (Status);
+      ZeroMem ((VOID *)(UINTN)MemoryAddress, Size);
+      OpRegion->RegionOffset = (UINT64)(UINTN)MemoryAddress;
+      OpRegion->RegionLen    = (UINT8)Size;
+      // Request to unblock this region from MM core
+      // TODO: FFA lend
+      Status = MmUnblockMemoryRequest (MemoryAddress, EFI_SIZE_TO_PAGES (Size));
+      if ((Status != EFI_UNSUPPORTED) && EFI_ERROR (Status)) {
+        ASSERT_EFI_ERROR (Status);
+      }
+
+      break;
+    }
+  }
+
+  return (VOID *)(UINTN)MemoryAddress;
+}
+
+/**
+  Locate the MM communication buffer and protocol, then use it to exchange information with
+  Tcg2StandaloneMmm on NVS address and SMI value.
+
+  @param[in, out] TcgNvs         The NVS subject to send to MM environment.
+
+  @return                        The status for locating MM common buffer, communicate to MM, etc.
+
+**/
+EFI_STATUS
+EFIAPI
+ExchangeCommonBuffer (
+  IN OUT  TCG_NVS  *TcgNvs
+  )
+{
+  EFI_STATUS                     Status;
+  EFI_MM_COMMUNICATION_PROTOCOL  *MmCommunication;
+  EFI_MM_COMMUNICATE_HEADER      *CommHeader = NULL;
+  TPM_NVS_MM_COMM_BUFFER         *CommBuffer;
+  UINTN                          CommBufferSize;
+
+  // Step 0: Sanity check for input argument
+  if (TcgNvs == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a - Input argument is NULL!\n", __func__));
+    return EFI_INVALID_PARAMETER;
+  }
+
+  // Step 1: Allocate a common buffer
+  CommHeader = AllocatePool (sizeof (TPM_NVS_MM_COMM_BUFFER) + OFFSET_OF (EFI_MM_COMMUNICATE_HEADER, Data));
+  if (CommHeader == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a - Failed to allocate common buffer!\n", __func__));
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  // Step 3: Start to populate contents
+  // Step 3.1: MM Communication common header
+  CommBufferSize = sizeof (TPM_NVS_MM_COMM_BUFFER) + OFFSET_OF (EFI_MM_COMMUNICATE_HEADER, Data);
+  ZeroMem (CommHeader, CommBufferSize);
+  CopyGuid (&CommHeader->HeaderGuid, &gTpmNvsMmGuid);
+  CommHeader->MessageLength = sizeof (TPM_NVS_MM_COMM_BUFFER);
+
+  // Step 3.2: TPM_NVS_MM_COMM_BUFFER content per our needs
+  CommBuffer                = (TPM_NVS_MM_COMM_BUFFER *)(CommHeader->Data);
+  CommBuffer->Function      = TpmNvsMmExchangeInfo;
+  CommBuffer->TargetAddress = (EFI_PHYSICAL_ADDRESS)(UINTN)TcgNvs;
+
+  // Step 4: Locate the protocol and signal Mmi.
+  Status = gBS->LocateProtocol (&gEfiMmCommunicationProtocolGuid, NULL, (VOID **)&MmCommunication);
+  if (!EFI_ERROR (Status)) {
+    Status = MmCommunication->Communicate (MmCommunication, CommHeader, &CommBufferSize);
+    DEBUG ((DEBUG_INFO, "%a - Communicate() = %r\n", __func__, Status));
+  } else {
+    DEBUG ((DEBUG_ERROR, "%a - Failed to locate MmCommunication protocol - %r\n", __func__, Status));
+    goto Exit;
+  }
+
+  // Step 5: If everything goes well, populate the channel number
+  if (!EFI_ERROR (CommBuffer->ReturnStatus)) {
+    // Need to demote to UINT8 according to SMI value definition
+    TcgNvs->PhysicalPresence.SoftwareSmi = (UINT8)CommBuffer->RegisteredPpSwiValue;
+    TcgNvs->MemoryClear.SoftwareSmi      = (UINT8)CommBuffer->RegisteredMcSwiValue;
+    DEBUG ((
+      DEBUG_INFO,
+      "%a Communication returned software SMI value. PP: 0x%x; MC: 0x%x.\n",
+      __func__,
+      TcgNvs->PhysicalPresence.SoftwareSmi,
+      TcgNvs->MemoryClear.SoftwareSmi
+      ));
+  }
+
+Exit:
+  if (CommHeader != NULL) {
+    FreePool (CommHeader);
+  }
+  return (EFI_STATUS)CommBuffer->ReturnStatus;
+}
 
 /**
   Patch version string of Physical Presence interface supported by platform. The initial string tag in TPM
@@ -586,6 +722,15 @@ PublishAcpiTable (
         ));
     }
   }
+
+  ASSERT (Table->OemTableId == SIGNATURE_64 ('T', 'p', 'm', '2', 'T', 'a', 'b', 'l'));
+  CopyMem (Table->OemId, PcdGetPtr (PcdAcpiDefaultOemId), sizeof (Table->OemId));
+  mTcgNvs = AssignOpRegion (Table, SIGNATURE_32 ('T', 'N', 'V', 'S'), (UINT16)sizeof (TCG_NVS));
+  ASSERT (mTcgNvs != NULL);
+  mTcgNvs->TpmIrqNum            = PcdGet32 (PcdTpm2CurrentIrqNum);
+  mTcgNvs->IsShortFormPkgLength = IsShortFormPkgLength;
+
+  Status = ExchangeCommonBuffer (mTcgNvs);
 
   //
   // Publish the TPM ACPI table. Table is re-checksummed.
