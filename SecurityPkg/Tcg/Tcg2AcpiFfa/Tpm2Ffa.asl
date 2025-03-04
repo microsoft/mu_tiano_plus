@@ -119,8 +119,8 @@ DefinitionBlock (
       OperationRegion(AFFH, FFixedHw, 4, 144)
       Field(AFFH, BufferAcc, NoLock, Preserve) { AccessAs(BufferAcc, 0x1), FFAC, 1152 }
       Method (FDR2, 1, Serialized) {
-        CreateByteField(BUFF,0,STAT) // Out â€“ Status for req/rsp
-        CreateByteField(BUFF,1,LENG) // In/Out â€“ Bytes in req, updates bytes returned
+        CreateByteField(BUFF,0,STAT) // Out – Status for req/rsp
+        CreateByteField(BUFF,1,LENG) // In/Out – Bytes in req, updates bytes returned
         CreateField(BUFF,16,128,UUID) // UUID of service
 
         Store(0x20, LENG)

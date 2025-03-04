@@ -95,6 +95,11 @@
   MemLibWrapper|SecurityPkg/DeviceSecurity/OsStub/MemLibWrapper/MemLibWrapper.inf
   NULL|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf # MU_CHANGE: /GS and -fstack-protector support
 
+  ## MU_CHANGE [BEGIN] - Measure Firmware Debugger Enabled
+  DeviceStateLib|MdeModulePkg/Library/DeviceStateLib/DeviceStateLib.inf 
+  PanicLib|MdePkg/Library/BasePanicLibNull/BasePanicLibNull.inf 
+  # MU_CHANGE [END]
+
 [LibraryClasses.X64, LibraryClasses.IA32]
   Tcg2PreUefiEventLogLib|SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf  ## MU_CHANGE
 
@@ -419,8 +424,7 @@
   SecurityPkg/FvReportPei/FvReportPei.inf
 
 [Components.AARCH64]
-  SecurityPkg/Tcg/Tcg2AcpiFfa/Tcg2AcpiFfa.inf
-  SecurityPkg/Library/DxeTcg2PhysicalPresenceMinimumLib/DxeTcg2PhysicalPresenceMinimumLib.inf
+  SecurityPkg/Tcg/Tcg2AcpiFfa/Tcg2AcpiFfa.inf # MU_CHANGE
 
 [BuildOptions]
    MSFT:*_*_IA32_DLINK_FLAGS = /ALIGN:256
