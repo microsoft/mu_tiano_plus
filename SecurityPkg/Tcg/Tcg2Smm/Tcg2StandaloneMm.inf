@@ -73,6 +73,8 @@
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid              ## CONSUMES
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmOverFfa
 
+[Depex.IA32, Depex.X64]
+  gEfiSmmSwDispatch2ProtocolGuid
+
 [Depex]
-  gEfiSmmSwDispatch2ProtocolGuid AND
   gEfiSmmVariableProtocolGuid
