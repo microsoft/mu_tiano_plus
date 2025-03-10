@@ -105,17 +105,17 @@ SetRuntimeMemoryRangeAttributes (
       // The MMIO range is visible but has not been added to the memory space treat the region as not found.
       Status = EFI_NOT_FOUND;
     } else if (!EFI_ERROR (Status) &&
-        (
-         ((Descriptor.GcdMemoryType != EfiGcdMemoryTypeMemoryMappedIo) && (Descriptor.GcdMemoryType != EfiGcdMemoryTypeReserved)) ||
-         ((Descriptor.Length & EFI_PAGE_MASK) != 0)
-        )
-      )
+    (
+      ((Descriptor.GcdMemoryType != EfiGcdMemoryTypeMemoryMappedIo) && (Descriptor.GcdMemoryType != EfiGcdMemoryTypeReserved)) ||
+      ((Descriptor.Length & EFI_PAGE_MASK) != 0)
+     )
+     )
     {
       Status2 =  gDS->RemoveMemorySpace (
                         RuntimeMmioRanges->Range[Index].PhysicalBaseAddress,
                         Descriptor.Length
                         );
-    } 
+    }
 
     if ((Status == EFI_NOT_FOUND) || !EFI_ERROR (Status2)) {
       Status = gDS->AddMemorySpace (
