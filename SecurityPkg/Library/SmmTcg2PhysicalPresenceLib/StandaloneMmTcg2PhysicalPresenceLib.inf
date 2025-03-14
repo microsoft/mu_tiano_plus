@@ -30,9 +30,14 @@
 #
 
 [Sources]
-  StandaloneMmTcg2PhysicalPresenceLib.c
   MmTcg2PhysicalPresenceLibCommon.c
   MmTcg2PhysicalPresenceLibCommon.h
+
+[Sources.IA32, Sources.X64]
+  StandaloneMmTcg2PhysicalPresenceLib.c
+
+[Sources.ARM, Sources.AARCH64]
+  StandaloneMmTcg2PhysicalPresenceLibArm.c
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -59,6 +64,9 @@
 [Pcd]
   gEfiSecurityPkgTokenSpaceGuid.PcdTcg2PhysicalPresenceFlags        ## SOMETIMES_CONSUMES
   gEfiSecurityPkgTokenSpaceGuid.PcdDisallowPPIPersistentClearPermissions  ## CONSUMES # MU_CHANGE 108842
+
+[Pcd.ARM, Pcd.AARCH64]
+  gEfiSecurityPkgTokenSpaceGuid.PcdTcgPhysicalPresenceInterfaceVer
 
 [Depex]
   gEfiSmmVariableProtocolGuid
