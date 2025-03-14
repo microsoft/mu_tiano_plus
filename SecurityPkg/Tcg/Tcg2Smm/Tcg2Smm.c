@@ -16,6 +16,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 
 #include "Tcg2Smm.h"
+#include <IndustryStandard/ArmFfaPartInfo.h>
+#include <Library/ArmSvcLib.h>
+#include <Library/ArmFfaLib.h>
+#include <Library/ArmFfaLibEx.h>
 
 EFI_SMM_VARIABLE_PROTOCOL  *mSmmVariable = NULL;
 TCG_NVS                    *mTcgNvs      = NULL;
@@ -44,6 +48,7 @@ EFI_HANDLE                 mReadyToLockHandle;
   @retval EFI_ACCESS_DENIED         Part of the communication buffer lies in an invalid region.
 
 **/
+STATIC volatile BOOLEAN  loop = TRUE;
 EFI_STATUS
 EFIAPI
 TpmNvsCommunciate (
@@ -57,7 +62,7 @@ TpmNvsCommunciate (
   UINTN                   TempCommBufferSize;
   TPM_NVS_MM_COMM_BUFFER  *CommParams;
 
-  DEBUG ((DEBUG_VERBOSE, "%a()\n", __func__));
+  DEBUG ((DEBUG_ERROR, "%a()\n", __func__));
 
   //
   // If input is invalid, stop processing this SMI
@@ -85,7 +90,7 @@ TpmNvsCommunciate (
   Status     = EFI_SUCCESS;
   switch (CommParams->Function) {
     case TpmNvsMmExchangeInfo:
-      DEBUG ((DEBUG_VERBOSE, "[%a] - Function requested: MM_EXCHANGE_NVS_INFO\n", __func__));
+      DEBUG ((DEBUG_ERROR, "[%a] - Function requested: MM_EXCHANGE_NVS_INFO %p\n", __func__, (VOID*)(UINTN)CommParams->TargetAddress));
       // MU_CHANGE TCBZ4378 [BEGIN] - Check for invalid NVS buffer location
       if (!IsBufferOutsideMmValid (CommParams->TargetAddress, sizeof (TCG_NVS))) {
         DEBUG ((DEBUG_ERROR, "[%a] - NVS buffer in invalid location!\n", __func__));
@@ -93,11 +98,58 @@ TpmNvsCommunciate (
         Status = EFI_ACCESS_DENIED;
         break;
       }
+      UINT32 Resp1 = 0;
+      UINT32 Resp2 = 0;
+
+      UINT64 TxBufferAddr = 0;
+      UINT64 RxBufferAddr = 0;
+
+      ArmFfaLibGetRxTxBuffers (
+        (VOID **)&TxBufferAddr,
+        NULL,
+        (VOID **)&RxBufferAddr,
+        NULL
+        );
+
+      UINT8 *buffer = (UINT8*)TxBufferAddr;
+      DEBUG ((DEBUG_ERROR, "%a() buffer %d\n", __func__, __LINE__, buffer));
+      ZeroMem (buffer, sizeof (struct ffa_memory_region) + sizeof (struct ffa_memory_access));
+      struct ffa_memory_region *trans_desc = (struct ffa_memory_region *)buffer;
+      trans_desc->sender = 0;
+      trans_desc->attributes.cacheability = FFA_MEMORY_DEV_NGNRNE;
+      trans_desc->attributes.security = FFA_MEMORY_SECURITY_UNSPECIFIED;
+      trans_desc->attributes.type = FFA_MEMORY_DEVICE_MEM;
+      trans_desc->attributes.shareability = FFA_MEMORY_INNER_SHAREABLE;
+      trans_desc->flags = 0;
+      trans_desc->tag = 0; // TODO
+      trans_desc->handle = CommParams->RegisteredPpSwiValue;
+      trans_desc->memory_access_desc_size = sizeof (struct ffa_memory_access);
+      trans_desc->receiver_count = 1;
+      trans_desc->receivers_offset = sizeof (struct ffa_memory_region);
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
+      struct ffa_memory_access *receiver = (struct ffa_memory_access *)(buffer + sizeof (struct ffa_memory_region));
+      receiver->receiver_permissions.receiver = 0x8001;
+      receiver->receiver_permissions.permissions.data_access = FFA_DATA_ACCESS_RW;
+      receiver->receiver_permissions.permissions.instruction_access = FFA_INSTRUCTION_ACCESS_NOT_SPECIFIED;
+      receiver->receiver_permissions.flags = 0;
+      receiver->composite_memory_region_offset = 0;
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
+
+      Status = FfaMemRetrieveReqRxTx (
+        sizeof (struct ffa_memory_region) + sizeof (struct ffa_memory_access),
+        sizeof (struct ffa_memory_region) + sizeof (struct ffa_memory_access),
+        &Resp1,
+        &Resp2
+        );
+      DEBUG ((DEBUG_ERROR, "[%a] - %d %r!\n", __func__, __LINE__, Status));
+      // while (loop) {}
 
       // MU_CHANGE TCBZ4378 [END]
       CommParams->RegisteredPpSwiValue = mPpSoftwareSmi;
       CommParams->RegisteredMcSwiValue = mMcSoftwareSmi;
+      DEBUG ((DEBUG_ERROR, "[%a] - %d!\n", __func__, __LINE__));
       mTcgNvs                          = (TCG_NVS *)(UINTN)CommParams->TargetAddress;
+      DEBUG ((DEBUG_ERROR, "[%a] - %d!\n", __func__, __LINE__));
       break;
 
     default:
@@ -105,8 +157,9 @@ TpmNvsCommunciate (
       Status = EFI_UNSUPPORTED;
       break;
   }
-
+DEBUG ((DEBUG_ERROR, "[%a] - %d!\n", __func__, __LINE__));
   CommParams->ReturnStatus = (UINT64)Status;
+  DEBUG ((DEBUG_ERROR, "[%a] - %d!\n", __func__, __LINE__));
   return EFI_SUCCESS;
 }
 
@@ -141,29 +194,41 @@ PhysicalPresenceCallback (
   UINT32  OperationRequest;
   UINT32  RequestParameter;
 
+  DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
+
   if (mTcgNvs->PhysicalPresence.Parameter == TCG_ACPI_FUNCTION_RETURN_REQUEST_RESPONSE_TO_OS) {
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     mTcgNvs->PhysicalPresence.ReturnCode = Tcg2PhysicalPresenceLibReturnOperationResponseToOsFunction (
                                              &MostRecentRequest,
                                              &Response
                                              );
+                                             DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     mTcgNvs->PhysicalPresence.LastRequest = MostRecentRequest;
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     mTcgNvs->PhysicalPresence.Response    = Response;
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     return EFI_SUCCESS;
   } else if (  (mTcgNvs->PhysicalPresence.Parameter == TCG_ACPI_FUNCTION_SUBMIT_REQUEST_TO_BIOS)
             || (mTcgNvs->PhysicalPresence.Parameter == TCG_ACPI_FUNCTION_SUBMIT_REQUEST_TO_BIOS_2))
   {
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     OperationRequest                     = mTcgNvs->PhysicalPresence.Request;
     RequestParameter                     = mTcgNvs->PhysicalPresence.RequestParameter;
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     mTcgNvs->PhysicalPresence.ReturnCode = Tcg2PhysicalPresenceLibSubmitRequestToPreOSFunctionEx (
                                              &OperationRequest,
                                              &RequestParameter
                                              );
+                                             DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     mTcgNvs->PhysicalPresence.Request          = OperationRequest;
     mTcgNvs->PhysicalPresence.RequestParameter = RequestParameter;
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   } else if (mTcgNvs->PhysicalPresence.Parameter == TCG_ACPI_FUNCTION_GET_USER_CONFIRMATION_STATUS_FOR_REQUEST) {
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     mTcgNvs->PhysicalPresence.ReturnCode = Tcg2PhysicalPresenceLibGetUserConfirmationStatusFunction (mTcgNvs->PPRequestUserConfirm);
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   }
-
+DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   return EFI_SUCCESS;
 }
 
@@ -310,7 +375,7 @@ InitializeTcgCommon (
   McSwHandle         = NULL;
   NotifyHandle       = NULL;
 
-  // Register a root handler to communicate the NVS region and SMI channel between MM and DXE
+  // Register a non-root handler to communicate the NVS region and SMI channel between MM and DXE
   Status = gMmst->MmiHandlerRegister (TpmNvsCommunciate, &gTpmNvsMmGuid, &mReadyToLockHandle);
   ASSERT_EFI_ERROR (Status);
   if (EFI_ERROR (Status)) {

@@ -38,13 +38,20 @@
 [Sources]
   Tcg2Smm.h
   Tcg2Smm.c
+
+[Sources.IA32, Sources.X64]
   Tcg2StandaloneMm.c
+
+[Sources.ARM, Sources.AARCH64]
+  Tcg2StandaloneMmArm.c
 
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   SecurityPkg/SecurityPkg.dec
   StandaloneMmPkg/StandaloneMmPkg.dec
+  ArmPkg/ArmPkg.dec
+  FfaFeaturePkg/FfaFeaturePkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -56,6 +63,9 @@
   PcdLib
   MemLib
   HobLib
+  ArmSvcLib
+  ArmFfaLib
+  ArmFfaLibEx
 
 [Guids]
   ## SOMETIMES_PRODUCES ## Variable:L"MemoryOverwriteRequestControl"
@@ -73,6 +83,7 @@
 
 [Pcd]
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmOverFfa              ## CONSUMES
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid
 
 [Depex.IA32, Depex.X64]
   gEfiSmmSwDispatch2ProtocolGuid
