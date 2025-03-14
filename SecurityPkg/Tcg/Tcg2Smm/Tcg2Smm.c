@@ -416,7 +416,7 @@ InitializeTcgCommon (
     mMcSoftwareSmi = SwContext.SwSmiInputValue;
 #endif // MU_CHANGE End
   } else {
-    Status = gMmst->MmiHandlerRegister (PhysicalPresenceCallback, &gEfiTcg2PhysicalPresenceGuid, &PpSwHandle);
+    Status = gMmst->MmiHandlerRegister (PhysicalPresenceCallback, &gEfiPhysicalPresenceAcpiGuid, &PpSwHandle);
     ASSERT_EFI_ERROR (Status);
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "[%a] Failed to register PP callback as MMI handler - %r!\n", __func__, Status));

@@ -51,7 +51,6 @@
   SecurityPkg/SecurityPkg.dec
   StandaloneMmPkg/StandaloneMmPkg.dec
   ArmPkg/ArmPkg.dec
-  FfaFeaturePkg/FfaFeaturePkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -65,7 +64,6 @@
   HobLib
   ArmSvcLib
   ArmFfaLib
-  ArmFfaLibEx
 
 [Guids]
   ## SOMETIMES_PRODUCES ## Variable:L"MemoryOverwriteRequestControl"
@@ -75,6 +73,7 @@
   gEfiTpmDeviceInstanceTpm20DtpmGuid                            ## PRODUCES           ## GUID       # TPM device identifier
   gTpmNvsMmGuid                                                 ## CONSUMES
   gEdkiiTpmInstanceHobGuid
+  gEfiPhysicalPresenceAcpiGuid
 
 [Protocols]
   gEfiSmmSwDispatch2ProtocolGuid                                ## CONSUMES
