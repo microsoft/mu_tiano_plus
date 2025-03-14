@@ -16,7 +16,7 @@ DefinitionBlock (
   0x1000
   )
 {
-  Scope (_SB) {
+  Scope (_SB_) {
     Device(TPM0) {
       Name (_HID, "NNNN0000")
       Name (_CID, "MSFT0101")
@@ -88,6 +88,10 @@ DefinitionBlock (
         Return (Unicode ("TPM 2.0 Device"))
       }
 
+      Method(_EST, 0x0, NotSerialized) {
+        FDR2 ()
+      }
+
       Method (_STA, 0)
       {
         if (LEqual (ACC0, 0xff))
@@ -109,23 +113,20 @@ DefinitionBlock (
       })
 
       Name(BUFF, Buffer(50){})   // Create buffer for send/recv data
-      Name(PPIU, Package() {
-        ToUUID("aeb9c5c1-94f1-4d02-bfd9-4602db2d3c54") // UUID for Physical Presence Interface
-      })
 
       //
       // FFA Direct Req2 Wrapper
       //
       OperationRegion(AFFH, FFixedHw, 4, 144)
       Field(AFFH, BufferAcc, NoLock, Preserve) { AccessAs(BufferAcc, 0x1), FFAC, 1152 }
-      Method (FDR2, 1, Serialized) {
+      Method (FDR2, 0, Serialized) {
         CreateByteField(BUFF,0,STAT) // Out - Status for req/rsp
         CreateByteField(BUFF,1,LENG) // In/Out - Bytes in req, updates bytes returned
         CreateField(BUFF,16,128,UUID) // UUID of service
 
         Store(0x20, LENG)
         // Service UUID from the input
-        Store(Arg0, UUID)
+        Store(ToUUID("3dddfaa6-361b-4eb4-a424-8d10089d1653"), UUID)
         Store(Store(BUFF, \_SB_.TPM0.FFAC), BUFF)
       }
 
@@ -166,7 +167,7 @@ DefinitionBlock (
             //
             // Trigger the FFA direct req2
             //
-            FDR2 (PPIU)
+            FDR2 ()
             Return (FRET)
 
 
@@ -197,7 +198,7 @@ DefinitionBlock (
             //
             // Trigger the FFA direct req2
             //
-            FDR2 (PPIU)
+            FDR2 ()
 
             Store (LPPR, Index (TPM3, 0x01))
             Store (PPRP, Index (TPM3, 0x02))
@@ -229,7 +230,7 @@ DefinitionBlock (
             //
             // Trigger the FFA direct req2
             //
-            FDR2 (PPIU)
+            FDR2 ()
             Return (FRET)
           }
           Case (8)
@@ -243,7 +244,7 @@ DefinitionBlock (
             //
             // Trigger the FFA direct req2
             //
-            FDR2 (PPIU)
+            FDR2 ()
 
             Return (FRET)
           }
@@ -267,5 +268,5 @@ DefinitionBlock (
         Return (Buffer () {0})
       }
     }
-  } // Scope(_SB)
+  } // Scope(_SB_)
 }

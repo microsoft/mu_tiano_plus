@@ -50,7 +50,7 @@
 
 [Protocols]
   gEfiAcpiTableProtocolGuid                                     ## CONSUMES
-  gEfiMmCommunicationProtocolGuid
+  gEfiMmCommunication2ProtocolGuid
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId                ## SOMETIMES_CONSUMES

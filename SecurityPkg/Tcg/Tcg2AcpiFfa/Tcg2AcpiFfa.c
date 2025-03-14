@@ -20,7 +20,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #include <Protocol/AcpiTable.h>
 #include <Protocol/Tcg2Protocol.h>
-#include <Protocol/MmCommunication.h>
+#include <Protocol/MmCommunication2.h>
 
 #include <Library/BaseLib.h>
 #include <Library/BaseMemoryLib.h>
@@ -104,6 +104,8 @@ EFI_TPM2_ACPI_TABLE_V4  mTpm2AcpiTemplate = {
 
 TCG_NVS  *mTcgNvs;
 
+extern UINT64 gMmUnblockMemoryHandle;
+
 /**
   Find the operation region in TCG ACPI table by given Name and Size,
   and initialize it if the region is found.
@@ -175,48 +177,55 @@ ExchangeCommonBuffer (
   )
 {
   EFI_STATUS                     Status;
-  EFI_MM_COMMUNICATION_PROTOCOL  *MmCommunication;
+  EFI_MM_COMMUNICATION2_PROTOCOL  *MmCommunication;
   EFI_MM_COMMUNICATE_HEADER      *CommHeader = NULL;
   TPM_NVS_MM_COMM_BUFFER         *CommBuffer;
   UINTN                          CommBufferSize;
+
+  DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
 
   // Step 0: Sanity check for input argument
   if (TcgNvs == NULL) {
     DEBUG ((DEBUG_ERROR, "%a - Input argument is NULL!\n", __func__));
     return EFI_INVALID_PARAMETER;
   }
-
+DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   // Step 1: Allocate a common buffer
   CommHeader = AllocatePool (sizeof (TPM_NVS_MM_COMM_BUFFER) + OFFSET_OF (EFI_MM_COMMUNICATE_HEADER, Data));
+  DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   if (CommHeader == NULL) {
     DEBUG ((DEBUG_ERROR, "%a - Failed to allocate common buffer!\n", __func__));
     return EFI_OUT_OF_RESOURCES;
   }
-
+DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   // Step 3: Start to populate contents
   // Step 3.1: MM Communication common header
   CommBufferSize = sizeof (TPM_NVS_MM_COMM_BUFFER) + OFFSET_OF (EFI_MM_COMMUNICATE_HEADER, Data);
   ZeroMem (CommHeader, CommBufferSize);
   CopyGuid (&CommHeader->HeaderGuid, &gTpmNvsMmGuid);
   CommHeader->MessageLength = sizeof (TPM_NVS_MM_COMM_BUFFER);
-
+DEBUG ((DEBUG_ERROR, "%a() %d %p\n", __func__, __LINE__, &CommBufferSize));
   // Step 3.2: TPM_NVS_MM_COMM_BUFFER content per our needs
   CommBuffer                = (TPM_NVS_MM_COMM_BUFFER *)(CommHeader->Data);
   CommBuffer->Function      = TpmNvsMmExchangeInfo;
   CommBuffer->TargetAddress = (EFI_PHYSICAL_ADDRESS)(UINTN)TcgNvs;
-
+  CommBuffer->RegisteredPpSwiValue = gMmUnblockMemoryHandle;
+DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   // Step 4: Locate the protocol and signal Mmi.
-  Status = gBS->LocateProtocol (&gEfiMmCommunicationProtocolGuid, NULL, (VOID **)&MmCommunication);
+  Status = gBS->LocateProtocol (&gEfiMmCommunication2ProtocolGuid, NULL, (VOID **)&MmCommunication);
+  DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   if (!EFI_ERROR (Status)) {
-    Status = MmCommunication->Communicate (MmCommunication, CommHeader, &CommBufferSize);
-    DEBUG ((DEBUG_INFO, "%a - Communicate() = %r\n", __func__, Status));
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
+    Status = MmCommunication->Communicate (MmCommunication, CommHeader, CommHeader, &CommBufferSize);
+    DEBUG ((DEBUG_ERROR, "%a - Communicate() = %r\n", __func__, Status));
   } else {
     DEBUG ((DEBUG_ERROR, "%a - Failed to locate MmCommunication protocol - %r\n", __func__, Status));
     goto Exit;
   }
-
+DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   // Step 5: If everything goes well, populate the channel number
   if (!EFI_ERROR (CommBuffer->ReturnStatus)) {
+    DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
     // Need to demote to UINT8 according to SMI value definition
     TcgNvs->PhysicalPresence.SoftwareSmi = (UINT8)CommBuffer->RegisteredPpSwiValue;
     TcgNvs->MemoryClear.SoftwareSmi      = (UINT8)CommBuffer->RegisteredMcSwiValue;
@@ -228,11 +237,12 @@ ExchangeCommonBuffer (
       TcgNvs->MemoryClear.SoftwareSmi
       ));
   }
-
+DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
 Exit:
   if (CommHeader != NULL) {
     FreePool (CommHeader);
   }
+  DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
   return (EFI_STATUS)CommBuffer->ReturnStatus;
 }
 
