@@ -16,9 +16,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 
 #include "Tcg2Smm.h"
-#include <IndustryStandard/ArmFfaPartInfo.h>
-#include <Library/ArmSvcLib.h>
-#include <Library/ArmFfaLib.h>
 
 EFI_SMM_VARIABLE_PROTOCOL  *mSmmVariable = NULL;
 TCG_NVS                    *mTcgNvs      = NULL;
@@ -88,7 +85,7 @@ TpmNvsCommunciate (
   Status     = EFI_SUCCESS;
   switch (CommParams->Function) {
     case TpmNvsMmExchangeInfo:
-      DEBUG ((DEBUG_VERBOSE, "[%a] - Function requested: MM_EXCHANGE_NVS_INFO\n", __func__));      // MU_CHANGE TCBZ4378 [BEGIN] - Check for invalid NVS buffer location
+      DEBUG ((DEBUG_VERBOSE, "[%a] - Function requested: MM_EXCHANGE_NVS_INFO\n", __func__));
       if (!IsBufferOutsideMmValid (CommParams->TargetAddress, sizeof (TCG_NVS))) {
         DEBUG ((DEBUG_ERROR, "[%a] - NVS buffer in invalid location!\n", __func__));
 
@@ -142,10 +139,12 @@ PhysicalPresenceCallback (
   UINT32  Response;
   UINT32  OperationRequest;
   UINT32  RequestParameter;
+  EFI_STATUS Status;
 
-
-  if (PcdGetBool (PcdTpmOverFfa) == TRUE) {
-    mTcgNvs = (TCG_NVS *)(UINTN)CommBuffer;
+  Status = InspectNvsBuffer (&mTcgNvs, CommBuffer, CommBufferSize);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "[%a] - NVS buffer in invalid location!\n", __func__));
+    return EFI_ACCESS_DENIED;
   }
 
   if (mTcgNvs->PhysicalPresence.Parameter == TCG_ACPI_FUNCTION_RETURN_REQUEST_RESPONSE_TO_OS) {
@@ -325,59 +324,11 @@ InitializeTcgCommon (
     goto Cleanup;
   }
 
-  if (!PcdGetBool (PcdTpmOverFfa)) {
-    //
-    // Get the Sw dispatch protocol and register SMI callback functions.
-    //
-    Status = gMmst->MmLocateProtocol (&gEfiSmmSwDispatch2ProtocolGuid, NULL, (VOID **)&SwDispatch);
-    ASSERT_EFI_ERROR (Status);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "[%a] Failed to locate Sw dispatch protocol - %r!\n", __func__, Status));
-      goto Cleanup;
-    }
-
-    SwContext.SwSmiInputValue = (UINTN)-1;
-    Status                    = SwDispatch->Register (SwDispatch, PhysicalPresenceCallback, &SwContext, &PpSwHandle);
-    ASSERT_EFI_ERROR (Status);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "[%a] Failed to register PP callback as SW MM handler - %r!\n", __func__, Status));
-      goto Cleanup;
-    }
-
-    mPpSoftwareSmi = SwContext.SwSmiInputValue;
-
-#if 0  // MU_CHANGE Begin - MemoryClear SMI handler is not used
-    SwContext.SwSmiInputValue = (UINTN)-1;
-    Status                    = SwDispatch->Register (SwDispatch, MemoryClearCallback, &SwContext, &McSwHandle);
-    ASSERT_EFI_ERROR (Status);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "[%a] Failed to register MC callback as SW MM handler - %r!\n", __func__, Status));
-      goto Cleanup;
-    }
-
-    mMcSoftwareSmi = SwContext.SwSmiInputValue;
-#endif // MU_CHANGE End
-  } else {
-    Status = gMmst->MmiHandlerRegister (PhysicalPresenceCallback, &gEfiPhysicalPresenceAcpiGuid, &PpSwHandle);
-    ASSERT_EFI_ERROR (Status);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "[%a] Failed to register PP callback as MMI handler - %r!\n", __func__, Status));
-      goto Cleanup;
-    }
-
-    mPpSoftwareSmi = (UINTN)PpSwHandle;
-
-#if 0  // MU_CHANGE Begin - MemoryClear SMI handler is not used
-    SwContext.SwSmiInputValue = (UINTN)-1;
-    Status = gMmst->MmiHandlerRegister (MemoryClearCallback, &gEfiMemoryOverwriteControlDataGuid, &McSwHandle);
-    ASSERT_EFI_ERROR (Status);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "[%a] Failed to register MC callback as MMI handler - %r!\n", __func__, Status));
-      goto Cleanup;
-    }
-
-    mMcSoftwareSmi = (UINTN)McSwHandle;
-#endif // MU_CHANGE End
+  Status = RegsterPpiHandler (PhysicalPresenceCallback, &mPpSoftwareSmi);
+  ASSERT_EFI_ERROR (Status);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "[%a] Failed to register PP callback as SMI handler - %r!\n", __func__, Status));
+    goto Cleanup;
   }
 
   //

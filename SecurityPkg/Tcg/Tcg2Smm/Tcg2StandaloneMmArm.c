@@ -96,6 +96,75 @@ IsTpm20Dtpm (
 }
 
 /**
+  This function is used to register the SMM handler for physical presence.
+
+  @param[in]  Handler   The handler function to be registered.
+  @param[out] Token     The token returned for the registered handler.
+
+  @retval EFI_SUCCESS   The handler was registered successfully.
+  @retval Others       An error occurred while registering the handler.
+**/
+EFI_STATUS
+RegsterPpiHandler (
+  IN EFI_MM_HANDLER_ENTRY_POINT Handler,
+  OUT UINTN *Token
+  )
+{
+  EFI_STATUS Status;
+  EFI_HANDLE PpSwHandle;
+
+  if (Token == NULL) {
+    DEBUG ((DEBUG_ERROR, "[%a] Token is NULL!\n", __func__));
+    Status = EFI_INVALID_PARAMETER;
+    goto Cleanup;
+  }
+
+  Status = gMmst->MmiHandlerRegister (Handler, &gEfiPhysicalPresenceAcpiGuid, &PpSwHandle);
+  ASSERT_EFI_ERROR (Status);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "[%a] Failed to register PP callback as MMI handler - %r!\n", __func__, Status));
+    goto Cleanup;
+  }
+
+  *Token = (UINTN)PpSwHandle;
+
+Cleanup:
+  return Status;
+}
+
+/**
+  This function is used to inspect and/or fix up the NVS buffer.
+
+  @param[in] Buffer  The buffer start address to be checked.
+  @param[in] Length  The buffer length to be checked.
+
+  @retval EFI_SUCCESS  The buffer is valid.
+**/
+EFI_STATUS
+InspectNvsBuffer (
+  IN VOID** Tcg2Nvs,
+  IN VOID*  CommBuffer,
+  IN UINTN  Length
+  )
+{
+  EFI_STATUS  Status;
+  if (Tcg2Nvs == NULL || CommBuffer == NULL || Length == 0) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if (!IsCommBufferValid ((EFI_PHYSICAL_ADDRESS)(UINTN)CommBuffer, Length)) {
+    DEBUG ((DEBUG_ERROR, "[%a] - MM Communication buffer in invalid location!\n", __func__));
+    return EFI_ACCESS_DENIED;
+  }
+
+  // This is the special case for ARM Stmm, the input command
+  // goes through registers directly.
+  *Tcg2Nvs = CommBuffer;
+
+  return EFI_SUCCESS;
+}
+
+/**
   The driver's entry point.
 
   It install callbacks for TPM physical presence and MemoryClear, and locate

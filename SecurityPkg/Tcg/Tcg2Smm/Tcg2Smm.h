@@ -111,4 +111,34 @@ IsTpm20Dtpm (
   VOID
   );
 
+/**
+  This function is used to register the SMM handler for physical presence.
+
+  @param[in]  Handler   The handler function to be registered.
+  @param[out] Token     The token returned for the registered handler.
+
+  @retval EFI_SUCCESS   The handler was registered successfully.
+  @retval Others       An error occurred while registering the handler.
+**/
+EFI_STATUS
+RegsterPpiHandler (
+  IN EFI_MM_HANDLER_ENTRY_POINT Handler,
+  OUT UINTN *Token
+  );
+
+/**
+  This function is used to inspect and/or fix up the NVS buffer.
+
+  @param[in] Buffer  The buffer start address to be checked.
+  @param[in] Length  The buffer length to be checked.
+
+  @retval EFI_SUCCESS  The buffer is valid.
+**/
+EFI_STATUS
+InspectNvsBuffer (
+  IN VOID** Tcg2Nvs,
+  IN VOID*  CommBuffer,
+  IN UINTN  Length
+  );
+
 #endif // __TCG_SMM_H__

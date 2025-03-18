@@ -50,7 +50,6 @@
   MdeModulePkg/MdeModulePkg.dec
   SecurityPkg/SecurityPkg.dec
   StandaloneMmPkg/StandaloneMmPkg.dec
-  ArmPkg/ArmPkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -62,8 +61,6 @@
   PcdLib
   MemLib
   HobLib
-  ArmSvcLib
-  ArmFfaLib
 
 [Guids]
   ## SOMETIMES_PRODUCES ## Variable:L"MemoryOverwriteRequestControl"
@@ -81,8 +78,7 @@
   gEfiMmReadyToLockProtocolGuid                                 ## CONSUMES
 
 [Pcd]
-  gEfiSecurityPkgTokenSpaceGuid.PcdTpmOverFfa              ## CONSUMES
-  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid         ## CONSUMES
 
 [Depex.IA32, Depex.X64]
   gEfiSmmSwDispatch2ProtocolGuid
