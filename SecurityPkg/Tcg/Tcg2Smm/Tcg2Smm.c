@@ -47,7 +47,6 @@ EFI_HANDLE                 mReadyToLockHandle;
   @retval EFI_ACCESS_DENIED         Part of the communication buffer lies in an invalid region.
 
 **/
-STATIC volatile BOOLEAN  loop = TRUE;
 EFI_STATUS
 EFIAPI
 TpmNvsCommunciate (
