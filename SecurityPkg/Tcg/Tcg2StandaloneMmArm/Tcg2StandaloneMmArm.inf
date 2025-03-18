@@ -28,17 +28,15 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = Tcg2StandaloneMm
-  FILE_GUID                      = D40F321F-5349-4724-B667-131670587861
+  BASE_NAME                      = Tcg2StandaloneMmArm
+  FILE_GUID                      = EBFBCBA7-1F9E-42F7-842E-86A63B2710D6
   MODULE_TYPE                    = MM_STANDALONE
   PI_SPECIFICATION_VERSION       = 0x00010032
   VERSION_STRING                 = 1.0
   ENTRY_POINT                    = InitializeTcgStandaloneMm
 
 [Sources]
-  Tcg2Smm.h
-  Tcg2Smm.c
-  Tcg2StandaloneMm.c
+  Tcg2StandaloneMmArm.c
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -53,24 +51,18 @@
   MmServicesTableLib
   DebugLib
   Tcg2PhysicalPresenceLib
-  PcdLib
   MemLib
-  HobLib
 
 [Guids]
-  ## SOMETIMES_PRODUCES ## Variable:L"MemoryOverwriteRequestControl"
-  ## SOMETIMES_CONSUMES ## Variable:L"MemoryOverwriteRequestControl"
-  gEfiMemoryOverwriteControlDataGuid
-
   gEfiTpmDeviceInstanceTpm20DtpmGuid                            ## PRODUCES           ## GUID       # TPM device identifier
-  gTpmNvsMmGuid                                                 ## CONSUMES
   gEdkiiTpmInstanceHobGuid
+  gEfiPhysicalPresenceAcpiGuid
 
 [Protocols]
-  gEfiSmmSwDispatch2ProtocolGuid                                ## CONSUMES
-  gEfiSmmVariableProtocolGuid                                   ## CONSUMES
   gEfiMmReadyToLockProtocolGuid                                 ## CONSUMES
 
+[Pcd]
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid         ## CONSUMES
+
 [Depex]
-  gEfiSmmSwDispatch2ProtocolGuid AND
-  gEfiSmmVariableProtocolGuid
+  TRUE
