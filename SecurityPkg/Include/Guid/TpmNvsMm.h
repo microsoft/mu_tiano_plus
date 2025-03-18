@@ -53,16 +53,6 @@ typedef struct {
 } AML_OP_REGION_32_8;
 
 typedef struct {
-  UINT8     OpRegionOp;
-  UINT32    NameString;
-  UINT8     RegionSpace;
-  UINT8     QWordPrefix;
-  UINT64    RegionOffset;
-  UINT8     BytePrefix;
-  UINT8     RegionLen;
-} AML_OP_REGION_64_8;
-
-typedef struct {
   UINT64                  Function;
   UINT64                  ReturnStatus;
   EFI_PHYSICAL_ADDRESS    TargetAddress;

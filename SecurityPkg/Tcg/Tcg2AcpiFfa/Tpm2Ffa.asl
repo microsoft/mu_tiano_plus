@@ -42,29 +42,6 @@ DefinitionBlock (
                   // ignore the rest
       }
 
-      //
-      // Operational region for TPM support, TPM Physical Presence and TPM Memory Clear
-      // Region Offset 0xFFFFFFFFFFFF0000 and Length 0xF0 will be fixed in C code.
-      //
-      OperationRegion (TNVS, SystemMemory, 0xFFFFFFFFFFFF0000, 0xF0)
-      Field (TNVS, AnyAcc, NoLock, Preserve)
-      {
-        PPIN,   8,  //   Software SMI for Physical Presence Interface
-        PPIP,   32, //   Used for save physical presence parameter
-        PPRP,   32, //   Physical Presence request operation response
-        PPRQ,   32, //   Physical Presence request operation
-        PPRM,   32, //   Physical Presence request operation parameter
-        LPPR,   32, //   Last Physical Presence request operation
-        FRET,   32, //   Physical Presence function return code
-        MCIN,   8,  //   Software SMI for Memory Clear Interface
-        MCIP,   32, //   Used for save the Mor parameter
-        MORD,   32, //   Memory Overwrite Request Data
-        MRET,   32, //   Memory Overwrite function return code
-        UCRQ,   32, //   Physical Presence request operation to Get User Confirmation Status
-        IRQN,   32, //   IRQ Number for _CRS
-        SFRB,   8   //   Is shortformed Pkglength for resource buffer
-      }
-
       Method (_CRS, 0x0, Serialized) {
         Name (RBUF, ResourceTemplate ()
         {
@@ -88,10 +65,6 @@ DefinitionBlock (
         Return (Unicode ("TPM 2.0 Device"))
       }
 
-      Method(_EST, 0x0, NotSerialized) {
-        FDR2 ()
-      }
-
       Method (_STA, 0)
       {
         if (LEqual (ACC0, 0xff))
@@ -112,7 +85,24 @@ DefinitionBlock (
         0x0         // Response to the most recent operation request - Success
       })
 
-      Name(BUFF, Buffer(50){})   // Create buffer for send/recv data
+      Name(BUFF, Buffer (65){})
+      CreateByteField (BUFF, 0, STAT)   //   Out - Status for req/rsp
+      CreateByteField (BUFF, 1, LENG)   //   In/Out - Bytes in req, updates bytes returned
+      CreateField (BUFF, 16, 128, UUID) //   UUID of service
+      CreateByteField (BUFF, 18, PPIN) //   Software SMI for Physical Presence Interface
+      CreateDWordField (BUFF, 19, PPIP) //   Used for save physical presence parameter
+      CreateDWordField (BUFF, 23, PPRP) //   Physical Presence request operation response
+      CreateDWordField (BUFF, 27, PPRQ) //   Physical Presence request operation
+      CreateDWordField (BUFF, 31, PPRM) //   Physical Presence request operation parameter
+      CreateDWordField (BUFF, 35, LPPR) //   Last Physical Presence request operation
+      CreateDWordField (BUFF, 39, FRET) //   Physical Presence function return code
+      CreateByteField (BUFF, 43,  MCIN) //   Software SMI for Memory Clear Interface
+      CreateDWordField (BUFF, 44, MCIP) //   Used for save the Mor parameter
+      CreateDWordField (BUFF, 48, MORD) //   Memory Overwrite Request Data
+      CreateDWordField (BUFF, 52, MRET) //   Memory Overwrite function return code
+      CreateDWordField (BUFF, 56, UCRQ) //   Physical Presence request operation to Get User Confirmation Status
+      CreateDWordField (BUFF, 60, IRQN) //   IRQ Number for _CRS
+      CreateByteField (BUFF, 64, SFRB) //   Is shortformed Pkglength for resource buffer
 
       //
       // FFA Direct Req2 Wrapper
@@ -120,11 +110,7 @@ DefinitionBlock (
       OperationRegion(AFFH, FFixedHw, 4, 144)
       Field(AFFH, BufferAcc, NoLock, Preserve) { AccessAs(BufferAcc, 0x1), FFAC, 1152 }
       Method (FDR2, 0, Serialized) {
-        CreateByteField(BUFF,0,STAT) // Out - Status for req/rsp
-        CreateByteField(BUFF,1,LENG) // In/Out - Bytes in req, updates bytes returned
-        CreateField(BUFF,16,128,UUID) // UUID of service
-
-        Store(0x20, LENG)
+        Store(65, LENG)
         // Service UUID from the input
         Store(ToUUID("3dddfaa6-361b-4eb4-a424-8d10089d1653"), UUID)
         Store(Store(BUFF, \_SB_.TPM0.FFAC), BUFF)
@@ -159,6 +145,7 @@ DefinitionBlock (
             //
             // b) Submit TPM Operation Request to Pre-OS Environment
             //
+            Store (0, BUFF)
 
             Store (DerefOf (Index (Arg1, 0x00)), PPRQ)
             Store (0, PPRM)
@@ -193,6 +180,8 @@ DefinitionBlock (
             //
             // e) Return TPM Operation Response to OS Environment
             //
+            Store (0, BUFF)
+
             Store (0x05, PPIP)
 
             //
@@ -220,6 +209,8 @@ DefinitionBlock (
             //
             // g) Submit TPM Operation Request to Pre-OS Environment 2
             //
+            Store (0, BUFF)
+
             Store (7, PPIP)
             Store (DerefOf (Index (Arg1, 0x00)), PPRQ)
             Store (0, PPRM)
@@ -238,6 +229,8 @@ DefinitionBlock (
             //
             // e) Get User Confirmation Status for Operation
             //
+            Store (0, BUFF)
+
             Store (8, PPIP)
             Store (DerefOf (Index (Arg1, 0x00)), UCRQ)
 
