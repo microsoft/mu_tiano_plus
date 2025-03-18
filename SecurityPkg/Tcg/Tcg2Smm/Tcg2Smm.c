@@ -60,7 +60,7 @@ TpmNvsCommunciate (
   UINTN                   TempCommBufferSize;
   TPM_NVS_MM_COMM_BUFFER  *CommParams;
 
-  DEBUG ((DEBUG_ERROR, "%a()\n", __func__));
+  DEBUG ((DEBUG_VERBOSE, "%a()\n", __func__));
 
   //
   // If input is invalid, stop processing this SMI
@@ -88,8 +88,7 @@ TpmNvsCommunciate (
   Status     = EFI_SUCCESS;
   switch (CommParams->Function) {
     case TpmNvsMmExchangeInfo:
-      DEBUG ((DEBUG_ERROR, "[%a] - Function requested: MM_EXCHANGE_NVS_INFO %p\n", __func__, (VOID*)(UINTN)CommParams->TargetAddress));
-      // MU_CHANGE TCBZ4378 [BEGIN] - Check for invalid NVS buffer location
+      DEBUG ((DEBUG_VERBOSE, "[%a] - Function requested: MM_EXCHANGE_NVS_INFO\n", __func__));      // MU_CHANGE TCBZ4378 [BEGIN] - Check for invalid NVS buffer location
       if (!IsBufferOutsideMmValid (CommParams->TargetAddress, sizeof (TCG_NVS))) {
         DEBUG ((DEBUG_ERROR, "[%a] - NVS buffer in invalid location!\n", __func__));
 
@@ -100,9 +99,7 @@ TpmNvsCommunciate (
       // MU_CHANGE TCBZ4378 [END]
       CommParams->RegisteredPpSwiValue = mPpSoftwareSmi;
       CommParams->RegisteredMcSwiValue = mMcSoftwareSmi;
-      DEBUG ((DEBUG_ERROR, "[%a] - %d!\n", __func__, __LINE__));
       mTcgNvs                          = (TCG_NVS *)(UINTN)CommParams->TargetAddress;
-      DEBUG ((DEBUG_ERROR, "[%a] - %d!\n", __func__, __LINE__));
       break;
 
     default:
@@ -110,9 +107,8 @@ TpmNvsCommunciate (
       Status = EFI_UNSUPPORTED;
       break;
   }
-DEBUG ((DEBUG_ERROR, "[%a] - %d!\n", __func__, __LINE__));
+
   CommParams->ReturnStatus = (UINT64)Status;
-  DEBUG ((DEBUG_ERROR, "[%a] - %d!\n", __func__, __LINE__));
   return EFI_SUCCESS;
 }
 
@@ -174,7 +170,7 @@ PhysicalPresenceCallback (
   } else if (mTcgNvs->PhysicalPresence.Parameter == TCG_ACPI_FUNCTION_GET_USER_CONFIRMATION_STATUS_FOR_REQUEST) {
     mTcgNvs->PhysicalPresence.ReturnCode = Tcg2PhysicalPresenceLibGetUserConfirmationStatusFunction (mTcgNvs->PPRequestUserConfirm);
   }
-DEBUG ((DEBUG_ERROR, "%a() %d\n", __func__, __LINE__));
+
   return EFI_SUCCESS;
 }
 
