@@ -22,6 +22,10 @@
   VERSION_STRING                 = 1.0
   ENTRY_POINT                    = InitializeTcgAcpiFfa
 
+#
+#  VALID_ARCHITECTURES           = AARCH64
+#
+
 [Sources]
   Tcg2AcpiFfa.c
   Tpm2Ffa.asl
@@ -42,15 +46,12 @@
   Tpm2CommandLib
   Tcg2PhysicalPresenceLib
   PcdLib
-  MmUnblockMemoryLib
 
 [Guids]
   gEfiTpmDeviceInstanceTpm20DtpmGuid                            ## PRODUCES ## GUID # TPM device identifier
-  gTpmNvsMmGuid
 
 [Protocols]
   gEfiAcpiTableProtocolGuid                                     ## CONSUMES
-  gEfiMmCommunication2ProtocolGuid
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId                ## SOMETIMES_CONSUMES

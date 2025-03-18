@@ -407,8 +407,6 @@
   # consistent and functional.
   gEfiSecurityPkgTokenSpaceGuid.PcdSkipTcgSmmAcpiMeasurements|FALSE|BOOLEAN|0x10000001
 
-  gEfiSecurityPkgTokenSpaceGuid.PcdTpmOverFfa|FALSE|BOOLEAN|0x0000000C
-
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
   ## Image verification policy for OptionRom. Only following values are valid:<BR><BR>
   #  NOTE: Do NOT use 0x5 and 0x2 since it violates the UEFI specification and has been removed.<BR>

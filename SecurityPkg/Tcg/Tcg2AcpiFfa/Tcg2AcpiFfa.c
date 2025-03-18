@@ -32,8 +32,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/Tpm2DeviceLib.h>
 #include <Library/Tpm2CommandLib.h>
 #include <Library/UefiLib.h>
-#include <Library/MmUnblockMemoryLib.h>
-#include <Library/MemoryAllocationLib.h>
 
 //
 // Physical Presence Interface Version supported by Platform
