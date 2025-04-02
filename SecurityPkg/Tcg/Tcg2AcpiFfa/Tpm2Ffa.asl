@@ -86,10 +86,11 @@ DefinitionBlock (
       })
 
       Name(BUFF, Buffer (65){})
-      CreateByteField (BUFF, 0, STAT)   //   Out - Status for req/rsp
-      CreateByteField (BUFF, 1, LENG)   //   In/Out - Bytes in req, updates bytes returned
+      CreateQWordField (BUFF, 0, STAT)  //   In/Out - Status for req/rsp
+      CreateWordField (BUFF, 8, RCID)   //   In - Receiver ID populated by ASL. If zero, OS will populate this based on UUID.
+      // Empty space reserved for future use
       CreateField (BUFF, 16, 128, UUID) //   UUID of service
-      CreateByteField (BUFF, 18, PPIN) //   Software SMI for Physical Presence Interface
+      CreateByteField (BUFF, 18, PPIN)  //   Software SMI for Physical Presence Interface
       CreateDWordField (BUFF, 19, PPIP) //   Used for save physical presence parameter
       CreateDWordField (BUFF, 23, PPRP) //   Physical Presence request operation response
       CreateDWordField (BUFF, 27, PPRQ) //   Physical Presence request operation
@@ -102,12 +103,12 @@ DefinitionBlock (
       CreateDWordField (BUFF, 52, MRET) //   Memory Overwrite function return code
       CreateDWordField (BUFF, 56, UCRQ) //   Physical Presence request operation to Get User Confirmation Status
       CreateDWordField (BUFF, 60, IRQN) //   IRQ Number for _CRS
-      CreateByteField (BUFF, 64, SFRB) //   Is shortformed Pkglength for resource buffer
+      CreateByteField (BUFF, 64, SFRB)  //   Is shortformed Pkglength for resource buffer
 
       //
       // FFA Direct Req2 Wrapper
       //
-      OperationRegion(AFFH, FFixedHw, 4, 144)
+      OperationRegion(AFFH, FFixedHw, 2, 144)
       Field(AFFH, BufferAcc, NoLock, Preserve) { AccessAs(BufferAcc, 0x1), FFAC, 1152 }
       Method (FDR2, 0, Serialized) {
         Store(65, LENG)
