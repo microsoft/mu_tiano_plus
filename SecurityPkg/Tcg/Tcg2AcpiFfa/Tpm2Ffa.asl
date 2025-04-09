@@ -21,41 +21,20 @@ DefinitionBlock (
       Name (_HID, "NNNN0000")
       Name (_CID, "MSFT0101")
 
-      //
-      // Operational region for TPM access
-      //
-      OperationRegion (TPMR, SystemMemory, FixedPcdGet64 (PcdTpmBaseAddress), FixedPcdGet32 (PcdTpmCrbRegionSize))
-      Field (TPMR, AnyAcc, NoLock, Preserve)
-      {
-        ACC0, 8,  // TPM_ACCESS_0
-        Offset(0x8),
-        INTE, 32, // TPM_INT_ENABLE_0
-        INTV, 8,  // TPM_INT_VECTOR_0
-        Offset(0x10),
-        INTS, 32, // TPM_INT_STATUS_0
-        INTF, 32, // TPM_INTF_CAPABILITY_0
-        STS0, 32, // TPM_STS_0
-        Offset(0x24),
-        FIFO, 32, // TPM_DATA_FIFO_0
-        Offset(0x30),
-        TID0, 32, // TPM_INTERFACE_ID_0
-                  // ignore the rest
-      }
-
       Method (_CRS, 0x0, Serialized) {
         Name (RBUF, ResourceTemplate ()
         {
           QWordMemory (
-            ResourceConsumer, 
-            PosDecode, 
-            MinFixed, 
-            MaxFixed, 
+            ResourceConsumer,
+            PosDecode,
+            MinFixed,
+            MaxFixed,
             Cacheable,
-            ReadWrite, 
-            0x0, 
-            FixedPcdGet64 (PcdTpmBaseAddress), 
-            FixedPcdGet64 (PcdTpmMaxAddress), 
-            0x0, 
+            ReadWrite,
+            0x0,
+            FixedPcdGet64 (PcdTpmBaseAddress),
+            FixedPcdGet64 (PcdTpmMaxAddress),
+            0x0,
             FixedPcdGet32 (PcdTpmCrbRegionSize))
         })
         Return (RBUF)
@@ -67,10 +46,6 @@ DefinitionBlock (
 
       Method (_STA, 0)
       {
-        if (LEqual (ACC0, 0xff))
-        {
-            Return (0)
-        }
         Return (0x0f)
       }
 
@@ -113,6 +88,25 @@ DefinitionBlock (
         // Service UUID from the input
         Store(ToUUID("3dddfaa6-361b-4eb4-a424-8d10089d1653"), UUID)
         Store(Store(BUFF, \_SB_.TPM0.FFAC), BUFF)
+      }
+
+      Method (_EST, 0, Serialized) {
+        Store (0, BUFF)
+
+        Store (0xDEADBEEF, PPRQ)
+        Store (0, PPRM)
+        Store (0x02, PPIP)
+
+        //
+        // Trigger the FFA direct req2
+        //
+        FDR2 ()
+
+        If(LNotEqual (STAT, 0)) {
+          // Error handling
+          Return (STAT)
+        }
+        Return (FRET)
       }
 
       //
