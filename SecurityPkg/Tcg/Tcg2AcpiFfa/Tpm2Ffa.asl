@@ -85,25 +85,24 @@ DefinitionBlock (
         0x0         // Response to the most recent operation request - Success
       })
 
-      Name(BUFF, Buffer (65){})
-      CreateQWordField (BUFF, 0, STAT)  //   In/Out - Status for req/rsp
-      CreateWordField (BUFF, 8, RCID)   //   In - Receiver ID populated by ASL. If zero, OS will populate this based on UUID.
-      // Empty space reserved for future use
-      CreateField (BUFF, 16, 128, UUID) //   UUID of service
-      CreateByteField (BUFF, 18, PPIN)  //   Software SMI for Physical Presence Interface
-      CreateDWordField (BUFF, 19, PPIP) //   Used for save physical presence parameter
-      CreateDWordField (BUFF, 23, PPRP) //   Physical Presence request operation response
-      CreateDWordField (BUFF, 27, PPRQ) //   Physical Presence request operation
-      CreateDWordField (BUFF, 31, PPRM) //   Physical Presence request operation parameter
-      CreateDWordField (BUFF, 35, LPPR) //   Last Physical Presence request operation
-      CreateDWordField (BUFF, 39, FRET) //   Physical Presence function return code
-      CreateByteField (BUFF, 43,  MCIN) //   Software SMI for Memory Clear Interface
-      CreateDWordField (BUFF, 44, MCIP) //   Used for save the Mor parameter
-      CreateDWordField (BUFF, 48, MORD) //   Memory Overwrite Request Data
-      CreateDWordField (BUFF, 52, MRET) //   Memory Overwrite function return code
-      CreateDWordField (BUFF, 56, UCRQ) //   Physical Presence request operation to Get User Confirmation Status
-      CreateDWordField (BUFF, 60, IRQN) //   IRQ Number for _CRS
-      CreateByteField (BUFF, 64, SFRB)  //   Is shortformed Pkglength for resource buffer
+      Name(BUFF, Buffer (79){})
+      CreateQWordField (BUFF, 0, STAT)   //  In/Out - Status for req/rsp
+      CreateQWordField (BUFF, 8, RCID)   //  In - Receiver ID populated by ASL. If zero, OS will populate this based on UUID.
+      CreateField (BUFF, 128, 128, UUID) //  UUID of service
+      CreateByteField (BUFF, 32, PPIN)   //  Software SMI for Physical Presence Interface
+      CreateDWordField (BUFF, 33, PPIP)  //  Used for save physical presence parameter
+      CreateDWordField (BUFF, 37, PPRP)  //  Physical Presence request operation response
+      CreateDWordField (BUFF, 41, PPRQ)  //  Physical Presence request operation
+      CreateDWordField (BUFF, 45, PPRM)  //  Physical Presence request operation parameter
+      CreateDWordField (BUFF, 49, LPPR)  //  Last Physical Presence request operation
+      CreateDWordField (BUFF, 53, FRET)  //  Physical Presence function return code
+      CreateByteField (BUFF, 54, MCIN)   //  Software SMI for Memory Clear Interface
+      CreateDWordField (BUFF, 58, MCIP)  //  Used for save the Mor parameter
+      CreateDWordField (BUFF, 62, MORD)  //  Memory Overwrite Request Data
+      CreateDWordField (BUFF, 66, MRET)  //  Memory Overwrite function return code
+      CreateDWordField (BUFF, 70, UCRQ)  //  Physical Presence request operation to Get User Confirmation Status
+      CreateDWordField (BUFF, 74, IRQN)  //  IRQ Number for _CRS
+      CreateByteField (BUFF, 78, SFRB)   //  Is shortformed Pkglength for resource buffer
 
       //
       // FFA Direct Req2 Wrapper
@@ -111,7 +110,6 @@ DefinitionBlock (
       OperationRegion(AFFH, FFixedHw, 2, 144)
       Field(AFFH, BufferAcc, NoLock, Preserve) { AccessAs(BufferAcc, 0x1), FFAC, 1152 }
       Method (FDR2, 0, Serialized) {
-        Store(65, LENG)
         // Service UUID from the input
         Store(ToUUID("3dddfaa6-361b-4eb4-a424-8d10089d1653"), UUID)
         Store(Store(BUFF, \_SB_.TPM0.FFAC), BUFF)
@@ -156,9 +154,10 @@ DefinitionBlock (
             // Trigger the FFA direct req2
             //
             FDR2 ()
+            If(LNotEqual (STAT, 0)) {
+              Return (STAT)
+            }
             Return (FRET)
-
-
           }
           Case (3)
           {
@@ -189,6 +188,9 @@ DefinitionBlock (
             // Trigger the FFA direct req2
             //
             FDR2 ()
+            If(LNotEqual (STAT, 0)) {
+              Return (STAT)
+            }
 
             Store (LPPR, Index (TPM3, 0x01))
             Store (PPRP, Index (TPM3, 0x02))
@@ -223,6 +225,9 @@ DefinitionBlock (
             // Trigger the FFA direct req2
             //
             FDR2 ()
+            If(LNotEqual (STAT, 0)) {
+              Return (STAT)
+            }
             Return (FRET)
           }
           Case (8)
@@ -239,7 +244,9 @@ DefinitionBlock (
             // Trigger the FFA direct req2
             //
             FDR2 ()
-
+            If(LNotEqual (STAT, 0)) {
+              Return (STAT)
+            }
             Return (FRET)
           }
 
