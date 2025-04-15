@@ -3038,7 +3038,7 @@ DriverEntry (
   }
 
   // MU_CHANGE - Add support for measurements before the Tcg2 protocol is installed
-  CreateTcg2PreInstallEventLogEntries();
+  CreateTcg2PreInstallEventLogEntries ();
 
   //
   // Install Tcg2Protocol
