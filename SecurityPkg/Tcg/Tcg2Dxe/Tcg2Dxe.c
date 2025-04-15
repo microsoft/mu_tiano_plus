@@ -54,6 +54,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/DeviceStateLib.h>
 #include <Library/PanicLib.h>
 // MU_CHANGE [END]
+#include <Library/Tcg2PreInstallEventLogLib.h> // MU_CHANGE
 
 // #define PERF_ID_TCG2_DXE  0x3120 // MU_CHANGE
 
@@ -3035,6 +3036,9 @@ DriverEntry (
     //
     EfiCreateProtocolNotifyEvent (&gEfiResetNotificationProtocolGuid, TPL_CALLBACK, OnResetNotificationInstall, NULL, &Registration);
   }
+
+  // MU_CHANGE - Add support for measurements before the Tcg2 protocol is installed
+  CreateTcg2PreInstallEventLogEntries();
 
   //
   // Install Tcg2Protocol

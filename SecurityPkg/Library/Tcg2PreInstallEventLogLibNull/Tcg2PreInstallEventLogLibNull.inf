@@ -1,0 +1,27 @@
+## @file Tcg2PreInstallEventLogLibNull.inf
+# Tcg2PreInstallEventLogLib Null library instance
+#
+##
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION         = 0x00010017
+  BASE_NAME           = Tcg2PreInstallEventLogLibNull
+  FILE_GUID           = 2733B321-4C34-4302-843E-A83EB948191C
+  VERSION_STRING      = 1.0
+  MODULE_TYPE         = BASE
+  LIBRARY_CLASS       = Tcg2PreInstallEventLogLib
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  Tcg2PreInstallEventLogLibNull.c
+
+[Packages]
+  MdePkg/MdePkg.dec

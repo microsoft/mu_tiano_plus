@@ -138,6 +138,12 @@
   Tcg2PhysicalPresencePromptLib|Include/Library/Tcg2PhysicalPresencePromptLib.h
   ## MU_CHANGE [END]
 
+  ## MU_CHANGE
+  ##  @libraryclass  This library can be used to publish TPM EventLog entries
+  ##  for measurements before the Tcg2Dxe protocol is installed
+  #
+  Tcg2PreInstallEventLogLib|Include/Library/Tcg2PreInstallEventLogLib.h
+
   ##  @libraryclass Perform SPDM (following SPDM spec) and measure data to TPM (following TCG PFP spec).
   ##
   SpdmSecurityLib|Include/Library/SpdmSecurityLib.h

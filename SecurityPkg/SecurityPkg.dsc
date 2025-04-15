@@ -95,13 +95,13 @@
   MemLibWrapper|SecurityPkg/DeviceSecurity/OsStub/MemLibWrapper/MemLibWrapper.inf
   NULL|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf # MU_CHANGE: /GS and -fstack-protector support
 
+  Tcg2PreInstallEventLogLib|SecurityPkg/Library/Tcg2PreInstallEventLogLibNull/Tcg2PreInstallEventLogLibNull.inf  ## MU_CHANGE
+  Tcg2PreUefiEventLogLib|SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf  ## MU_CHANGE
+
   ## MU_CHANGE [BEGIN] - Measure Firmware Debugger Enabled
   DeviceStateLib|MdeModulePkg/Library/DeviceStateLib/DeviceStateLib.inf 
   PanicLib|MdePkg/Library/BasePanicLibNull/BasePanicLibNull.inf 
   # MU_CHANGE [END]
-
-[LibraryClasses.X64, LibraryClasses.IA32]
-  Tcg2PreUefiEventLogLib|SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf  ## MU_CHANGE
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
   #
@@ -286,6 +286,7 @@
   SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
   SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
   SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf
+  SecurityPkg/Library/Tcg2PreInstallEventLogLibNull/Tcg2PreInstallEventLogLibNull.inf
 # MU_CHANGE [END]
 
 [Components.IA32, Components.X64, Components.ARM, Components.AARCH64]
