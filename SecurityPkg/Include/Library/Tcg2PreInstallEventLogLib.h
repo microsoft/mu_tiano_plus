@@ -1,7 +1,8 @@
 /** @file -- Tcg2PreInstallEventLogLib.h
   This describes the interface that should be published by instances of the
   Tcg2PreInstallEventLogLib. This library can be used to publish TPM EventLog
-  entries for measurements before the TCG2 protocol is installed.
+  entries for measurements before the TCG2 protocol is installed and for
+  platforms that start at the DXE phase.
 
 Copyright (c) Microsoft Corporation.
 SPDX-License-Identifier: BSD-2-Clause-Patent
