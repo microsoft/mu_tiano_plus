@@ -1446,6 +1446,37 @@ Tcg2LogEvent (
   return Status;
 }
 
+EFI_STATUS
+EFIAPI
+Tcg2InitEvent (
+  IN OUT TCG_PCR_EVENT2_HDR  *Event,
+  IN UINT32                  EventSize
+  )
+{
+  EFI_STATUS     Status;
+  TCG_EVENTTYPE  EventType;
+
+  DEBUG ((DEBUG_VERBOSE, "%a - Entry\n", __FUNCTION__));
+
+  if (Event == NULL) {
+    Status = EFI_INVALID_PARAMETER;
+    goto Exit;
+  }
+
+  Status = EFI_SUCCESS;
+  if ((Event->EventType == EV_NO_ACTION) || (Event->EventType == EV_EFI_HCRTM_EVENT)) {
+    EventType = Event->EventType;
+    InitNoActionEvent (Event, EventSize);
+    Event->EventType = EventType;
+  } else {
+    // TODO: Add init for other event types
+  }
+
+Exit:
+  DEBUG ((DEBUG_VERBOSE, "%a - Exit. Status = %r\n", __FUNCTION__, Status));
+  return Status;
+}
+
 // MU_CHANGE - END - Add a new protocol to support Log-only events.
 
 /**
@@ -1617,7 +1648,8 @@ Tcg2GetResultOfSetActivePcrBanks (
 // MU_CHANGE - START - Add a new protocol to support Log-only events.
 MU_TCG2_PROTOCOL  mMuTcg2Protocol = {
   MU_TCG2_PROTOCOL_VERSION,
-  Tcg2LogEvent
+  Tcg2LogEvent,
+  Tcg2InitEvent,
 };
 // MU_CHANGE - END - Add a new protocol to support Log-only events.
 

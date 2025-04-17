@@ -38,11 +38,19 @@ EFI_STATUS
   IN TPML_DIGEST_VALUES   *DigestList,
   IN EFI_TCG2_EVENT       *Event
   );
+
+typedef
+EFI_STATUS
+(EFIAPI *MU_TCG2_INIT_EVENT)(
+  IN OUT TCG_PCR_EVENT2_HDR  *Event,
+  IN UINT32                  EventSize
+  );
 // MU_CHANGE - END - Add a new protocol to support Log-only events.
 
 struct tdMU_TCG2_PROTOCOL {
-  UINT32               Version;
-  MU_TCG2_LOG_EVENT    Tcg2LogEvent;
+  UINT32                Version;
+  MU_TCG2_LOG_EVENT     Tcg2LogEvent;
+  MU_TCG2_INIT_EVENT    Tcg2InitEvent;
 };
 
 extern EFI_GUID  gMuTcg2ProtocolExGuid;
