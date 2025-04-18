@@ -12,7 +12,7 @@
 #include <IndustryStandard/Tpm20.h>
 #include <Protocol/Tcg2Protocol.h>
 
-#define MU_TCG2_PROTOCOL_VERSION  1
+#define MU_TCG2_PROTOCOL_VERSION  2
 
 typedef struct tdMU_TCG2_PROTOCOL MU_TCG2_PROTOCOL;
 
@@ -39,6 +39,22 @@ EFI_STATUS
   IN EFI_TCG2_EVENT       *Event
   );
 
+/**
+  The EFI_MU_TCG2_PROTOCOL MuEventInit function call provides callers with
+  an interface for initializing events before they are logged.
+
+  Supported Event Types:
+  EV_NO_ACTION
+  EV_EFI_HCRTM_EVENT
+
+  @param[in]      This             Indicates the calling context
+  @param[in/out]  Event            Pointer to the event to initialize
+  @param[in]      EventSize        Size of the event
+
+  @retval EFI_SUCCESS            Operation completed successfully.
+  @retval EFI_INVALID_PARAMETER  One or more of the parameters are incorrect.
+  @retval EFI_UNSUPPORTED        The event provided is unsupported
+**/
 typedef
 EFI_STATUS
 (EFIAPI *MU_TCG2_INIT_EVENT)(
