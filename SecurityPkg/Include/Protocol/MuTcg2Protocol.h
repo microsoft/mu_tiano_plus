@@ -40,8 +40,8 @@ EFI_STATUS
   );
 
 /**
-  The EFI_MU_TCG2_PROTOCOL MuEventInit function call provides callers with
-  an interface for initializing events before they are logged.
+  Initializes the provided TCG PCR Event2 Header structure based on its event type
+  so it is populated for further use such as logging.
 
   Supported Event Types:
   EV_NO_ACTION
