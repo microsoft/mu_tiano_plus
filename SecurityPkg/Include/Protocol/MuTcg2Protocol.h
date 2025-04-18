@@ -58,6 +58,7 @@ EFI_STATUS
 typedef
 EFI_STATUS
 (EFIAPI *MU_TCG2_INIT_EVENT)(
+  IN MU_TCG2_PROTOCOL        *This,
   IN OUT TCG_PCR_EVENT2_HDR  *Event,
   IN UINT32                  EventSize
   );
