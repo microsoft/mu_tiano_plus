@@ -75,6 +75,7 @@
   DeviceStateLib
   PanicLib
   ## MU_CHANGE [END]
+  Tcg2InitEventLib  ## MU_CHANGE
 
 [Guids]
   ## SOMETIMES_CONSUMES     ## Variable:L"SecureBoot"
@@ -101,6 +102,7 @@
 
 [Protocols]
   gEfiTcg2ProtocolGuid                               ## PRODUCES
+  gTpmLogProtocolGuid                                ## PRODUCES # MU_CHANGE
   gEfiTcg2FinalEventsTableGuid                       ## PRODUCES
   gEfiMpServiceProtocolGuid                          ## SOMETIMES_CONSUMES
   gEfiVariableWriteArchProtocolGuid                  ## NOTIFY

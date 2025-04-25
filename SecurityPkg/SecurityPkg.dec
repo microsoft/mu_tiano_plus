@@ -136,6 +136,11 @@
   #   a user with Physical Presence requests
   #
   Tcg2PhysicalPresencePromptLib|Include/Library/Tcg2PhysicalPresencePromptLib.h
+
+  ##  @libraryclass  Initializes TCG event data structures.
+  #
+  Tcg2InitEventLib|Include/Library/Tcg2InitEventLib.h
+
   ## MU_CHANGE [END]
 
   ##  @libraryclass Perform SPDM (following SPDM spec) and measure data to TPM (following TCG PFP spec).

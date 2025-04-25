@@ -1,0 +1,30 @@
+## @file Tcg2InitEventLib.inf
+# Initializes TCG event data structures
+#
+##
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION         = 0x00010017
+  BASE_NAME           = Tcg2InitEventLib
+  FILE_GUID           = E64B8E39-818D-4681-8797-55F96432FDA6
+  VERSION_STRING      = 1.0
+  MODULE_TYPE         = BASE
+  LIBRARY_CLASS       = Tcg2InitEventLib
+
+[Sources]
+  Tcg2InitEventLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  SecurityPkg/SecurityPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  Tpm2CommandLib
+  UefiBootServicesTableLib
+  UefiLib

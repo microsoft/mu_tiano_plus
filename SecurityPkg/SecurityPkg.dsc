@@ -93,11 +93,12 @@
   CryptlibWrapper|SecurityPkg/DeviceSecurity/OsStub/CryptlibWrapper/CryptlibWrapper.inf
   PlatformLibWrapper|SecurityPkg/DeviceSecurity/OsStub/PlatformLibWrapper/PlatformLibWrapper.inf
   MemLibWrapper|SecurityPkg/DeviceSecurity/OsStub/MemLibWrapper/MemLibWrapper.inf
+  Tcg2InitEventLib|SecurityPkg/Library/Tcg2InitEventLib/Tcg2InitEventLib.inf  ## MU_CHANGE
   NULL|MdePkg/Library/StackCheckLibNull/StackCheckLibNull.inf # MU_CHANGE: /GS and -fstack-protector support
 
   ## MU_CHANGE [BEGIN] - Measure Firmware Debugger Enabled
-  DeviceStateLib|MdeModulePkg/Library/DeviceStateLib/DeviceStateLib.inf 
-  PanicLib|MdePkg/Library/BasePanicLibNull/BasePanicLibNull.inf 
+  DeviceStateLib|MdeModulePkg/Library/DeviceStateLib/DeviceStateLib.inf
+  PanicLib|MdePkg/Library/BasePanicLibNull/BasePanicLibNull.inf
   # MU_CHANGE [END]
 
 [LibraryClasses.X64, LibraryClasses.IA32]
@@ -271,6 +272,7 @@
   SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
   SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
   SecurityPkg/Library/TcgEventLogRecordLib/TcgEventLogRecordLib.inf
+  SecurityPkg/Library/Tcg2InitEventLib/Tcg2InitEventLib.inf ## MU_CHANGE
 
 # MU_CHANGE [BEGIN]
   SecurityPkg/Library/BaseHash2CryptoLibNull/BaseHash2CryptoLibNull.inf

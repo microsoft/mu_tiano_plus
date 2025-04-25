@@ -27,6 +27,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Protocol/Tcg2Protocol.h>
 #include <Protocol/TrEEProtocol.h>
 #include <Protocol/ResetNotification.h>
+#include <Protocol/TpmLogProtocol.h> // MU_CHANGE
 
 #include <Library/DebugLib.h>
 #include <Library/BaseMemoryLib.h>
@@ -53,6 +54,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/DeviceStateLib.h>
 #include <Library/PanicLib.h>
 // MU_CHANGE [END]
+#include <Library/Tcg2InitEventLib.h> // MU_CHANGE
 
 // #define PERF_ID_TCG2_DXE  0x3120 // MU_CHANGE
 
@@ -170,82 +172,6 @@ InternalDumpData (
   for (Index = 0; Index < Size; Index++) {
     DEBUG ((DEBUG_INFO, "%02x", (UINTN)Data[Index]));
   }
-}
-
-/**
-
-  This function initialize TCG_PCR_EVENT2_HDR for EV_NO_ACTION Event Type other than EFI Specification ID event
-  The behavior is defined by TCG PC Client PFP Spec. Section 9.3.4 EV_NO_ACTION Event Types
-
-  @param[in, out]   NoActionEvent  Event Header of EV_NO_ACTION Event
-  @param[in]        EventSize      Event Size of the EV_NO_ACTION Event
-
-**/
-VOID
-InitNoActionEvent (
-  IN OUT TCG_PCR_EVENT2_HDR  *NoActionEvent,
-  IN UINT32                  EventSize
-  )
-{
-  UINT32         DigestListCount;
-  TPMI_ALG_HASH  HashAlgId;
-  UINT8          *DigestBuffer;
-
-  DigestBuffer    = (UINT8 *)NoActionEvent->Digests.digests;
-  DigestListCount = 0;
-
-  NoActionEvent->PCRIndex  = 0;
-  NoActionEvent->EventType = EV_NO_ACTION;
-
-  //
-  // Set Hash count & hashAlg accordingly, while Digest.digests[n].digest to all 0
-  //
-  ZeroMem (&NoActionEvent->Digests, sizeof (NoActionEvent->Digests));
-
-  if ((mTcgDxeData.BsCap.ActivePcrBanks & EFI_TCG2_BOOT_HASH_ALG_SHA1) != 0) {
-    HashAlgId = TPM_ALG_SHA1;
-    CopyMem (DigestBuffer, &HashAlgId, sizeof (TPMI_ALG_HASH));
-    DigestBuffer += sizeof (TPMI_ALG_HASH) + GetHashSizeFromAlgo (HashAlgId);
-    DigestListCount++;
-  }
-
-  if ((mTcgDxeData.BsCap.ActivePcrBanks & EFI_TCG2_BOOT_HASH_ALG_SHA256) != 0) {
-    HashAlgId = TPM_ALG_SHA256;
-    CopyMem (DigestBuffer, &HashAlgId, sizeof (TPMI_ALG_HASH));
-    DigestBuffer += sizeof (TPMI_ALG_HASH) + GetHashSizeFromAlgo (HashAlgId);
-    DigestListCount++;
-  }
-
-  if ((mTcgDxeData.BsCap.ActivePcrBanks & EFI_TCG2_BOOT_HASH_ALG_SHA384) != 0) {
-    HashAlgId = TPM_ALG_SHA384;
-    CopyMem (DigestBuffer, &HashAlgId, sizeof (TPMI_ALG_HASH));
-    DigestBuffer += sizeof (TPMI_ALG_HASH) + GetHashSizeFromAlgo (HashAlgId);
-    DigestListCount++;
-  }
-
-  if ((mTcgDxeData.BsCap.ActivePcrBanks & EFI_TCG2_BOOT_HASH_ALG_SHA512) != 0) {
-    HashAlgId = TPM_ALG_SHA512;
-    CopyMem (DigestBuffer, &HashAlgId, sizeof (TPMI_ALG_HASH));
-    DigestBuffer += sizeof (TPMI_ALG_HASH) + GetHashSizeFromAlgo (HashAlgId);
-    DigestListCount++;
-  }
-
-  if ((mTcgDxeData.BsCap.ActivePcrBanks & EFI_TCG2_BOOT_HASH_ALG_SM3_256) != 0) {
-    HashAlgId = TPM_ALG_SM3_256;
-    CopyMem (DigestBuffer, &HashAlgId, sizeof (TPMI_ALG_HASH));
-    DigestBuffer += sizeof (TPMI_ALG_HASH) + GetHashSizeFromAlgo (HashAlgId);
-    DigestListCount++;
-  }
-
-  //
-  // Set Digests Count
-  //
-  WriteUnaligned32 ((UINT32 *)&NoActionEvent->Digests.count, DigestListCount);
-
-  //
-  // Set Event Size
-  //
-  WriteUnaligned32 ((UINT32 *)DigestBuffer, EventSize);
 }
 
 /**
@@ -1249,7 +1175,7 @@ TcgDxeHashLogExtendEvent (
     //
     if (NewEventHdr->PCRIndex <= MAX_PCR_INDEX) {
       Status = EFI_SUCCESS;
-      InitNoActionEvent (&NoActionEvent, NewEventHdr->EventSize);
+      InitNoActionEvent (&NoActionEvent, NewEventHdr->EventSize, mTcgDxeData.BsCap.ActivePcrBanks); // MU_CHANGE
       if ((Flags & EFI_TCG2_EXTEND_ONLY) == 0) {
         Status = TcgDxeLogHashEvent (&(NoActionEvent.Digests), NewEventHdr, NewEventData);
       }
@@ -1557,6 +1483,67 @@ Tcg2GetResultOfSetActivePcrBanks (
   }
 }
 
+// MU_CHANGE - [BEGIN]
+
+/**
+  Provides callers with an interface for only logging events without hashing
+  data nor extending anything to the TPM.
+
+  @param[in]  This               Indicates the calling context
+  @param[in]  DigestList         Pointer to a list of digest values.
+  @param[in]  EfiTcgEvent        Pointer to data buffer containing information about the event.
+
+  @retval EFI_SUCCESS            Operation completed successfully.
+  @retval EFI_DEVICE_ERROR       The command was unsuccessful.
+  @retval EFI_INVALID_PARAMETER  One or more of the parameters are incorrect.
+  @retval EFI_OUT_OF_RESOURCES   No enough memory to log the new event.
+**/
+EFI_STATUS
+EFIAPI
+TpmLogEvent (
+  IN TPM_LOG_PROTOCOL    *This,
+  IN TPML_DIGEST_VALUES  *DigestList,
+  IN EFI_TCG2_EVENT      *Event
+  )
+{
+  EFI_STATUS         Status;
+  TCG_PCR_EVENT_HDR  NewEventHdr;
+
+  DEBUG ((DEBUG_VERBOSE, "TpmLogEvent ...\n"));
+
+  if ((This == NULL) || (Event == NULL) || (DigestList == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if (!mTcgDxeData.BsCap.TPMPresentFlag) {
+    return EFI_DEVICE_ERROR;
+  }
+
+  if (Event->Size < Event->Header.HeaderSize + sizeof (UINT32)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if (Event->Header.PCRIndex > MAX_PCR_INDEX) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  NewEventHdr.PCRIndex  = Event->Header.PCRIndex;
+  NewEventHdr.EventType = Event->Header.EventType;
+  NewEventHdr.EventSize = Event->Size - sizeof (UINT32) - Event->Header.HeaderSize;
+
+  Status = TcgDxeLogHashEvent (DigestList, &NewEventHdr, Event->Event);
+
+  DEBUG ((DEBUG_VERBOSE, "TpmLogEvent - %r\n", Status));
+  return Status;
+}
+
+TPM_LOG_PROTOCOL  mTpmLogProtocol = {
+  TPM_LOG_PROTOCOL_VERSION,
+  TpmLogEvent,
+};
+
+// MU_CHANGE - [END]
+
 EFI_TCG2_PROTOCOL  mTcg2Protocol = {
   Tcg2GetCapability,
   Tcg2GetEventLog,
@@ -1740,7 +1727,7 @@ SetupEventLog (
         //
         GuidHob.Guid = GetFirstGuidHob (&gTcg800155PlatformIdEventHobGuid);
         while (GuidHob.Guid != NULL) {
-          InitNoActionEvent (&NoActionEvent, GET_GUID_HOB_DATA_SIZE (GuidHob.Guid));
+          InitNoActionEvent (&NoActionEvent, GET_GUID_HOB_DATA_SIZE (GuidHob.Guid), mTcgDxeData.BsCap.ActivePcrBanks); // MU_CHANGE
 
           Status = TcgDxeLogEvent (
                      mTcg2EventInfo[Index].LogFormat,
@@ -1769,7 +1756,7 @@ SetupEventLog (
           //
           // Initialize StartupLocalityEvent
           //
-          InitNoActionEvent (&NoActionEvent, sizeof (StartupLocalityEvent));
+          InitNoActionEvent (&NoActionEvent, sizeof (StartupLocalityEvent), mTcgDxeData.BsCap.ActivePcrBanks); // MU_CHANGE
 
           //
           // Log EfiStartupLocalityEvent as the second Event
@@ -2772,6 +2759,8 @@ InstallTcg2 (
                   &Handle,
                   &gEfiTcg2ProtocolGuid,
                   &mTcg2Protocol,
+                  &gTpmLogProtocolGuid, // MU_CHANGE
+                  &mTpmLogProtocol,     // MU_CHANGE
                   NULL
                   );
   return Status;
