@@ -729,7 +729,7 @@ Tcg2GetEventLog (
 {
   UINTN  Index;
 
-  DEBUG ((DEBUG_INFO, "Tcg2GetEventLog ... (0x%x)\n", EventLogFormat));
+  // DEBUG ((DEBUG_INFO, "Tcg2GetEventLog ... (0x%x)\n", EventLogFormat)); // MU_CHANGE: Remove print
 
   if (This == NULL) {
     return EFI_INVALID_PARAMETER;
@@ -767,7 +767,7 @@ Tcg2GetEventLog (
 
   if (EventLogLocation != NULL) {
     *EventLogLocation = mTcgDxeData.EventLogAreaStruct[Index].Lasa;
-    DEBUG ((DEBUG_INFO, "Tcg2GetEventLog (EventLogLocation - %x)\n", *EventLogLocation));
+    // DEBUG ((DEBUG_INFO, "Tcg2GetEventLog (EventLogLocation - %x)\n", *EventLogLocation)); // MU_CHANGE: Remove print
   }
 
   if (EventLogLastEntry != NULL) {
@@ -777,15 +777,15 @@ Tcg2GetEventLog (
       *EventLogLastEntry = (EFI_PHYSICAL_ADDRESS)(UINTN)mTcgDxeData.EventLogAreaStruct[Index].LastEvent;
     }
 
-    DEBUG ((DEBUG_INFO, "Tcg2GetEventLog (EventLogLastEntry - %x)\n", *EventLogLastEntry));
+    // DEBUG ((DEBUG_INFO, "Tcg2GetEventLog (EventLogLastEntry - %x)\n", *EventLogLastEntry)); // MU_CHANGE: Remove print
   }
 
   if (EventLogTruncated != NULL) {
     *EventLogTruncated = mTcgDxeData.EventLogAreaStruct[Index].EventLogTruncated;
-    DEBUG ((DEBUG_INFO, "Tcg2GetEventLog (EventLogTruncated - %x)\n", *EventLogTruncated));
+    // DEBUG ((DEBUG_INFO, "Tcg2GetEventLog (EventLogTruncated - %x)\n", *EventLogTruncated)); MU_CHANGE: Remove print
   }
 
-  DEBUG ((DEBUG_INFO, "Tcg2GetEventLog - %r\n", EFI_SUCCESS));
+  // DEBUG ((DEBUG_INFO, "Tcg2GetEventLog - %r\n", EFI_SUCCESS)); // MU_CHANGE: Remove print
 
   // Dump Event Log for debug purpose
   if ((EventLogLocation != NULL) && (EventLogLastEntry != NULL)) {
@@ -1144,12 +1144,12 @@ TcgDxeLogHashEvent (
   UINT8           *DigestBuffer;
   UINT32          *EventSizePtr;
 
-  DEBUG ((DEBUG_INFO, "SupportedEventLogs - 0x%08x\n", mTcgDxeData.BsCap.SupportedEventLogs));
+  DEBUG ((DEBUG_VERBOSE, "SupportedEventLogs - 0x%08x\n", mTcgDxeData.BsCap.SupportedEventLogs)); // MU_CHANGE: Downgrade debug message
 
   RetStatus = EFI_SUCCESS;
   for (Index = 0; Index < sizeof (mTcg2EventInfo)/sizeof (mTcg2EventInfo[0]); Index++) {
     if ((mTcgDxeData.BsCap.SupportedEventLogs & mTcg2EventInfo[Index].LogFormat) != 0) {
-      DEBUG ((DEBUG_INFO, "  LogFormat - 0x%08x\n", mTcg2EventInfo[Index].LogFormat));
+      DEBUG ((DEBUG_VERBOSE, "  LogFormat - 0x%08x\n", mTcg2EventInfo[Index].LogFormat)); // MU_CHANGE: Downgrade debug message
       switch (mTcg2EventInfo[Index].LogFormat) {
         case EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2:
           Status = GetDigestFromDigestList (TPM_ALG_SHA1, DigestList, &NewEventHdr->Digest);
@@ -1474,7 +1474,7 @@ Tcg2SubmitCommand (
 {
   EFI_STATUS  Status;
 
-  DEBUG ((DEBUG_INFO, "Tcg2SubmitCommand ...\n"));
+  // DEBUG ((DEBUG_INFO, "Tcg2SubmitCommand ...\n")); MU_CHANGE: Remove noisy print
 
   if ((This == NULL) ||
       (InputParameterBlockSize == 0) || (InputParameterBlock == NULL) ||
@@ -1501,7 +1501,7 @@ Tcg2SubmitCommand (
              &OutputParameterBlockSize,
              OutputParameterBlock
              );
-  DEBUG ((DEBUG_INFO, "Tcg2SubmitCommand - %r\n", Status));
+  // DEBUG ((DEBUG_INFO, "Tcg2SubmitCommand - %r\n", Status)); MU_CHANGE: Remove noisy print
   return Status;
 }
 
