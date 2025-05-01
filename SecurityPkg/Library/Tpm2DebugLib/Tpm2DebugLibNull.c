@@ -6,6 +6,9 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
+#include <Uefi.h>
+#include <Library/Tpm2DebugLib.h>
+
 /**
   This function dumps as much information as possible about
   a command being sent to the TPM for maximum user-readability.
