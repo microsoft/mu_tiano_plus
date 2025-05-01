@@ -80,3 +80,49 @@ DumpTpmOutputBlock (
 
   return;
 } // DumpTpmOutputBlock()
+
+/**
+  This function dump event log.
+
+  @param[in]  EventLogFormat     The type of the event log for which the information is requested.
+  @param[in]  EventLogLocation   A pointer to the memory address of the event log.
+  @param[in]  EventLogLastEntry  If the Event Log contains more than one entry, this is a pointer to the
+                                 address of the start of the last entry in the event log in memory.
+  @param[in]  FinalEventsTable   A pointer to the memory address of the final event table.
+**/
+VOID
+EFIAPI
+DumpEventLog (
+  IN EFI_TCG2_EVENT_LOG_FORMAT    EventLogFormat,
+  IN EFI_PHYSICAL_ADDRESS         EventLogLocation,
+  IN EFI_PHYSICAL_ADDRESS         EventLogLastEntry,
+  IN EFI_TCG2_FINAL_EVENTS_TABLE  *FinalEventsTable
+  )
+{
+  // Dumping the entire event log is left for the verbose version of this library, because it can be thousands of
+  // lines long.
+  DEBUG ((DEBUG_INFO, "EventLogFormat - 0x%llx\n", EventLogFormat));
+  DEBUG ((DEBUG_INFO, "EventLogLocation - 0x%llx\n", EventLogLocation));
+  DEBUG ((DEBUG_INFO, "EventLogLastEntry - 0x%llx\n", EventLogLastEntry));
+  DEBUG ((DEBUG_INFO, "FinalEventsTable - 0x%llx\n", FinalEventsTable));
+}
+
+/**
+  This function dumps the provided PCR digest.
+
+  @param[in]  PcrIndex   The index of the PCR.
+  @param[in]  HashAlg    The hash algorithm used.
+  @param[in]  PcrValues  The digest to be dumped.
+**/
+VOID
+EFIAPI
+DumpPcrDigest (
+  IN UINT32         PcrIndex,
+  IN TPMI_ALG_HASH  HashAlg,
+  IN TPML_DIGEST    *PcrValues
+  )
+{
+  // This function simply marks we have read these PCRs, the verbose version of this function will dump the contents.
+  DEBUG ((DEBUG_INFO, "PcrIndex - %d\n", PcrIndex));
+  DEBUG ((DEBUG_INFO, "HashAlg - 0x%04x\n", HashAlg));
+}
