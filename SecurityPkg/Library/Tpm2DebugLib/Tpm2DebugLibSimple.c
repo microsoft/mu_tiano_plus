@@ -7,7 +7,9 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
+#include <Uefi.h>
 #include <Library/DebugLib.h>
+#include <Library/Tpm2DebugLib.h>
 
 /**
   This function dumps as much information as possible about
