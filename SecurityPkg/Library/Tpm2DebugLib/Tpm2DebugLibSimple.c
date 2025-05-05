@@ -82,7 +82,7 @@ DumpTpmOutputBlock (
 } // DumpTpmOutputBlock()
 
 /**
-  This function dump event log.
+  This function dumps the provided event log.
 
   @param[in]  EventLogFormat     The type of the event log for which the information is requested.
   @param[in]  EventLogLocation   A pointer to the memory address of the event log.
