@@ -743,10 +743,10 @@ DumpTpmOutputBlock (
 
 /**
 
-  This function dump raw data.
+  This function dumps raw data.
 
-  @param  Data  raw data
-  @param  Size  raw data size
+  @param[in]  Data  raw data
+  @param[in]  Size  raw data size
 
 **/
 STATIC
@@ -765,10 +765,10 @@ InternalDumpData (
 
 /**
 
-  This function dump raw data with colume format.
+  This function dumps raw data formatted in columns.
 
-  @param  Data  raw data
-  @param  Size  raw data size
+  @param[in]  Data  raw data
+  @param[in]  Size  raw data size
 
 **/
 STATIC
@@ -782,25 +782,25 @@ InternalDumpHex (
   UINTN  Count;
   UINTN  Left;
 
-  #define COLUME_SIZE  (16 * 2)
+  #define COLUMN_SIZE  (16 * 2)
 
-  Count = Size / COLUME_SIZE;
-  Left  = Size % COLUME_SIZE;
+  Count = Size / COLUMN_SIZE;
+  Left  = Size % COLUMN_SIZE;
   for (Index = 0; Index < Count; Index++) {
-    DEBUG ((DEBUG_INFO, "%04x: ", Index * COLUME_SIZE));
-    InternalDumpData (Data + Index * COLUME_SIZE, COLUME_SIZE);
+    DEBUG ((DEBUG_INFO, "%04x: ", Index * COLUMN_SIZE));
+    InternalDumpData (Data + Index * COLUMN_SIZE, COLUMN_SIZE);
     DEBUG ((DEBUG_INFO, "\n"));
   }
 
   if (Left != 0) {
-    DEBUG ((DEBUG_INFO, "%04x: ", Index * COLUME_SIZE));
-    InternalDumpData (Data + Index * COLUME_SIZE, Left);
+    DEBUG ((DEBUG_INFO, "%04x: ", Index * COLUMN_SIZE));
+    InternalDumpData (Data + Index * COLUMN_SIZE, Left);
     DEBUG ((DEBUG_INFO, "\n"));
   }
 }
 
 /**
-  This function dump PCR event.
+  This function dumps PCR events.
 
   @param[in]  EventHdr     TCG PCR event structure.
 **/
@@ -816,7 +816,7 @@ DumpEvent (
   DEBUG ((DEBUG_INFO, "    PCRIndex  - %d\n", EventHdr->PCRIndex));
   DEBUG ((DEBUG_INFO, "    EventType - 0x%08x\n", EventHdr->EventType));
   DEBUG ((DEBUG_INFO, "    Digest    - "));
-  for (Index = 0; Index < sizeof (TCG_DIGEST); Index++) {
+  for (Index = 0; Index < sizeof (EventHdr->Digest); Index++) {
     DEBUG ((DEBUG_INFO, "%02x ", EventHdr->Digest.digest[Index]));
   }
 
@@ -826,7 +826,7 @@ DumpEvent (
 }
 
 /**
-  This function dump PCR event 2.
+  This function dumps TCG_PCR_EVENT2 type events.
 
   @param[in]  TcgPcrEvent2     TCG PCR event 2 structure.
 **/
@@ -890,14 +890,14 @@ DumpEvent2 (
   DEBUG ((DEBUG_INFO, "\n"));
   DigestBuffer = DigestBuffer - sizeof (TPMI_ALG_HASH);
 
-  CopyMem (&EventSize, DigestBuffer, sizeof (TcgPcrEvent2->EventSize));
+  CopyMem (&EventSize, DigestBuffer, sizeof (EventSize));
   DEBUG ((DEBUG_INFO, "    EventSize - 0x%08x\n", EventSize));
   EventBuffer = DigestBuffer + sizeof (TcgPcrEvent2->EventSize);
   InternalDumpHex (EventBuffer, EventSize);
 }
 
 /**
-  This function dump TCG_EfiSpecIDEventStruct.
+  This function dumps a TCG_EfiSpecIDEventStruct structure.
 
   @param[in]  TcgEfiSpecIdEventStruct     A pointer to TCG_EfiSpecIDEventStruct.
 **/
@@ -950,6 +950,8 @@ DumpTcgEfiSpecIdEventStruct (
   avoid library dependencies within TCG2 code.
 
   @param[in]  TcgEfiSpecIdEventStruct     A pointer to TCG_EfiSpecIDEventStruct.
+
+  @return size of a TCG_EfiSpecIDEventStruct instance.
 **/
 STATIC
 UINTN
@@ -969,7 +971,7 @@ Tpm2DebugLibGetTcgEfiSpecIdEventStructSize (
 }
 
 /**
-  This function returns size of TCG PCR event 2.
+  This function returns the size of a TCG PCR event 2 instance.
 
   @param[in]  TcgPcrEvent2     TCG PCR event 2 structure.
 
@@ -1020,14 +1022,14 @@ GetPcrEvent2Size (
 
   DigestBuffer = DigestBuffer - sizeof (TPMI_ALG_HASH);
 
-  CopyMem (&EventSize, DigestBuffer, sizeof (TcgPcrEvent2->EventSize));
+  CopyMem (&EventSize, DigestBuffer, sizeof (EventSize));
   EventBuffer = DigestBuffer + sizeof (TcgPcrEvent2->EventSize);
 
   return (UINTN)EventBuffer + EventSize - (UINTN)TcgPcrEvent2;
 }
 
 /**
-  This function dump event log.
+  This function dumps the provided event log.
 
   @param[in]  EventLogFormat     The type of the event log for which the information is requested.
   @param[in]  EventLogLocation   A pointer to the memory address of the event log.
