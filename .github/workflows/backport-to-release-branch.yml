@@ -32,6 +32,7 @@ name: Backport Commits to Release Branch
 on:
   push:
     branches:
+      - dev/202502
       - dev/202405
 
 jobs:
