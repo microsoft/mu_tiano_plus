@@ -20,6 +20,9 @@
 #include <Library/BaseMemoryLib.h>
 
 #include <Protocol/Cpu.h>
+#include <Protocol/IoMmu.h>
+
+EDKII_IOMMU_PROTOCOL  *mIoMmuProtocol;
 
 typedef struct {
   EFI_PHYSICAL_ADDRESS    HostAddress;
@@ -27,6 +30,7 @@ typedef struct {
   UINTN                   NumberOfBytes;
   DMA_MAP_OPERATION       Operation;
   BOOLEAN                 DoubleBuffer;
+  VOID                    *IoMmuContext; // MU_CHANGE
 } MAP_INFO_INSTANCE;
 
 typedef struct {
@@ -214,6 +218,15 @@ DmaMap (
     return EFI_INVALID_PARAMETER;
   }
 
+  // MU_CHANGE [BEGIN]
+  if (FeaturePcdGet (PcdRequireIommu) && (mIoMmuProtocol == NULL)) {
+    DEBUG ((DEBUG_ERROR, "%a - mIoMmuProtocol is NULL!\n", __func__));
+    ASSERT (mIoMmuProtocol != NULL);
+    return EFI_DEVICE_ERROR;
+  }
+
+  // MU_CHANGE [END]
+
   *DeviceAddress = HostToDeviceAddress (HostAddress);
 
   // Remember range so we can flush on the other side
@@ -338,8 +351,24 @@ DmaMap (
   Map->HostAddress   = (UINTN)HostAddress;
   Map->NumberOfBytes = *NumberOfBytes;
   Map->Operation     = Operation;
+  Map->IoMmuContext  = NULL; // MU_CHANGE
 
   *Mapping = Map;
+
+  if (mIoMmuProtocol != NULL) {
+    Status = mIoMmuProtocol->Map (
+      mIoMmuProtocol,
+      Operation,
+      (VOID *)(UINTN)*DeviceAddress,
+      NumberOfBytes,
+      DeviceAddress,
+      &Map->IoMmuContext
+      );
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a - IoMmu Map failed.\n", __func__));
+      return Status;
+    }
+  }
 
   return EFI_SUCCESS;
 
@@ -389,6 +418,23 @@ DmaUnmap (
   }
 
   Map = (MAP_INFO_INSTANCE *)Mapping;
+
+  // MU_CHANGE [BEGIN]
+  if (FeaturePcdGet (PcdRequireIommu) && (mIoMmuProtocol == NULL)) {
+    DEBUG ((DEBUG_ERROR, "%a - mIoMmuProtocol is NULL!\n", __func__));
+    ASSERT (mIoMmuProtocol != NULL);
+    return EFI_DEVICE_ERROR;
+  }
+
+  if (mIoMmuProtocol != NULL) {
+    Status = mIoMmuProtocol->Unmap (mIoMmuProtocol, Map->IoMmuContext);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a - IoMmu Unmap failed.\n", __func__));
+      return Status;
+    }
+  }
+
+  // MU_CHANGE [END]
 
   Status = EFI_SUCCESS;
   if (((UINTN)Map->HostAddress + Map->NumberOfBytes) > mDmaHostAddressLimit) {
@@ -692,6 +738,8 @@ NonCoherentDmaLibConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
+  EFI_STATUS  Status;
+
   InitializeListHead (&UncachedAllocationList);
 
   //
@@ -702,6 +750,14 @@ NonCoherentDmaLibConstructor (
 
   mDmaHostAddressLimit = PcdGet64 (PcdDmaDeviceLimit) -
                          PcdGet64 (PcdDmaDeviceOffset);
+
+  if (FeaturePcdGet (PcdRequireIommu)) {
+    Status = gBS->LocateProtocol (&gEdkiiIoMmuProtocolGuid, NULL, (VOID **)&mIoMmuProtocol);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: Failed to locate IOMMU protocol\n", __func__));
+      return Status;
+    }
+  }
 
   // Get the Cpu protocol for later use
   return gBS->LocateProtocol (&gEfiCpuArchProtocolGuid, NULL, (VOID **)&mCpu);

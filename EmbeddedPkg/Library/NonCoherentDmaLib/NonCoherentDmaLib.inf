@@ -24,6 +24,7 @@
 [Packages]
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
 
 [LibraryClasses]
   BaseMemoryLib
@@ -33,12 +34,17 @@
   MemoryAllocationLib
   UefiBootServicesTableLib
 
+[FeaturePcd]                                      ## MU_CHANGE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdRequireIommu  ## MU_CHANGE
+
 [Protocols]
   gEfiCpuArchProtocolGuid
+  gEdkiiIoMmuProtocolGuid                       ## SOMETIMES_CONSUMES ## MU_CHANGE
 
 [Pcd]
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceOffset
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit
 
 [Depex]
-  gEfiCpuArchProtocolGuid
+  gEfiCpuArchProtocolGuid AND
+  gEdkiiIoMmuProtocolGuid                       ## SOMETIMES_CONSUMES ## MU_CHANGE
