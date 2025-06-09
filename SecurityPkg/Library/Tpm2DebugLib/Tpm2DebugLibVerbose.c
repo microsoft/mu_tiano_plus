@@ -1145,10 +1145,10 @@ DumpPcrDigest (
       PcrIndex
       ));
 
-    for (Index2 = 0; Index2 < PcrValues->digests[Index].size; Index2++) {
-      if ((PcrValues->digests == NULL) || (PcrValues->digests[Index].buffer == NULL)) {
-        DEBUG ((DEBUG_INFO, "NULL\n"));
-      } else {
+    if ((PcrValues->digests == NULL) || (PcrValues->digests[Index].buffer == NULL)) {
+      DEBUG ((DEBUG_INFO, "NULL\n"));
+    } else {
+      for (Index2 = 0; Index2 < PcrValues->digests[Index].size; Index2++) {
         DEBUG ((DEBUG_INFO, "%02x ", PcrValues->digests[Index].buffer[Index2]));
       }
     }
