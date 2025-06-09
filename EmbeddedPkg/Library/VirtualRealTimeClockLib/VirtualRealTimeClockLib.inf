@@ -35,3 +35,6 @@
 # Current usage of this library expects GCC in a UNIX-like shell environment with the date command
 [BuildOptions]
   GCC:*_*_*_CC_FLAGS = -DBUILD_EPOCH=`printenv SOURCE_DATE_EPOCH || date +%s`
+  # For MSVC/VS2022, calculate BUILD_EPOCH using compile-time macros from TimeBaseLib.h
+  # This provides a reasonable approximation based on build date
+  MSFT:*_*_*_CC_FLAGS = /D"BUILD_EPOCH=((TIME_BUILD_YEAR-1970)*31557600+(TIME_BUILD_MONTH-1)*2629800+(TIME_BUILD_DAY-1)*86400)"
