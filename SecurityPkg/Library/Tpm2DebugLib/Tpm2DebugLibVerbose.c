@@ -1133,7 +1133,7 @@ DumpPcrDigest (
   UINTN  Index2;
 
   if (PcrValues == NULL) {
-    DEBUG ((DEBUG_INFO, "DumpPcrDigest - PcrValues is NULL\n"));
+    DEBUG ((DEBUG_ERROR, "DumpPcrDigest - PcrValues is NULL\n"));
     return;
   }
 
