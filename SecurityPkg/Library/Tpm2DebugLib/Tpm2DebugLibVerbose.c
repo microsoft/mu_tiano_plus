@@ -1133,12 +1133,18 @@ DumpPcrDigest (
   UINTN  Index2;
 
   if (PcrValues == NULL) {
-    DEBUG ((DEBUG_ERROR, "DumpPcrDigest - PcrValues is NULL\n"));
+    DEBUG ((
+      DEBUG_ERROR,
+      "DumpPcrDigest - PcrValues is NULL\n"
+      ));
     return;
   }
 
   if (PcrValues->digests == NULL) {
-    DEBUG ((DEBUG_ERROR, "DumpPcrDigest - PcrValues->digests is NULL\n"));
+    DEBUG ((
+      DEBUG_ERROR,
+      "DumpPcrDigest - PcrValues->digests is NULL\n"
+      ));
     return;
   }
 
