@@ -1137,6 +1137,11 @@ DumpPcrDigest (
     return;
   }
 
+  if (PcrValues->digests == NULL) {
+    DEBUG ((DEBUG_ERROR, "DumpPcrDigest - PcrValues->digests is NULL\n"));
+    return;
+  }
+
   for (Index = 0; Index < PcrValues->count; Index++) {
     DEBUG ((
       DEBUG_INFO,
@@ -1145,7 +1150,7 @@ DumpPcrDigest (
       PcrIndex
       ));
 
-    if ((PcrValues->digests == NULL) || (PcrValues->digests[Index].buffer == NULL)) {
+    if (PcrValues->digests[Index].buffer == NULL) {
       DEBUG ((DEBUG_INFO, "NULL\n"));
     } else {
       for (Index2 = 0; Index2 < PcrValues->digests[Index].size; Index2++) {
