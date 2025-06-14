@@ -1133,22 +1133,22 @@ DumpPcrDigest (
   UINTN  Index2;
 
   if (PcrValues == NULL) {
-    DEBUG ((DEBUG_INFO, "DumpPcrDigest - PcrValues is NULL\n"));
+    DEBUG ((DEBUG_ERROR, "DumpPcrDigest - PcrValues is NULL\n"));
+    return;
+  }
+
+  if (PcrValues->digests == NULL) {
+    DEBUG ((DEBUG_ERROR, "DumpPcrDigest - PcrValues->digests is NULL\n"));
     return;
   }
 
   for (Index = 0; Index < PcrValues->count; Index++) {
-    DEBUG ((
-      DEBUG_INFO,
-      "ReadPcr - HashAlg = 0x%04x, Pcr[%02d], digest = ",
-      HashAlg,
-      PcrIndex
-      ));
+    DEBUG ((DEBUG_INFO, "ReadPcr - HashAlg = 0x%04x, Pcr[%02d], digest = ", HashAlg, PcrIndex));
 
-    for (Index2 = 0; Index2 < PcrValues->digests[Index].size; Index2++) {
-      if ((PcrValues->digests == NULL) || (PcrValues->digests[Index].buffer == NULL)) {
-        DEBUG ((DEBUG_INFO, "NULL\n"));
-      } else {
+    if (PcrValues->digests[Index].buffer == NULL) {
+      DEBUG ((DEBUG_INFO, "NULL\n"));
+    } else {
+      for (Index2 = 0; Index2 < PcrValues->digests[Index].size; Index2++) {
         DEBUG ((DEBUG_INFO, "%02x ", PcrValues->digests[Index].buffer[Index2]));
       }
     }
