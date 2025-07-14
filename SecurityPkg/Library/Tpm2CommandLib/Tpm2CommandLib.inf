@@ -48,4 +48,3 @@
   BaseMemoryLib
   DebugLib
   Tpm2DeviceLib
-  Tpm2DebugLib # MU_CHANGE - Add Tpm2DebugLib

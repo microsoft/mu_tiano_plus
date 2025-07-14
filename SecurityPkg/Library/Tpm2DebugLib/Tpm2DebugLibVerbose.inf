@@ -31,5 +31,4 @@
   SecurityPkg/SecurityPkg.dec
 
 [LibraryClasses]
-  BaseMemoryLib
   DebugLib
