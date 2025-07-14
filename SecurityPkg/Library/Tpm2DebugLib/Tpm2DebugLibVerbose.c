@@ -9,10 +9,8 @@ MU_CHANGE
 
 **/
 
-#include <Uefi.h>
 #include <Library/DebugLib.h>
 #include <Library/BaseLib.h>
-#include <Library/Tpm2DebugLib.h>
 
 #include <IndustryStandard/Tpm20.h>
 
