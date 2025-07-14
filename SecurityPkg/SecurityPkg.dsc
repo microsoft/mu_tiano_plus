@@ -58,7 +58,6 @@
   Tcg2PhysicalPresenceLib|SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
   TcgPpVendorLib|SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
   Tcg2PpVendorLib|SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
-  Tpm2DebugLib|SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf             ## MU_CHANGE
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
   PciLib|MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf
   PciSegmentLib|MdePkg/Library/BasePciSegmentLibPci/BasePciSegmentLibPci.inf
@@ -262,13 +261,10 @@
   SecurityPkg/Library/DxeHash2CryptoLib/DxeHash2CryptoLib.inf
   SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLib.inf
   SecurityPkg/Library/OemTpm2InitLibNull/OemTpm2InitLibVendorNull.inf
-  SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibSimple.inf
-  SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibVerbose.inf
   SecurityPkg/Library/DxeTpmMeasurementLib/DxeTpmMeasurementLib.inf
   SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
   SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
   SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
-  SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf
   SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
   SecurityPkg/Library/Tcg2PreUefiEventLogLibNull/Tcg2PreUefiEventLogLibNull.inf
 # MU_CHANGE [END]

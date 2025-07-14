@@ -3,8 +3,6 @@
 
 Copyright (c) 2013 - 2018, Intel Corporation. All rights reserved.<BR>
 (C) Copyright 2015 Hewlett Packard Enterprise Development LP<BR>
-Copyright (c) 2016, Microsoft Corporation
-
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -18,7 +16,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/DebugLib.h>
 #include <Library/Tpm2DeviceLib.h>
 #include <Library/PcdLib.h>
-#include <Library/Tpm2DebugLib.h>       // MU_CHANGE
 
 #include <IndustryStandard/TpmTis.h>
 
@@ -226,10 +223,6 @@ Tpm2TisTpmCommand (
   UINT32      Data32;
 
   DEBUG_CODE_BEGIN ();
-  // MU_CHANGE [BEGIN]
-  DumpTpmInputBlock (SizeIn, BufferIn);
-
-  /*
   UINTN  DebugSize;
 
   DEBUG ((DEBUG_VERBOSE, "Tpm2TisTpmCommand Send - "));
@@ -251,8 +244,6 @@ Tpm2TisTpmCommand (
   }
 
   DEBUG ((DEBUG_VERBOSE, "\n"));
-  */
-  // MU_CHANGE [END]
   DEBUG_CODE_END ();
   TpmOutSize = 0;
 
@@ -356,9 +347,6 @@ Tpm2TisTpmCommand (
     }
   }
 
-  // MU_CHANGE [BEGIN]
-
-  /*
   DEBUG_CODE_BEGIN ();
   DEBUG ((DEBUG_VERBOSE, "Tpm2TisTpmCommand ReceiveHeader - "));
   for (Index = 0; Index < sizeof (TPM2_RESPONSE_HEADER); Index++) {
@@ -367,8 +355,6 @@ Tpm2TisTpmCommand (
 
   DEBUG ((DEBUG_VERBOSE, "\n"));
   DEBUG_CODE_END ();
-  */
-  // MU_CHANGE [END]
   //
   // Check the response data header (tag,parasize and returncode )
   //
@@ -410,18 +396,12 @@ Tpm2TisTpmCommand (
 
 Exit:
   DEBUG_CODE_BEGIN ();
-  // MU_CHANGE [BEGIN]
-  DumpTpmOutputBlock (TpmOutSize, BufferOut);
-
-  /*
   DEBUG ((DEBUG_VERBOSE, "Tpm2TisTpmCommand Receive - "));
   for (Index = 0; Index < TpmOutSize; Index++) {
     DEBUG ((DEBUG_VERBOSE, "%02x ", BufferOut[Index]));
   }
 
   DEBUG ((DEBUG_VERBOSE, "\n"));
-  */
-  // MU_CHANGE [END]
   DEBUG_CODE_END ();
   MmioWrite8 ((UINTN)&TisReg->Status, TIS_PC_STS_READY);
   return Status;
