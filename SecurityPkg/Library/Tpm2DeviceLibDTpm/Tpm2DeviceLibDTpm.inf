@@ -49,7 +49,6 @@
   TimerLib
   DebugLib
   PcdLib
-  Tpm2DebugLib         ## MU_CHANGE
 
 [Pcd]
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmBaseAddress            ## CONSUMES
