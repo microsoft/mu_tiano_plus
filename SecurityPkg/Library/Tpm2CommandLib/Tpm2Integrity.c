@@ -773,7 +773,7 @@ Tpm2PcrReadForActiveBank (
   ZeroMem (&PcrValues, sizeof (PcrValues));
   ZeroMem (&Pcrs, sizeof (TPML_PCR_SELECTION));
 
-  // DEBUG ((DEBUG_INFO, "ReadPcr - %02d\n", PcrIndex)); MU_CHANGE: Remove noisy print
+  DEBUG ((DEBUG_INFO, "ReadPcr - %02d\n", PcrIndex));
 
   //
   // Read TPM capabilities
