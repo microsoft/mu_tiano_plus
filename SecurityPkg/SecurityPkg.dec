@@ -556,7 +556,9 @@
   ## This PCD defines minimum length(in bytes) of the system preboot TCG event log area(LAML).
   #  For PC Client Implementation spec up to and including 1.2 the minimum log size is 64KB.
   # @Prompt Minimum length(in bytes) of the system preboot TCG event log area(LAML).
-  gEfiSecurityPkgTokenSpaceGuid.PcdTcgLogAreaMinLen|0x10000|UINT32|0x00010017
+  # MU_CHANGE [BEGIN]
+  gEfiSecurityPkgTokenSpaceGuid.PcdTcgLogAreaMinLen|0x20000|UINT32|0x00010017
+  # MU_CHANGE [END]
 
   ## This PCD defines length(in bytes) of the TCG2 Final event log area.
   # @Prompt Length(in bytes) of the TCG2 Final event log area.
