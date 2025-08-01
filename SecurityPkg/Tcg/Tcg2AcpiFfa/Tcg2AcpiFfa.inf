@@ -48,7 +48,8 @@
   PcdLib
 
 [Guids]
-  gEfiTpmDeviceInstanceTpm20DtpmGuid                            ## PRODUCES ## GUID # TPM device identifier
+  # MU_CHANGE: Check for FFA instance
+  gTpm2ServiceFfaGuid                                           ## PRODUCES ## GUID # TPM device identifier
 
 [Protocols]
   gEfiAcpiTableProtocolGuid                                     ## CONSUMES

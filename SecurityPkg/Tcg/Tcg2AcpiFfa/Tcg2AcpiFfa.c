@@ -447,13 +447,23 @@ InitializeTcgAcpiFfa (
   )
 {
   EFI_STATUS  Status;
+  // MU_CHANGE Starts: Check for FFA instance
+  VOID  *TpmGuid;
 
   DEBUG ((DEBUG_INFO, "TCG ACPI FFA Entry Point!\n"));
-
-  if (!CompareGuid (PcdGetPtr (PcdTpmInstanceGuid), &gEfiTpmDeviceInstanceTpm20DtpmGuid)) {
-    DEBUG ((DEBUG_ERROR, "No TPM2 DTPM instance required!\n"));
+  TpmGuid = PcdGetPtr (PcdTpmInstanceGuid);
+  if (TpmGuid == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a - Driver failed due to no TPM2 instance configured!\n", __func__));
     return EFI_UNSUPPORTED;
   }
+
+  if (!CompareGuid (PcdGetPtr (PcdTpmInstanceGuid), &gTpm2ServiceFfaGuid)) {
+    // MU_CHANGE: Check for FFA instance
+    DEBUG ((DEBUG_ERROR, "%a - Driver failed due to no the system does not have a TPM2 FFA instance configured, not supported!!\n", __func__));
+    return EFI_UNSUPPORTED;
+  }
+
+  // MU_CHANGE Ends
 
   Status = PublishAcpiTable ();
   ASSERT_EFI_ERROR (Status);
