@@ -249,6 +249,7 @@ Tpm2NvReadPublic (
     case TPM_RC_SUCCESS:
       // return data
       break;
+    case TPM_RC_HANDLE:                            // MU_CHANGE: Treat 0x8B (TPM_RC_HANDLE) as EFI_NOT_FOUND.
     case TPM_RC_HANDLE + RC_NV_ReadPublic_nvIndex: // TPM_RC_NV_DEFINED:
       return EFI_NOT_FOUND;
     case TPM_RC_VALUE + RC_NV_ReadPublic_nvIndex:
