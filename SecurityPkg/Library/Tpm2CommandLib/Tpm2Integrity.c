@@ -9,6 +9,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <IndustryStandard/UefiTcgPlatform.h>
 #include <Library/Tpm2CommandLib.h>
 #include <Library/Tpm2DebugLib.h> // MU_CHANGE: Move noisy prints to debug lib
+#include <Library/Tpm2HelpLib.h>  // MU_CHANGE
 #include <Library/Tpm2DeviceLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/BaseLib.h>

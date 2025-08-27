@@ -76,6 +76,7 @@
   PanicLib
   ## MU_CHANGE [END]
   Tpm2DebugLib # MU_CHANGE - Add Tpm2DebugLib
+  Tpm2HelpLib # MU_CHANGE
 
 [Guids]
   ## SOMETIMES_CONSUMES     ## Variable:L"SecureBoot"

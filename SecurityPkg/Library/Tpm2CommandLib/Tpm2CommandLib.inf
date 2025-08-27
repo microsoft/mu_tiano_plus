@@ -37,7 +37,7 @@
   Tpm2DictionaryAttack.c
   Tpm2Object.c
   Tpm2Miscellaneous.c
-  Tpm2Help.c
+  #Tpm2Help.c # MU_CHANGE - Moved to Tpm2HelpLib
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -49,3 +49,4 @@
   DebugLib
   Tpm2DeviceLib
   Tpm2DebugLib # MU_CHANGE - Add Tpm2DebugLib
+  Tpm2HelpLib  # MU_CHANGE - Add Tpm2HelpLib
