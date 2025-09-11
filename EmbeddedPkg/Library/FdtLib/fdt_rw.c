@@ -124,7 +124,7 @@ _fdt_splice (
   char  *p   = splicepoint;
   char  *end = (char *)fdt + _fdt_data_size (fdt);
 
-  if ((unsigned int)oldlen > (end - p)) {
+  if ((unsigned int)oldlen > (end - p)) {     // MU_CHANGE: Fix CodeQL warning - Pointer overflow check
     return -FDT_ERR_BADOFFSET;
   }
 
