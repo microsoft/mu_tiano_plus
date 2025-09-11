@@ -40,7 +40,6 @@
   BaseMemoryLib
   DebugLib
   Tpm2CommandLib
-  Tpm2HelpLib       ## MU_CHANGE
   MemoryAllocationLib
   PcdLib
 
