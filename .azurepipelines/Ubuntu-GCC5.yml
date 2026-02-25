@@ -17,5 +17,16 @@
 variables:
 - group: architectures-arm64-x86-64
 - group: tool-chain-ubuntu-gcc
-- group: coverage
 
+
+stages:
+- stage: UbuntuGccValidation
+  displayName: Ubuntu Gcc Pipeline Validation
+  jobs:
+  - job: ValidatePipeline
+    displayName: Validate Pipeline Entry
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - script: echo Repo is depreciated, functionality was moved into mu_basecore
+      displayName: Repo deprecation notice
