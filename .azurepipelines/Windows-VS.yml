@@ -17,4 +17,15 @@
 variables:
 - group: architectures-x86-64
 - group: tool-chain-windows-visual-studio-latest
-- group: coverage
+
+stages:
+- stage: WindowsVsValidation
+  displayName: Windows VS Pipeline Validation
+  jobs:
+  - job: ValidatePipeline
+    displayName: Validate Pipeline Entry
+    pool:
+      vmImage: windows-latest
+    steps:
+    - script: echo Repo is depreciated, functionality was moved into mu_basecore
+      displayName: Repo deprecation notice
